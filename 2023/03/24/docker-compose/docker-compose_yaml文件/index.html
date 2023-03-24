@@ -1,0 +1,1162 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="docker-compose.yml 配置文件编写详解一.前言关于 docker compose 技术可以查看官方文档 Docker Compose撰写规范：https:&#x2F;&#x2F;github.com&#x2F;compose-spec&#x2F;compose-spec&#x2F;blob&#x2F;master&#x2F;spec.md 以下的内容是确立在已经下载好 Docker 以及 Docker Compose，可参看 Docker Compo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker-compose.yml 配置文件编写详解">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/03/24/docker-compose/docker-compose_yaml%E6%96%87%E4%BB%B6/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="docker-compose.yml 配置文件编写详解一.前言关于 docker compose 技术可以查看官方文档 Docker Compose撰写规范：https:&#x2F;&#x2F;github.com&#x2F;compose-spec&#x2F;compose-spec&#x2F;blob&#x2F;master&#x2F;spec.md 以下的内容是确立在已经下载好 Docker 以及 Docker Compose，可参看 Docker Compo">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-03-24T08:02:11.000Z">
+<meta property="article:modified_time" content="2023-03-24T09:49:41.332Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="docker-compose">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>docker-compose.yml 配置文件编写详解 - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="docker-compose.yml 配置文件编写详解"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-24 16:02" pubdate>
+          2023年3月24日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          22k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          181 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">docker-compose.yml 配置文件编写详解</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="docker-compose-yml-配置文件编写详解"><a href="#docker-compose-yml-配置文件编写详解" class="headerlink" title="docker-compose.yml 配置文件编写详解"></a>docker-compose.yml 配置文件编写详解</h1><h2 id="一-前言"><a href="#一-前言" class="headerlink" title="一.前言"></a>一.前言</h2><p>关于 docker compose 技术可以查看官方文档 Docker Compose<br>撰写规范：<a target="_blank" rel="noopener" href="https://github.com/compose-spec/compose-spec/blob/master/spec.md">https://github.com/compose-spec/compose-spec/blob/master/spec.md</a></p>
+<p>以下的内容是确立在已经下载好 Docker 以及 Docker Compose，可参看 Docker Compose 的官方安装教程 Install Docker Compose</p>
+<p>原文参考： [<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36148847/article/details/79427878]">https://blog.csdn.net/qq_36148847/article/details/79427878]</a><br>( <a target="_blank" rel="noopener" href="https://blog.csdn.net/Aria_Miazzy/article/details/89326829">https://blog.csdn.net/Aria_Miazzy/article/details/89326829</a>)<br>( <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36148847/article/details/79427878">https://blog.csdn.net/qq_36148847/article/details/79427878</a>)</p>
+<h2 id="二-Docker-Compose-配置文件的构建参数说明"><a href="#二-Docker-Compose-配置文件的构建参数说明" class="headerlink" title="二. Docker Compose 配置文件的构建参数说明"></a>二. Docker Compose 配置文件的构建参数说明</h2><p>首先，官方提供了一个 yaml Docker Compose 配置文件的标准例子</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;3&quot;</span><br><span class="hljs-attr">services:</span><br><br>  <span class="hljs-attr">redis:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">redis:alpine</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;6379&quot;</span><br>    <span class="hljs-attr">networks:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">frontend</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">replicas:</span> <span class="hljs-number">2</span><br>      <span class="hljs-attr">update_config:</span><br>        <span class="hljs-attr">parallelism:</span> <span class="hljs-number">2</span><br>        <span class="hljs-attr">delay:</span> <span class="hljs-string">10s</span><br>      <span class="hljs-attr">restart_policy:</span><br>        <span class="hljs-attr">condition:</span> <span class="hljs-string">on-failure</span><br><br>  <span class="hljs-attr">db:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">postgres:9.4</span><br>    <span class="hljs-attr">volumes:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">db-data:/var/lib/postgresql/data</span><br>    <span class="hljs-attr">networks:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">backend</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">placement:</span><br>        <span class="hljs-attr">constraints:</span> [<span class="hljs-string">node.role</span> <span class="hljs-string">==</span> <span class="hljs-string">manager</span>]<br><br>  <span class="hljs-attr">vote:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">dockersamples/examplevotingapp_vote:before</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-number">5000</span><span class="hljs-string">:80</span><br>    <span class="hljs-attr">networks:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">frontend</span><br>    <span class="hljs-attr">depends_on:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">redis</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">replicas:</span> <span class="hljs-number">2</span><br>      <span class="hljs-attr">update_config:</span><br>        <span class="hljs-attr">parallelism:</span> <span class="hljs-number">2</span><br>      <span class="hljs-attr">restart_policy:</span><br>        <span class="hljs-attr">condition:</span> <span class="hljs-string">on-failure</span><br><br>  <span class="hljs-attr">result:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">dockersamples/examplevotingapp_result:before</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-number">5001</span><span class="hljs-string">:80</span><br>    <span class="hljs-attr">networks:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">backend</span><br>    <span class="hljs-attr">depends_on:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">db</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">replicas:</span> <span class="hljs-number">1</span><br>      <span class="hljs-attr">update_config:</span><br>        <span class="hljs-attr">parallelism:</span> <span class="hljs-number">2</span><br>        <span class="hljs-attr">delay:</span> <span class="hljs-string">10s</span><br>      <span class="hljs-attr">restart_policy:</span><br>        <span class="hljs-attr">condition:</span> <span class="hljs-string">on-failure</span><br><br>  <span class="hljs-attr">worker:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">dockersamples/examplevotingapp_worker</span><br>    <span class="hljs-attr">networks:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">frontend</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">backend</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">mode:</span> <span class="hljs-string">replicated</span><br>      <span class="hljs-attr">replicas:</span> <span class="hljs-number">1</span><br>      <span class="hljs-attr">labels:</span> [<span class="hljs-string">APP=VOTING</span>]<br>      <span class="hljs-attr">restart_policy:</span><br>        <span class="hljs-attr">condition:</span> <span class="hljs-string">on-failure</span><br>        <span class="hljs-attr">delay:</span> <span class="hljs-string">10s</span><br>        <span class="hljs-attr">max_attempts:</span> <span class="hljs-number">3</span><br>        <span class="hljs-attr">window:</span> <span class="hljs-string">120s</span><br>      <span class="hljs-attr">placement:</span><br>        <span class="hljs-attr">constraints:</span> [<span class="hljs-string">node.role</span> <span class="hljs-string">==</span> <span class="hljs-string">manager</span>]<br><br>  <span class="hljs-attr">visualizer:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">dockersamples/visualizer:stable</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;8080:8080&quot;</span><br>    <span class="hljs-attr">stop_grace_period:</span> <span class="hljs-string">1m30s</span><br>    <span class="hljs-attr">volumes:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;/var/run/docker.sock:/var/run/docker.sock&quot;</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">placement:</span><br>        <span class="hljs-attr">constraints:</span> [<span class="hljs-string">node.role</span> <span class="hljs-string">==</span> <span class="hljs-string">manager</span>]<br><br><span class="hljs-attr">networks:</span><br>  <span class="hljs-attr">frontend:</span><br>  <span class="hljs-attr">backend:</span><br><br><span class="hljs-attr">volumes:</span><br>  <span class="hljs-attr">db-data:</span><br><br></code></pre></td></tr></table></figure>
+
+<p>此文件配置了多个服务，关于此配置文件的各个语句含义就需要弄懂配置选项的含义了</p>
+<h3 id="文件配置"><a href="#文件配置" class="headerlink" title="文件配置"></a>文件配置</h3><p>compose 文件是一个定义服务、 网络和卷的 YAML 文件 。Compose 文件的默认路径是 .&#x2F;docker-compose.yml</p>
+<blockquote>
+<p>提示：可以是用 .yml 或 .yaml 作为文件扩展名</p>
+</blockquote>
+<p>服务定义包含应用于为该服务启动的每个容器的配置，就像传递命令行参数一样 <strong>docker container create</strong>。同样，网络和卷的定义类似于 docker network create 和 docker volume create。</p>
+<p>正如 docker container create 在 Dockerfile 指定选项，如 CMD、 EXPOSE、VOLUME、ENV，在默认情况下，你不需要再次指定它们docker-compose.yml。</p>
+<p>可以使用 Bash 类 ${VARIABLE} 语法在配置值中使用环境变量。</p>
+<h3 id="配置选项"><a href="#配置选项" class="headerlink" title="配置选项"></a>配置选项</h3><h4 id="1-bulid"><a href="#1-bulid" class="headerlink" title="1.bulid"></a>1.bulid</h4><p>服务除了可以基于指定的镜像，还可以基于一份 Dockerfile，在使用 up 启动之时执行构建任务，这个构建标签就是 build，它可以指定 Dockerfile 所在文件夹的路径。Compose 将会利用它自动构建这个镜像，然后使用这个镜像启动服务容器</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">build:</span> <span class="hljs-string">/path/to/build/dir</span><br></code></pre></td></tr></table></figure>
+
+
+<p>也可以是相对路径</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">build:</span> <span class="hljs-string">./dir</span><br></code></pre></td></tr></table></figure>
+
+<p>设定上下文根目录，然后以该目录为准指定 Dockerfile</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">build:</span><br>  <span class="hljs-attr">context:</span> <span class="hljs-string">../</span><br>  <span class="hljs-attr">dockerfile:</span> <span class="hljs-string">path/of/Dockerfile</span><br>  <br><span class="hljs-comment"># 例子</span><br><span class="hljs-attr">version:</span> <span class="hljs-string">&#x27;3&#x27;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">webapp:</span><br>    <span class="hljs-attr">build:</span> <span class="hljs-string">./dir</span><br></code></pre></td></tr></table></figure>
+
+<p>如果 context 中有指定的路径，并且可以选定 Dockerfile 和 args。那么 arg 这个标签，就像 Dockerfile 中的 ARG 指令，它可以在构建过程中指定环境变量，但是在构建成功后取消，在 docker-compose.yml 文件中也支持这样的写法：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&#x27;3&#x27;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">webapp:</span><br>    <span class="hljs-attr">build:</span><br>      <span class="hljs-attr">context:</span> <span class="hljs-string">./dir</span><br>      <span class="hljs-attr">dockerfile:</span> <span class="hljs-string">Dockerfile-alternate</span><br>      <span class="hljs-attr">args:</span><br>        <span class="hljs-attr">buildno:</span> <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+<p>与 ENV 不同的是，ARG 可以为空值</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">args:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">buildno</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">password</span><br></code></pre></td></tr></table></figure>
+
+<p>如果要指定 image 以及 build ，选项格式为</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">build:</span> <span class="hljs-string">./dir</span><br><span class="hljs-attr">image:</span> <span class="hljs-string">webapp:tag</span><br></code></pre></td></tr></table></figure>
+
+<p>这会在 .&#x2F;dir 目录生成一个名为 webaapp 和标记为 tag 的镜像</p>
+<blockquote>
+<p>Note:当用(Version 3) Compose 文件在群集模式下部署堆栈时，该选项被忽略。因为 docker stack 命令只接受预先构建的镜像</p>
+</blockquote>
+<h4 id="2-context"><a href="#2-context" class="headerlink" title="2.context"></a>2.context</h4><p>context 选项可以是 Dockerfile 的文件路径，也可以是到链接到 git 仓库的 url</p>
+<p>当提供的值是相对路径时，它被解析为相对于撰写文件的路径，此目录也是发送到 Docker 守护进程的 context</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">build:</span><br>  <span class="hljs-attr">context:</span> <span class="hljs-string">./dir</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-dockerfile"><a href="#3-dockerfile" class="headerlink" title="3.dockerfile"></a>3.dockerfile</h4><p>使用此 dockerfile 文件来构建，必须指定构建路径</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">build:</span><br>  <span class="hljs-attr">context:</span> <span class="hljs-string">.</span><br>  <span class="hljs-attr">dockerfile:</span> <span class="hljs-string">Dockerfile-alternate</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="4-args"><a href="#4-args" class="headerlink" title="4.args"></a>4.args</h4><p>添加构建参数，这些参数是仅在构建过程中可访问的环境变量</p>
+<p>首先， 在Dockerfile中指定参数：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">ARG buildno<br>ARG password<br><br>RUN <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Build number: <span class="hljs-variable">$buildno</span>&quot;</span><br>RUN script-requiring-password.sh <span class="hljs-string">&quot;<span class="hljs-variable">$password</span>&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>然后指定 build 下的参数,可以传递映射或列表</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">build:</span><br>  <span class="hljs-attr">context:</span> <span class="hljs-string">.</span><br>  <span class="hljs-attr">args:</span><br>    <span class="hljs-attr">buildno:</span> <span class="hljs-number">1</span><br>    <span class="hljs-attr">password:</span> <span class="hljs-string">secret</span><br></code></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">build:</span><br>  <span class="hljs-attr">context:</span> <span class="hljs-string">.</span><br>  <span class="hljs-attr">args:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">buildno=1</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">password=secret</span><br></code></pre></td></tr></table></figure>
+
+<p>指定构建参数时可以省略该值，在这种情况下，构建时的值默认构成运行环境中的值</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">args:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">buildno</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">password</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Note： YAML 布尔值（true，false，yes，no，on，off）必须使用引号括起来，以为了能够正常被解析为字符串</p>
+</blockquote>
+<h4 id="5-cache-from"><a href="#5-cache-from" class="headerlink" title="5.cache_from"></a>5.cache_from</h4><p>编写缓存解析镜像列表</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">build:</span><br>  <span class="hljs-attr">context:</span> <span class="hljs-string">.</span><br>  <span class="hljs-attr">cache_from:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">alpine:latest</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">corp/web_app:3.14</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="6-labels"><a href="#6-labels" class="headerlink" title="6.labels"></a>6.labels</h4><p>使用 Docker标签 将元数据添加到生成的镜像中，可以使用数组或字典。</p>
+<p>建议使用反向 DNS 标记来防止签名与其他软件所使用的签名冲突</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">build:</span><br>  <span class="hljs-attr">context:</span> <span class="hljs-string">.</span><br>  <span class="hljs-attr">labels:</span><br>    <span class="hljs-attr">com.example.description:</span> <span class="hljs-string">&quot;Accounting webapp&quot;</span><br>    <span class="hljs-attr">com.example.department:</span> <span class="hljs-string">&quot;Finance&quot;</span><br>    <span class="hljs-attr">com.example.label-with-empty-value:</span> <span class="hljs-string">&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">build:</span><br>  <span class="hljs-attr">context:</span> <span class="hljs-string">.</span><br>  <span class="hljs-attr">labels:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;com.example.description=Accounting webapp&quot;</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;com.example.department=Finance&quot;</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;com.example.label-with-empty-value&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="7-shm-size"><a href="#7-shm-size" class="headerlink" title="7.shm_size"></a>7.shm_size</h4><p>设置容器 &#x2F;dev&#x2F;shm 分区的大小，值为表示字节的整数值或表示字符的字符串</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">build:</span><br>  <span class="hljs-attr">context:</span> <span class="hljs-string">.</span><br>  <span class="hljs-attr">shm_size:</span> <span class="hljs-string">&#x27;2gb&#x27;</span><br><br><span class="hljs-comment"># 或</span><br><br><span class="hljs-attr">build:</span><br>  <span class="hljs-attr">context:</span> <span class="hljs-string">.</span><br>  <span class="hljs-attr">shm_size:</span> <span class="hljs-number">10000000</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="8-target"><a href="#8-target" class="headerlink" title="8.target"></a>8.target</h4><p>根据对应的 Dockerfile 构建指定 Stage</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">build:</span><br>    <span class="hljs-attr">context:</span> <span class="hljs-string">.</span><br>    <span class="hljs-attr">target:</span> <span class="hljs-string">prod</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="9-cap-add、cap-drop"><a href="#9-cap-add、cap-drop" class="headerlink" title="9.cap_add、cap_drop"></a>9.cap_add、cap_drop</h4><p>添加或删除容器功能，可查看 man 7 capabilities</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">cap_add:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">ALL</span><br><br><span class="hljs-attr">cap_drop:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">NET_ADMIN</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">SYS_ADMIN</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Note:当用(Version 3) Compose 文件在群集模式下部署堆栈时，该选项被忽略。因为 docker stack 命令只接受预先构建的镜像</p>
+</blockquote>
+<h4 id="10-command"><a href="#10-command" class="headerlink" title="10.command"></a>10.command</h4><p>覆盖容器启动后默认执行的命令</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">command:</span> <span class="hljs-string">bundle</span> <span class="hljs-string">exec</span> <span class="hljs-string">thin</span> <span class="hljs-string">-p</span> <span class="hljs-number">3000</span><br></code></pre></td></tr></table></figure>
+
+<p>该命令也可以是一个列表，方法类似于 dockerfile:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">command:</span> [<span class="hljs-string">&quot;bundle&quot;</span>, <span class="hljs-string">&quot;exec&quot;</span>, <span class="hljs-string">&quot;thin&quot;</span>, <span class="hljs-string">&quot;-p&quot;</span>, <span class="hljs-string">&quot;3000&quot;</span>]<br></code></pre></td></tr></table></figure>
+
+<h4 id="11-configs"><a href="#11-configs" class="headerlink" title="11.configs"></a>11.configs</h4><p>使用服务 configs 配置为每个服务赋予相应的访问权限，支持两种不同的语法。</p>
+<blockquote>
+<p>Note: 配置必须存在或在 configs 此堆栈文件的顶层中定义，否则堆栈部署失效</p>
+</blockquote>
+<h5 id="1-SHORT-语法"><a href="#1-SHORT-语法" class="headerlink" title="1.SHORT 语法"></a>1.SHORT 语法</h5><p>SHORT 语法只能指定配置名称，这允许容器访问配置并将其安装在 &#x2F;<config_name> 容器内，源名称和目标装入点都设为配置名称。</config_name></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;3.3&quot;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">redis:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">redis:latest</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">replicas:</span> <span class="hljs-number">1</span><br>    <span class="hljs-attr">configs:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">my_config</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">my_other_config</span><br><span class="hljs-attr">configs:</span><br>  <span class="hljs-attr">my_config:</span><br>    <span class="hljs-attr">file:</span> <span class="hljs-string">./my_config.txt</span><br>  <span class="hljs-attr">my_other_config:</span><br>    <span class="hljs-attr">external:</span> <span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<p>以上实例使用 SHORT 语法将 redis 服务访问授予 my_config 和 my_other_config ,并被 my_other_config 定义为外部资源，这意味着它已经在 Docker 中定义。可以通过 docker config create 命令或通过另一个堆栈部署。如果外部部署配置都不存在，则堆栈部署会失败并出现 config not found 错误。</p>
+<blockquote>
+<p>Note: config 定义仅在 3.3 版本或在更高版本的撰写文件格式中受支持，YAML 的布尔值（true, false, yes, no, on, off）必须要使用引号引起来（单引号、双引号均可），否则会当成字符串解析。</p>
+</blockquote>
+<h5 id="2-LONG-语法"><a href="#2-LONG-语法" class="headerlink" title="2.LONG 语法"></a>2.LONG 语法</h5><p>LONG 语法提供了创建服务配置的更加详细的信息</p>
+<ul>
+<li><p>source:Docker 中存在的配置的名称</p>
+</li>
+<li><p>target:要在服务的任务中装载的文件的路径或名称。如果未指定则默认为 &#x2F;<source></p>
+</li>
+<li><p>uid 和 gid:在服务的任务容器中拥有安装的配置文件的数字 UID 或 GID。如果未指定，则默认为在Linux上。Windows不支持</p>
+</li>
+<li><p>mode:在服务的任务容器中安装的文件的权限，以八进制表示法。例如，0444 代表文件可读的。默认是 0444。如果配置文件无法写入，是因为它们安装在临时文件系统中，所以如果设置了可写位，它将被忽略。可执行位可以设置。如果您不熟悉 UNIX 文件权限模式，Unix Permissions Calculator</p>
+<p>下面示例在容器中将 my_config 名称设置为 redis_config，将模式设置为 0440（group-readable）并将用户和组设置为 103。该　｀redis　服务无法访问 my_other_config 配置。</p>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;3.3&quot;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">redis:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">redis:latest</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">replicas:</span> <span class="hljs-number">1</span><br>    <span class="hljs-attr">configs:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">source:</span> <span class="hljs-string">my_config</span><br>        <span class="hljs-attr">target:</span> <span class="hljs-string">/redis_config</span><br>        <span class="hljs-attr">uid:</span> <span class="hljs-string">&#x27;103&#x27;</span><br>        <span class="hljs-attr">gid:</span> <span class="hljs-string">&#x27;103&#x27;</span><br>        <span class="hljs-attr">mode:</span> <span class="hljs-number">0440</span><br><span class="hljs-attr">configs:</span><br>  <span class="hljs-attr">my_config:</span><br>    <span class="hljs-attr">file:</span> <span class="hljs-string">./my_config.txt</span><br>  <span class="hljs-attr">my_other_config:</span><br>    <span class="hljs-attr">external:</span> <span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<p>可以同时授予多个配置的服务相应的访问权限，也可以混合使用 LONG 和 SHORT 语法。定义配置并不意味着授予服务访问权限。</p>
+<h4 id="12-cgroup-parent"><a href="#12-cgroup-parent" class="headerlink" title="12.cgroup_parent"></a>12.cgroup_parent</h4><p>可以为容器选择一个可选的父 cgroup</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">cgroup_parent:</span> <span class="hljs-string">m-executor-abcd</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：当 使用（Version 3）Compose 文件在群集模式下部署堆栈时，忽略此选项</p>
+</blockquote>
+<h4 id="13-container-name"><a href="#13-container-name" class="headerlink" title="13.container_name"></a>13.container_name</h4><p>为自定义的容器指定一个名称，而不是使用默认的名称</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">container_name:</span> <span class="hljs-string">my-web-container</span><br></code></pre></td></tr></table></figure>
+
+<p>因为 docker 容器名称必须是唯一的，所以如果指定了一个自定义的名称，不能扩展一个服务超过 1 个容器</p>
+<h4 id="14-credential-spec"><a href="#14-credential-spec" class="headerlink" title="14.credential_spec"></a>14.credential_spec</h4><p>为托管服务账户配置凭据规范，此选项仅适用于 Windows 容器服务</p>
+<p>在 credential_spec 上的配置列表格式为 file:&#x2F;&#x2F;<filename> 或 registry:&#x2F;&#x2F;<value-name></value-name></filename></p>
+<p>使用 file: 应该注意引用的文件必须存在于 <strong>CredentialSpecs,docker</strong>  数据目录的子目录中。在 Windows 上，该目录默认为 C:\ProgramData\Docker\ 。以下示例从名为  C:\ProgramData\Docker\CredentialSpecs\my-credential-spec.json  的文件加载凭证规范 ：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">credential_spec:</span><br>  <span class="hljs-attr">file:</span> <span class="hljs-string">my-credential-spec.json</span><br></code></pre></td></tr></table></figure>
+
+<p>使用 registry: 将从守护进程主机上的 Windows 注册表中读取凭据规范。其注册表值必须位于：</p>
+<figure class="highlight moonscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs moonscript">HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization\Containers\CredentialSpecs<br></code></pre></td></tr></table></figure>
+
+<p>下面的示例通过 my-credential-spec 注册表中指定的值加载凭证规范：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">credential_spec:</span><br>  <span class="hljs-attr">registry:</span> <span class="hljs-string">my-credential-spec</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="15-deploy"><a href="#15-deploy" class="headerlink" title="15.deploy"></a>15.deploy</h4><p>指定与部署和运行服务相关的配置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&#x27;3&#x27;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">redis:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">redis:alpine</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">replicas:</span> <span class="hljs-number">6</span><br>      <span class="hljs-attr">update_config:</span><br>        <span class="hljs-attr">parallelism:</span> <span class="hljs-number">2</span><br>        <span class="hljs-attr">delay:</span> <span class="hljs-string">10s</span><br>      <span class="hljs-attr">restart_policy:</span><br>        <span class="hljs-attr">condition:</span> <span class="hljs-string">on-failure</span><br></code></pre></td></tr></table></figure>
+
+<p>这里有几个子选项</p>
+<h5 id="1-endpoint-mode"><a href="#1-endpoint-mode" class="headerlink" title="1.endpoint_mode"></a>1.endpoint_mode</h5><p>指定连接到群组外部客户端服务发现方法</p>
+<p><strong>endpoint_mode: vip</strong> ：Docker 为该服务分配了一个虚拟 IP(VIP),作为客户端的 “前端“ 部位用于访问网络上的服务。<br><strong>endpoint_mode: dnsrr</strong> : DNS轮询（DNSRR）服务发现不使用单个虚拟 IP。Docker为服务设置 DNS 条目，使得服务名称的 DNS 查询返回一个 IP 地址列表，并且客户端直接连接到其中的一个。如果想使用自己的负载平衡器，或者混合 Windows 和 Linux 应用程序，则 DNS 轮询调度（round-robin）功能就非常实用。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;3.3&quot;</span><br><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">wordpress:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">wordpress</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-number">8080</span><span class="hljs-string">:80</span><br>    <span class="hljs-attr">networks:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">overlay</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">mode:</span> <span class="hljs-string">replicated</span><br>      <span class="hljs-attr">replicas:</span> <span class="hljs-number">2</span><br>      <span class="hljs-attr">endpoint_mode:</span> <span class="hljs-string">vip</span><br><br>  <span class="hljs-attr">mysql:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">mysql</span><br>    <span class="hljs-attr">volumes:</span><br>       <span class="hljs-bullet">-</span> <span class="hljs-string">db-data:/var/lib/mysql/data</span><br>    <span class="hljs-attr">networks:</span><br>       <span class="hljs-bullet">-</span> <span class="hljs-string">overlay</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">mode:</span> <span class="hljs-string">replicated</span><br>      <span class="hljs-attr">replicas:</span> <span class="hljs-number">2</span><br>      <span class="hljs-attr">endpoint_mode:</span> <span class="hljs-string">dnsrr</span><br><br><span class="hljs-attr">volumes:</span><br>  <span class="hljs-attr">db-data:</span><br><br><span class="hljs-attr">networks:</span><br>  <span class="hljs-attr">overlay:</span><br></code></pre></td></tr></table></figure>
+
+<p>相关信息：Swarm 模式 CLI 命令 、Configure 服务发现</p>
+<blockquote>
+<p><strong>注意：</strong> 使用 <strong>deploy</strong> 字段配置时，该配置默认只在swarm模式下生效，如果不想开启swarm，</p>
+<p>只要在 docker-compos 启动时加上 <strong>–compatibility</strong> 即可</p>
+</blockquote>
+<h5 id="2-labels"><a href="#2-labels" class="headerlink" title="2.labels"></a>2.labels</h5><p>指定服务的标签，这些标签仅在服务上设置。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;3&quot;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">web:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">web</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">labels:</span><br>        <span class="hljs-attr">com.example.description:</span> <span class="hljs-string">&quot;This label will appear on the web service&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>通过将 deploy 外面的 labels 标签来设置容器上的 labels</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;3&quot;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">web:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">web</span><br>    <span class="hljs-attr">labels:</span><br>      <span class="hljs-attr">com.example.description:</span> <span class="hljs-string">&quot;This label will appear on all containers for the web service&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="3-mode"><a href="#3-mode" class="headerlink" title="3.mode"></a>3.mode</h5><ul>
+<li><p>global:每个集节点只有一个容器</p>
+</li>
+<li><p>replicated:指定容器数量（默认）</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&#x27;3&#x27;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">worker:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">dockersamples/examplevotingapp_worker</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">mode:</span> <span class="hljs-string">global</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="4-placement"><a href="#4-placement" class="headerlink" title="4.placement"></a>4.placement</h5><p>指定 constraints 和 preferences</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&#x27;3&#x27;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">db:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">postgres</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">placement:</span><br>        <span class="hljs-attr">constraints:</span><br>          <span class="hljs-bullet">-</span> <span class="hljs-string">node.role</span> <span class="hljs-string">==</span> <span class="hljs-string">manager</span><br>          <span class="hljs-bullet">-</span> <span class="hljs-string">engine.labels.operatingsystem</span> <span class="hljs-string">==</span> <span class="hljs-string">ubuntu</span> <span class="hljs-number">14.04</span><br>        <span class="hljs-attr">preferences:</span><br>          <span class="hljs-bullet">-</span> <span class="hljs-attr">spread:</span> <span class="hljs-string">node.labels.zone</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="5-replicas"><a href="#5-replicas" class="headerlink" title="5.replicas"></a>5.replicas</h5><p>如果服务是 replicated（默认)，需要指定运行的容器数量</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&#x27;3&#x27;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">worker:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">dockersamples/examplevotingapp_worker</span><br>    <span class="hljs-attr">networks:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">frontend</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">backend</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">mode:</span> <span class="hljs-string">replicated</span><br>      <span class="hljs-attr">replicas:</span> <span class="hljs-number">6</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="6-resources"><a href="#6-resources" class="headerlink" title="6.resources"></a>6.resources</h5><p>配置资源限制</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&#x27;3&#x27;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">redis:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">redis:alpine</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">resources:</span><br>        <span class="hljs-attr">limits:</span><br>          <span class="hljs-attr">cpus:</span> <span class="hljs-string">&#x27;0.50&#x27;</span><br>          <span class="hljs-attr">memory:</span> <span class="hljs-string">50M</span><br>        <span class="hljs-attr">reservations:</span><br>          <span class="hljs-attr">cpus:</span> <span class="hljs-string">&#x27;0.25&#x27;</span><br>          <span class="hljs-attr">memory:</span> <span class="hljs-string">20M</span><br></code></pre></td></tr></table></figure>
+
+<p>此例子中，redis 服务限制使用不超过 50M 的内存和 0.50（50％）可用处理时间（CPU），并且 保留 20M 了内存和 0.25 CPU时间</p>
+<h5 id="7-restart-policy"><a href="#7-restart-policy" class="headerlink" title="7.restart_policy"></a>7.restart_policy</h5><p>配置容器的重新启动，代替 restart</p>
+<ul>
+<li><p><strong>condition:</strong> 值可以为 <strong>none</strong> 、<strong>on-failure</strong> 以及 <strong>any</strong> (默认)</p>
+</li>
+<li><p><strong>delay:</strong>  尝试重启的等待时间，默认为 0</p>
+</li>
+<li><p><strong>max_attempts:</strong> 放弃之前尝试重新启动容器次数（默认：从不放弃）。如果重新启动在配置中没有成功 window，则此尝试不计入配置max_attempts 值。例如，如果 max_attempts 值为 2，并且第一次尝试重新启动失败，则可能会尝试重新启动两次以上。</p>
+</li>
+<li><p><strong>windows:</strong> 在决定重新启动是否成功之前的等时间，指定为持续时间（默认值：立即决定）。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;3&quot;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">redis:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">redis:alpine</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">restart_policy:</span><br>        <span class="hljs-attr">condition:</span> <span class="hljs-string">on-failure</span><br>        <span class="hljs-attr">delay:</span> <span class="hljs-string">5s</span><br>        <span class="hljs-attr">max_attempts:</span> <span class="hljs-number">3</span><br>        <span class="hljs-attr">window:</span> <span class="hljs-string">120s</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="8-update-config"><a href="#8-update-config" class="headerlink" title="8.update_config"></a>8.update_config</h5><p>配置更新服务，用于无缝更新应用（rolling update)</p>
+<ul>
+<li><p><strong>parallelism：</strong>一次性更新的容器数量</p>
+</li>
+<li><p><strong>delay</strong>：更新一组容器之间的等待时间。</p>
+</li>
+<li><p><strong>failure_action：</strong>如果更新失败，可以执行的的是 continue、rollback 或 pause （默认）</p>
+</li>
+<li><p><strong>monitor：</strong>每次任务更新后监视失败的时间 (ns|us|ms|s|m|h)（默认为0）</p>
+</li>
+<li><p><strong>max_failure_ratio：</strong>在更新期间能接受的失败率</p>
+</li>
+<li><p><strong>order：</strong>更新次序设置，top-first（旧的任务在开始新任务之前停止）、start-first（新的任务首先启动，并且正在运行的任务短暂重叠）（默认 stop-first）</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&#x27;3.4&#x27;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">vote:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">dockersamples/examplevotingapp_vote:before</span><br>    <span class="hljs-attr">depends_on:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">redis</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">replicas:</span> <span class="hljs-number">2</span><br>      <span class="hljs-attr">update_config:</span><br>        <span class="hljs-attr">parallelism:</span> <span class="hljs-number">2</span><br>        <span class="hljs-attr">delay:</span> <span class="hljs-string">10s</span><br>        <span class="hljs-attr">order:</span> <span class="hljs-string">stop-first</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>不支持 Docker stack desploy 的几个子选项</strong><br>build、cgroup_parent、container_name、devices、tmpfs、external_links、inks、network_mode、restart、security_opt、stop_signal、sysctls、userns_mode</p>
+</li>
+</ul>
+<h4 id="16-devices"><a href="#16-devices" class="headerlink" title="16.devices"></a>16.devices</h4><p>设置映射列表，与 Docker 客户端的 –device 参数类似 :</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">devices:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;/dev/ttyUSB0:/dev/ttyUSB0&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="17-depends-on"><a href="#17-depends-on" class="headerlink" title="17.depends_on"></a>17.depends_on</h4><p>此选项解决了启动顺序的问题</p>
+<p>在使用 Compose 时，最大的好处就是少打启动命令，但是一般项目容器启动的顺序是有要求的，如果直接从上到下启动容器，必然会因为容器依赖问题而启动失败。例如在没启动数据库容器的时候启动了应用容器，这时候应用容器会因为找不到数据库而退出，为了避免这种情况我们需要加入一个标签，就是 depends_on，这个标签解决了容器的依赖、启动先后的问题。</p>
+<p>指定服务之间的依赖关系，有两种效果</p>
+<ul>
+<li><p>docker-compose up 以依赖顺序启动服务，下面例子中 redis 和 db 服务在 web 启动前启动</p>
+</li>
+<li><p>docker-compose up SERVICE 自动包含 SERVICE 的依赖性，下面例子中，例如下面容器会先启动 redis 和 db<br>两个服务，最后才启动 web 服务：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&#x27;3&#x27;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">web:</span><br>    <span class="hljs-attr">build:</span> <span class="hljs-string">.</span><br>    <span class="hljs-attr">depends_on:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">db</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">redis</span><br>  <span class="hljs-attr">redis:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">redis</span><br>  <span class="hljs-attr">db:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">postgres</span><br></code></pre></td></tr></table></figure>
+
+<p>注意的是，默认情况下使用 docker-compose up web 这样的方式启动 web 服务时，也会启动 redis 和 db 两个服务，因为在配置文件中定义了依赖关系</p>
+</li>
+</ul>
+<h4 id="18-dns"><a href="#18-dns" class="headerlink" title="18.dns"></a>18.dns</h4><p>自定义 DNS 服务器，与 –dns 具有一样的用途，可以是单个值或列表</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">dns:</span> <span class="hljs-number">8.8</span><span class="hljs-number">.8</span><span class="hljs-number">.8</span><br><span class="hljs-attr">dns:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-number">8.8</span><span class="hljs-number">.8</span><span class="hljs-number">.8</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-number">9.9</span><span class="hljs-number">.9</span><span class="hljs-number">.9</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="19-dns-search"><a href="#19-dns-search" class="headerlink" title="19.dns_search"></a>19.dns_search</h4><p>自定义 DNS 搜索域，可以是单个值或列表</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">dns_search:</span> <span class="hljs-string">example.com</span><br><span class="hljs-attr">dns_search:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">dc1.example.com</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">dc2.example.com</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="20-tmpfs"><a href="#20-tmpfs" class="headerlink" title="20.tmpfs"></a>20.tmpfs</h4><p>挂载临时文件目录到容器内部，与 run 的参数一样效果，可以是单个值或列表</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">tmpfs:</span> <span class="hljs-string">/run</span><br><span class="hljs-attr">tmpfs:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">/run</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">/tmp</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="21-entrypoint"><a href="#21-entrypoint" class="headerlink" title="21.entrypoint"></a>21.entrypoint</h4><p>在 Dockerfile 中有一个指令叫做 ENTRYPOINT 指令，用于指定接入点。在 docker-compose.yml 中可以定义接入点，覆盖 Dockerfile 中的定义：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">entrypoint:</span> <span class="hljs-string">/code/entrypoint.sh</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>entrypoint</strong> 也可以是一个列表，方法类似于 dockerfile</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">entrypoint:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">php</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">-d</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20100525/xdebug.so</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">-d</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">memory_limit=-1</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">vendor/bin/phpunit</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="21-env-file"><a href="#21-env-file" class="headerlink" title="21.env_file"></a>21.env_file</h4><p>从文件中添加环境变量。可以是单个值或是列表<br>如果已经用 docker-compose -f FILE 指定了 Compose 文件，那么 env_file 路径值为相对于该文件所在的目录</p>
+<p>但 environment 环境中的设置的变量会会覆盖这些值，无论这些值未定义还是为 None</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">env_file:</span> <span class="hljs-string">.env</span><br></code></pre></td></tr></table></figure>
+
+<p>或者根据 docker-compose.yml 设置多个：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">env_file:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">./common.env</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">./apps/web.env</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">/opt/secrets.env</span><br></code></pre></td></tr></table></figure>
+
+<p>环境配置文件 env_file 中的声明每行都是以 VAR&#x3D;VAL 格式，其中以 # 开头的被解析为注释而被忽略</p>
+<blockquote>
+<p>注意环境变量配置列表的顺序*,例如下面例子</p>
+</blockquote>
+<p>docker_compose.yml</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">some-service:</span><br>    <span class="hljs-attr">env_file:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">a.env</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">b.env</span><br></code></pre></td></tr></table></figure>
+
+<p>a.env 文件</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># a.env</span><br><span class="hljs-string">VAR=1</span><br></code></pre></td></tr></table></figure>
+
+<p>b.env文件</p>
+<p>对于在文件a.env 中指定的相同变量但在文件 b.env 中分配了不同的值，如果 b.env 像下面列在 a.env 之后，则刚在 a.env 设置的值被 b.env 相同变量的值覆盖，此时 $VAR 值为 hello。此外，这里所说的环境变量是对宿主机的 Compose 而言的，如果在配置文件中有 build 操作，这些变量并不会进入构建过程中，如果要在构建中使用变量还是首选 arg 标签</p>
+<h4 id="22-environment"><a href="#22-environment" class="headerlink" title="22.environment"></a>22.environment</h4><p>添加环境变量，可以使用数组或字典。与上面的 env_file 选项完全不同，反而和 arg 有几分类似，这个标签的作用是设置镜像变量，它可以保存变量到镜像里面，也就是说启动的容器也会包含这些变量设置，这是与 arg 最大的不同。<br>一般 arg 标签的变量仅用在构建过程中。而 environment 和 Dockerfile 中的 ENV 指令一样会把变量一直保存在镜像、容器中，类似 docker run -e 的效果</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">environment:</span><br>  <span class="hljs-attr">RACK_ENV:</span> <span class="hljs-string">development</span><br>  <span class="hljs-attr">SHOW:</span> <span class="hljs-string">&#x27;true&#x27;</span><br>  <span class="hljs-attr">SESSION_SECRET:</span><br><br><span class="hljs-comment"># 或</span><br><br><span class="hljs-attr">environment:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">RACK_ENV=development</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">SHOW=true</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">SESSION_SECRET</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="23-expose"><a href="#23-expose" class="headerlink" title="23.expose"></a>23.expose</h4><p>暴露端口，但不映射到宿主机，只被连接的服务访问。这个标签与 Dockerfile 中的 EXPOSE 指令一样，用于指定暴露的端口，但是只是作为一种参考，实际上 docker-compose.yml 的端口映射还得 ports 这样的标签</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">expose:</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;3000&quot;</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;8000&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="24-external-links"><a href="#24-external-links" class="headerlink" title="24.external_links"></a>24.external_links</h4><p>链接到 docker-compose.yml 外部的容器，甚至 并非 Compose 项目文件管理的容器。参数格式跟 links 类似</p>
+<blockquote>
+<p>在使用Docker过程中，会有许多单独使用 docker run 启动的容器的情况，为了使 Compose 能够连接这些不在docker-compose.yml 配置文件中定义的容器，那么就需要一个特殊的标签，就是 external_links，它可以让Compose 项目里面的容器连接到那些项目配置外部的容器（前提是外部容器中必须至少有一个容器是连接到与项目内的服务的同一个网络里面）。</p>
+</blockquote>
+<p>格式如下</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">external_links:</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">redis_1</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">project_db_1:mysql</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">project_db_1:postgresql</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="25-extra-hosts"><a href="#25-extra-hosts" class="headerlink" title="25.extra_hosts"></a>25.extra_hosts</h4><p>添加主机名的标签，就是往 &#x2F;etc&#x2F;hosts 文件中添加一些记录，与 Docker 客户端 中的 –add-host 类似：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">extra_hosts:</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;somehost:162.242.195.82&quot;</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;otherhost:50.31.209.229&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>具有 IP 地址和主机名的条目在 &#x2F;etc&#x2F;hosts 内部容器中创建。启动之后查看容器内部 hosts ，例如：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-number">162.242</span><span class="hljs-number">.195</span><span class="hljs-number">.82</span>  somehost<br><span class="hljs-number">50.31</span><span class="hljs-number">.209</span><span class="hljs-number">.229</span>   otherhost<br></code></pre></td></tr></table></figure>
+
+<h4 id="26-healthcheck"><a href="#26-healthcheck" class="headerlink" title="26.healthcheck"></a>26.healthcheck</h4><p>用于检查测试服务使用的容器是否正常</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-symbol">healthcheck:</span><br><span class="hljs-symbol">  test:</span> [<span class="hljs-string">&quot;CMD&quot;</span>, <span class="hljs-string">&quot;curl&quot;</span>, <span class="hljs-string">&quot;-f&quot;</span>, <span class="hljs-string">&quot;http://localhost&quot;</span>]<br><span class="hljs-symbol">  interval:</span> <span class="hljs-number">1</span>m30s<br><span class="hljs-symbol">  timeout:</span> <span class="hljs-number">10</span>s<br><span class="hljs-symbol">  retries:</span> <span class="hljs-number">3</span><br><span class="hljs-symbol">  start_period:</span> <span class="hljs-number">40</span>s<br></code></pre></td></tr></table></figure>
+
+<p><strong>interval，timeout</strong>  以及 <strong>start_period</strong> 都定为持续时间</p>
+<p>test 必须是字符串或列表，如果它是一个列表，第一项必须是 NONE，CMD 或 CMD-SHELL ；如果它是一个字符串，则相当于指定CMD-SHELL 后跟该字符串。</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs subunit"># Hit the local web app<br><span class="hljs-keyword">test: </span>[&quot;CMD&quot;, &quot;curl&quot;, &quot;-f&quot;, &quot;http://localhost&quot;]<br><br># As above, but wrapped in /bin/sh. Both forms below are equivalent.<br><span class="hljs-keyword">test: </span>[&quot;CMD-SHELL&quot;, &quot;curl -f http://localhost || exit 1&quot;]<br><span class="hljs-keyword">test: </span>curl -f https://localhost || exit 1<br></code></pre></td></tr></table></figure>
+
+<p>如果需要禁用镜像的所有检查项目，可以使用 disable:true,相当于 test:[“NONE”]</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">healthcheck:</span><br>  <span class="hljs-attr">disable:</span> <span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="27-image"><a href="#27-image" class="headerlink" title="27.image"></a>27.image</h4><p>从指定的镜像中启动容器，可以是存储仓库、标签以及镜像 ID</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">image:</span> <span class="hljs-string">redis</span><br><span class="hljs-attr">image:</span> <span class="hljs-string">ubuntu:14.04</span><br><span class="hljs-attr">image:</span> <span class="hljs-string">tutum/influxdb</span><br><span class="hljs-attr">image:</span> <span class="hljs-string">example-registry.com:4000/postgresql</span><br><span class="hljs-attr">image:</span> <span class="hljs-string">a4bc65fd</span><br></code></pre></td></tr></table></figure>
+
+<p>如果镜像不存在，Compose 会自动拉去镜像</p>
+<h4 id="28-isolation"><a href="#28-isolation" class="headerlink" title="28.isolation"></a>28.isolation</h4><p>Linux 上仅仅支持 default 值</p>
+<h4 id="29-labels"><a href="#29-labels" class="headerlink" title="29.labels"></a>29.labels</h4><p>使用 Docker 标签将元数据添加到容器，可以使用数组或字典。与 Dockerfile 中的 LABELS 类似：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">labels:</span><br>  <span class="hljs-attr">com.example.description:</span> <span class="hljs-string">&quot;Accounting webapp&quot;</span><br>  <span class="hljs-attr">com.example.department:</span> <span class="hljs-string">&quot;Finance&quot;</span><br>  <span class="hljs-attr">com.example.label-with-empty-value:</span> <span class="hljs-string">&quot;&quot;</span><br><br><span class="hljs-attr">labels:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;com.example.description=Accounting webapp&quot;</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;com.example.department=Finance&quot;</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;com.example.label-with-empty-value&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="30-links"><a href="#30-links" class="headerlink" title="30.links"></a>30.links</h4><p>链接到其它服务的中的容器，可以指定服务名称也可以指定链接别名（SERVICE：ALIAS)，与 Docker 客户端的 –link 有一样效果，会连接到其它服务中的容器</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">web:</span><br>  <span class="hljs-attr">links:</span><br>   <span class="hljs-bullet">-</span> <span class="hljs-string">db</span><br>   <span class="hljs-bullet">-</span> <span class="hljs-string">db:database</span><br>   <span class="hljs-bullet">-</span> <span class="hljs-string">redis</span><br></code></pre></td></tr></table></figure>
+
+<p>使用的别名将会自动在服务容器中的 &#x2F;etc&#x2F;hosts 里创建。例如：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-number">172.12</span><span class="hljs-number">.2</span><span class="hljs-number">.186</span>  db<br><span class="hljs-number">172.12</span><span class="hljs-number">.2</span><span class="hljs-number">.186</span>  database<br><span class="hljs-number">172.12</span><span class="hljs-number">.2</span><span class="hljs-number">.187</span>  redis<br></code></pre></td></tr></table></figure>
+
+<p>相应的环境变量也将被创建</p>
+<h4 id="31-logging"><a href="#31-logging" class="headerlink" title="31.logging"></a>31.logging</h4><p>配置日志服务</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">logging:</span><br>  <span class="hljs-attr">driver:</span> <span class="hljs-string">syslog</span><br>  <span class="hljs-attr">options:</span><br>    <span class="hljs-attr">syslog-address:</span> <span class="hljs-string">&quot;tcp://192.168.0.42:123&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>该 driver值是指定服务器的日志记录驱动程序，默认值为 json-file,与 –log-diver 选项一样</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">driver:</span> <span class="hljs-string">&quot;json-file&quot;</span><br><span class="hljs-attr">driver:</span> <span class="hljs-string">&quot;syslog&quot;</span><br><span class="hljs-attr">driver:</span> <span class="hljs-string">&quot;none&quot;</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：只有驱动程序 json-file 和 journald 驱动程序可以直接从 docker-compose up 和 docker-compose logs 获取日志。使用任何其他方式不会显示任何日志。</p>
+</blockquote>
+<p>对于可选值，可以使用 options 指定日志记录中的日志记录选项</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">driver:</span> <span class="hljs-string">&quot;syslog&quot;</span><br><span class="hljs-attr">options:</span><br>  <span class="hljs-attr">syslog-address:</span> <span class="hljs-string">&quot;tcp://192.168.0.42:123&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>默认驱动程序 json-file 具有限制存储日志量的选项，所以，使用键值对来获得最大存储大小以及最小存储数量</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">options:</span><br>  <span class="hljs-attr">max-size:</span> <span class="hljs-string">&quot;200k&quot;</span><br>  <span class="hljs-attr">max-file:</span> <span class="hljs-string">&quot;10&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>上面实例将存储日志文件，直到它们达到max-size:200kB，存储的单个日志文件的数量由该 max-file 值指定。随着日志增长超出最大限制，旧日志文件将被删除以存储新日志</p>
+<p>docker-compose.yml 限制日志存储的示例</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">some-service:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">some-service</span><br>    <span class="hljs-attr">logging:</span><br>      <span class="hljs-attr">driver:</span> <span class="hljs-string">&quot;json-file&quot;</span><br>      <span class="hljs-attr">options:</span><br>        <span class="hljs-attr">max-size:</span> <span class="hljs-string">&quot;200k&quot;</span><br>        <span class="hljs-attr">max-file:</span> <span class="hljs-string">&quot;10&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="32-network-mode"><a href="#32-network-mode" class="headerlink" title="32.network_mode"></a>32.network_mode</h4><p>网络模式，用法类似于 Docke 客户端的 –net 选项，格式为：service:[service name]</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">network_mode:</span> <span class="hljs-string">&quot;bridge&quot;</span><br><span class="hljs-attr">network_mode:</span> <span class="hljs-string">&quot;host&quot;</span><br><span class="hljs-attr">network_mode:</span> <span class="hljs-string">&quot;none&quot;</span><br><span class="hljs-attr">network_mode:</span> <span class="hljs-string">&quot;service:[service name]&quot;</span><br><span class="hljs-attr">network_mode:</span> <span class="hljs-string">&quot;container:[container name/id]&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>可以指定使用服务或者容器的网络</p>
+<h4 id="33-networks"><a href="#33-networks" class="headerlink" title="33.networks"></a>33.networks</h4><p>加入指定网络</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">some-service:</span><br>    <span class="hljs-attr">networks:</span><br>     <span class="hljs-bullet">-</span> <span class="hljs-string">some-network</span><br>     <span class="hljs-bullet">-</span> <span class="hljs-string">other-network</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="34-aliases"><a href="#34-aliases" class="headerlink" title="34.aliases"></a>34.aliases</h4><p>同一网络上的其他容器可以使用服务器名称或别名来连接到其他服务的容器</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">some-service:</span><br>    <span class="hljs-attr">networks:</span><br>      <span class="hljs-attr">some-network:</span><br>        <span class="hljs-attr">aliases:</span><br>         <span class="hljs-bullet">-</span> <span class="hljs-string">alias1</span><br>         <span class="hljs-bullet">-</span> <span class="hljs-string">alias3</span><br>      <span class="hljs-attr">other-network:</span><br>        <span class="hljs-attr">aliases:</span><br>         <span class="hljs-bullet">-</span> <span class="hljs-string">alias2</span><br></code></pre></td></tr></table></figure>
+
+<p>下面实例中，提供 web 、worker以及db 服务，伴随着两个网络 new 和 legacy 。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&#x27;2&#x27;</span><br><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">web:</span><br>    <span class="hljs-attr">build:</span> <span class="hljs-string">./web</span><br>    <span class="hljs-attr">networks:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">new</span><br><br>  <span class="hljs-attr">worker:</span><br>    <span class="hljs-attr">build:</span> <span class="hljs-string">./worker</span><br>    <span class="hljs-attr">networks:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">legacy</span><br><br>  <span class="hljs-attr">db:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">mysql</span><br>    <span class="hljs-attr">networks:</span><br>      <span class="hljs-attr">new:</span><br>        <span class="hljs-attr">aliases:</span><br>          <span class="hljs-bullet">-</span> <span class="hljs-string">database</span><br>      <span class="hljs-attr">legacy:</span><br>        <span class="hljs-attr">aliases:</span><br>          <span class="hljs-bullet">-</span> <span class="hljs-string">mysql</span><br><br><span class="hljs-attr">networks:</span><br>  <span class="hljs-attr">new:</span><br>  <span class="hljs-attr">legacy:</span><br></code></pre></td></tr></table></figure>
+
+<p>相同的服务可以在不同的网络有不同的别名</p>
+<h4 id="35-ipv4-address、ipv6-address"><a href="#35-ipv4-address、ipv6-address" class="headerlink" title="35.ipv4_address、ipv6_address"></a>35.ipv4_address、ipv6_address</h4><p>为服务的容器指定一个静态 IP 地址</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&#x27;2.1&#x27;</span><br><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">app:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">busybox</span><br>    <span class="hljs-attr">command:</span> <span class="hljs-string">ifconfig</span><br>    <span class="hljs-attr">networks:</span><br>      <span class="hljs-attr">app_net:</span><br>        <span class="hljs-attr">ipv4_address:</span> <span class="hljs-number">172.16</span><span class="hljs-number">.238</span><span class="hljs-number">.10</span><br>        <span class="hljs-attr">ipv6_address:</span> <span class="hljs-number">2001</span><span class="hljs-string">:3984:3989::10</span><br><br><span class="hljs-attr">networks:</span><br>  <span class="hljs-attr">app_net:</span><br>    <span class="hljs-attr">driver:</span> <span class="hljs-string">bridge</span><br>    <span class="hljs-attr">enable_ipv6:</span> <span class="hljs-literal">true</span><br>    <span class="hljs-attr">ipam:</span><br>      <span class="hljs-attr">driver:</span> <span class="hljs-string">default</span><br>      <span class="hljs-attr">config:</span><br>      <span class="hljs-bullet">-</span><br>        <span class="hljs-attr">subnet:</span> <span class="hljs-number">172.16</span><span class="hljs-number">.238</span><span class="hljs-number">.0</span><span class="hljs-string">/24</span><br>      <span class="hljs-bullet">-</span><br>        <span class="hljs-attr">subnet:</span> <span class="hljs-number">2001</span><span class="hljs-string">:3984:3989::/64</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="36-PID"><a href="#36-PID" class="headerlink" title="36.PID"></a>36.PID</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">pid:</span> <span class="hljs-string">&quot;host&quot;</span><br></code></pre></td></tr></table></figure>
+
+
+<p>将 PID 模式设置为主机 PID 模式，可以打开容器与主机操作系统之间的共享 PID 地址空间。使用此标志启动的容器可以访问和操作宿主机的其他容器，反之亦然。</p>
+<h4 id="37-ports"><a href="#37-ports" class="headerlink" title="37. ports"></a>37. ports</h4><p>映射端口</p>
+<h5 id="1-SHORT-语法-1"><a href="#1-SHORT-语法-1" class="headerlink" title="1.SHORT 语法"></a>1.SHORT 语法</h5><p>可以使用 HOST:CONTAINER 的方式指定端口，也可以指定容器端口（选择临时主机端口），宿主机会随机映射端口</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">ports:</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;3000&quot;</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;3000-3005&quot;</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;8000:8000&quot;</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;9090-9091:8080-8081&quot;</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;49100:22&quot;</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;127.0.0.1:8001:8001&quot;</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;127.0.0.1:5000-5010:5000-5010&quot;</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;6060:6060/udp&quot;</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：当使用 HOST:CONTAINER 格式来映射端口时，如果使用的容器端口小于 60 可能会得到错误得结果，因为YAML 将会解析 xx:yy 这种数字格式为 60 进制，所以建议采用字符串格式。</p>
+</blockquote>
+<h5 id="2-LONG-语法-1"><a href="#2-LONG-语法-1" class="headerlink" title="2.LONG 语法"></a>2.LONG 语法</h5><p>LONG 语法支持 SHORT 语法不支持的附加字段</p>
+<ul>
+<li><p>target：容器内的端口</p>
+</li>
+<li><p>published：公开的端口</p>
+</li>
+<li><p>protocol： 端口协议（tcp 或 udp）</p>
+</li>
+<li><p>mode：通过host 用在每个节点还是哪个发布的主机端口或使用 ingress 用于集群模式端口进行平衡负载，</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">ports:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">target:</span> <span class="hljs-number">80</span><br>    <span class="hljs-attr">published:</span> <span class="hljs-number">8080</span><br>    <span class="hljs-attr">protocol:</span> <span class="hljs-string">tcp</span><br>    <span class="hljs-attr">mode:</span> <span class="hljs-string">host</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="38-secrets"><a href="#38-secrets" class="headerlink" title="38.secrets"></a>38.secrets</h4><p>通过 secrets为每个服务授予相应的访问权限</p>
+<h5 id="1-SHORT-语法-2"><a href="#1-SHORT-语法-2" class="headerlink" title="1.SHORT 语法"></a>1.SHORT 语法</h5><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;3.1&quot;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">redis:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">redis:latest</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">replicas:</span> <span class="hljs-number">1</span><br>    <span class="hljs-attr">secrets:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">my_secret</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">my_other_secret</span><br><span class="hljs-attr">secrets:</span><br>  <span class="hljs-attr">my_secret:</span><br>    <span class="hljs-attr">file:</span> <span class="hljs-string">./my_secret.txt</span><br>  <span class="hljs-attr">my_other_secret:</span><br>    <span class="hljs-attr">external:</span> <span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="2-LONG-语法-2"><a href="#2-LONG-语法-2" class="headerlink" title="2.LONG 语法"></a>2.LONG 语法</h5><p>LONG 语法可以添加其他选项</p>
+<ul>
+<li><p>source：secret 名称</p>
+</li>
+<li><p>target：在服务任务容器中需要装载在 &#x2F;run&#x2F;secrets&#x2F; 中的文件名称，如果 source 未定义，那么默认为此值</p>
+</li>
+<li><p>uid&amp;gid：在服务的任务容器中拥有该文件的 UID 或 GID 。如果未指定，两者都默认为 0。</p>
+</li>
+<li><p>mode：以八进制表示法将文件装载到服务的任务容器中 &#x2F;run&#x2F;secrets&#x2F; 的权限。例如，0444 代表可读。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;3.1&quot;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">redis:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">redis:latest</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">replicas:</span> <span class="hljs-number">1</span><br>    <span class="hljs-attr">secrets:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">source:</span> <span class="hljs-string">my_secret</span><br>        <span class="hljs-attr">target:</span> <span class="hljs-string">redis_secret</span><br>        <span class="hljs-attr">uid:</span> <span class="hljs-string">&#x27;103&#x27;</span><br>        <span class="hljs-attr">gid:</span> <span class="hljs-string">&#x27;103&#x27;</span><br>        <span class="hljs-attr">mode:</span> <span class="hljs-number">0440</span><br><span class="hljs-attr">secrets:</span><br>  <span class="hljs-attr">my_secret:</span><br>    <span class="hljs-attr">file:</span> <span class="hljs-string">./my_secret.txt</span><br>  <span class="hljs-attr">my_other_secret:</span><br>    <span class="hljs-attr">external:</span> <span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="39-security-opt"><a href="#39-security-opt" class="headerlink" title="39.security_opt"></a>39.security_opt</h4><p>为每个容器覆盖默认的标签。简单说来就是管理全部服务的标签，比如设置全部服务的 user 标签值为 USER</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">security_opt:<br>  - label:user:<span class="hljs-keyword">USER</span><br>  <span class="hljs-title">- label</span>:role:ROLE<br></code></pre></td></tr></table></figure>
+
+<h5 id="40-stop-grace-period"><a href="#40-stop-grace-period" class="headerlink" title="40.stop_grace_period"></a>40.stop_grace_period</h5><p>在发送 SIGKILL 之前指定 stop_signal ，如果试图停止容器（如果它没有处理 SIGTERM（或指定的任何停止信号）），则需要等待的时间</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">stop_grace_period:</span> <span class="hljs-string">1s</span><br><span class="hljs-attr">stop_grace_period:</span> <span class="hljs-string">1m30s</span><br></code></pre></td></tr></table></figure>
+
+<p>默认情况下，stop 在发送SIGKILL之前等待10秒钟容器退出</p>
+<h4 id="41-stop-signal"><a href="#41-stop-signal" class="headerlink" title="41.stop_signal"></a>41.stop_signal</h4><p>设置另一个信号来停止容器。在默认情况下使用的 SIGTERM 来停止容器。设置另一个信号可以使用 stop_signal 标签：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">stop_signal:</span> <span class="hljs-string">SIGUSR1</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="42-sysctls"><a href="#42-sysctls" class="headerlink" title="42.sysctls"></a>42.sysctls</h4><p>在容器中设置的内核参数，可以为数组或字典</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">sysctls:</span><br>  <span class="hljs-attr">net.core.somaxconn:</span> <span class="hljs-number">1024</span><br>  <span class="hljs-attr">net.ipv4.tcp_syncookies:</span> <span class="hljs-number">0</span><br><br><span class="hljs-attr">sysctls:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">net.core.somaxconn=1024</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">net.ipv4.tcp_syncookies=0</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="43-ulimits"><a href="#43-ulimits" class="headerlink" title="43.ulimits"></a>43.ulimits</h4><p>覆盖容器的默认限制，可以单一地将限制值设为一个整数，也可以将soft&#x2F;hard 限制指定为映射</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">ulimits:</span><br>  <span class="hljs-attr">nproc:</span> <span class="hljs-number">65535</span><br>  <span class="hljs-attr">nofile:</span><br>    <span class="hljs-attr">soft:</span> <span class="hljs-number">20000</span><br>    <span class="hljs-attr">hard:</span> <span class="hljs-number">40000</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="44-userns-mode"><a href="#44-userns-mode" class="headerlink" title="44.userns_mode"></a>44.userns_mode</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">userns_mode:</span> <span class="hljs-string">&quot;host&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="45-volumes"><a href="#45-volumes" class="headerlink" title="45.volumes"></a>45.volumes</h4><p>挂载一个目录或者一个已存在的数据卷容器，可以直接使用 HOST:CONTAINER 这样的格式，或者使用 HOST:CONTAINER:ro 这样的格式，后者对于容器来说，数据卷是只读的，这样可以有效保护宿主机的文件系统</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;3.2&quot;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">web:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">nginx:alpine</span><br>    <span class="hljs-attr">volumes:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">volume</span><br>        <span class="hljs-attr">source:</span> <span class="hljs-string">mydata</span><br>        <span class="hljs-attr">target:</span> <span class="hljs-string">/data</span><br>        <span class="hljs-attr">volume:</span><br>          <span class="hljs-attr">nocopy:</span> <span class="hljs-literal">true</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span><br>        <span class="hljs-attr">source:</span> <span class="hljs-string">./static</span><br>        <span class="hljs-attr">target:</span> <span class="hljs-string">/opt/app/static</span><br><br>  <span class="hljs-attr">db:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">postgres:latest</span><br>    <span class="hljs-attr">volumes:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;/var/run/postgres/postgres.sock:/var/run/postgres/postgres.sock&quot;</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;dbdata:/var/lib/postgresql/data&quot;</span><br><br><span class="hljs-attr">volumes:</span><br>  <span class="hljs-attr">mydata:</span><br>  <span class="hljs-attr">dbdata:</span><br></code></pre></td></tr></table></figure>
+
+<p>Compose 的数据卷指定路径可以是相对路径，使用 . 或者 .. 来指定相对目录。</p>
+<p>数据卷的格式可以是下面多种形式：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">volumes:</span><br>  <span class="hljs-comment"># 只是指定一个路径，Docker 会自动在创建一个数据卷（这个路径是容器内部的）。</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">/var/lib/mysql</span><br><br>  <span class="hljs-comment"># 使用绝对路径挂载数据卷</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">/opt/data:/var/lib/mysql</span><br><br>  <span class="hljs-comment"># 以 Compose 配置文件为中心的相对路径作为数据卷挂载到容器。</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">./cache:/tmp/cache</span><br><br>  <span class="hljs-comment"># 使用用户的相对路径（~/ 表示的目录是 /home/&lt;用户目录&gt;/ 或者 /root/）。</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">~/configs:/etc/configs/:ro</span><br><br>  <span class="hljs-comment"># 已经存在的命名的数据卷。</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">datavolume:/var/lib/mysql</span><br><br></code></pre></td></tr></table></figure>
+
+<p>如果你不使用宿主机的路径，可以指定一个 volume_driver</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">volume_driver:</span> <span class="hljs-string">mydriver</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="1-SHORT-语法-3"><a href="#1-SHORT-语法-3" class="headerlink" title="1.SHORT 语法"></a>1.SHORT 语法</h5><p>可以选择在主机（HOST:CONTAINER）或访问模式（HOST:CONTAINER:ro）上指定路径。</p>
+<p>可以在主机上挂载相对路径，该路径相对于正在使用的 Compose 配置文件的目录进行扩展。相对路径应始终以 . 或 .. 开头</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">volumes:</span><br>  <span class="hljs-comment"># Just specify a path and let the Engine create a volume</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">/var/lib/mysql</span><br><br>  <span class="hljs-comment"># Specify an absolute path mapping</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">/opt/data:/var/lib/mysql</span><br><br>  <span class="hljs-comment"># Path on the host, relative to the Compose file</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">./cache:/tmp/cache</span><br><br>  <span class="hljs-comment"># User-relative path</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">~/configs:/etc/configs/:ro</span><br><br>  <span class="hljs-comment"># Named volume</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">datavolume:/var/lib/mysql</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="2-LONG-语法-3"><a href="#2-LONG-语法-3" class="headerlink" title="2.LONG 语法"></a>2.LONG 语法</h5><p>LONG 语法有些附加字段</p>
+<ul>
+<li><p>type：安装类型，可以为 volume、bind 或 tmpfs</p>
+</li>
+<li><p>source：安装源，主机上用于绑定安装的路径或定义在顶级 volumes密钥中卷的名称 ,不适用于 tmpfs 类型安装。</p>
+</li>
+<li><p>target：卷安装在容器中的路径</p>
+</li>
+<li><p>read_only：标志将卷设置为只读</p>
+</li>
+<li><p>bind：配置额外的绑定选项</p>
+</li>
+<li><p>propagation：用于绑定的传播模式</p>
+</li>
+<li><p>volume：配置额外的音量选项</p>
+</li>
+<li><p>nocopy：创建卷时禁止从容器复制数据的标志</p>
+</li>
+<li><p>tmpfs：配置额外的 tmpfs 选项</p>
+</li>
+<li><p>size：tmpfs 的大小，以字节为单位</p>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;3.2&quot;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">web:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">nginx:alpine</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;80:80&quot;</span><br>    <span class="hljs-attr">volumes:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">volume</span><br>        <span class="hljs-attr">source:</span> <span class="hljs-string">mydata</span><br>        <span class="hljs-attr">target:</span> <span class="hljs-string">/data</span><br>        <span class="hljs-attr">volume:</span><br>          <span class="hljs-attr">nocopy:</span> <span class="hljs-literal">true</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span><br>        <span class="hljs-attr">source:</span> <span class="hljs-string">./static</span><br>        <span class="hljs-attr">target:</span> <span class="hljs-string">/opt/app/static</span><br><br><span class="hljs-attr">networks:</span><br>  <span class="hljs-attr">webnet:</span><br><br><span class="hljs-attr">volumes:</span><br>  <span class="hljs-attr">mydata:</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="3-volumes-from"><a href="#3-volumes-from" class="headerlink" title="3.volumes_from"></a>3.volumes_from</h5><p>从其它容器或者服务挂载数据卷，可选的参数是 :ro 或 :rw，前者表示容器只读，后者表示容器对数据卷是可读可写的（默认情况为可读可写的）。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">volumes_from:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">service_name</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">service_name:ro</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">container:container_name</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">container:container_name:rw</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="4-用于服务、群集以及堆栈文件的卷"><a href="#4-用于服务、群集以及堆栈文件的卷" class="headerlink" title="4.用于服务、群集以及堆栈文件的卷"></a>4.用于服务、群集以及堆栈文件的卷</h5><p>在使用服务，群集和 docker-stack.yml 文件时，请记住支持服务的任务（容器）可以部署在群集中的任何节点上，并且每次更新服务时都可能是不同的节点。</p>
+<p>在缺少指定源的命名卷的情况下，Docker 为支持服务的每个任务创建一个匿名卷。关联的容器被移除后，匿名卷不会保留。</p>
+<p>如果希望数据持久存在，请使用可识别多主机的命名卷和卷驱动程序，以便可以从任何节点访问数据。或者，对该服务设置约束，以便将其任务部署在具有该卷的节点上。</p>
+<p>下面一个例子，Docker Labs 中 votingapp 示例的 docker-stack.yml文件中定义了一个称为 db 的服务。它被配置为一个命名卷来保存群体上的数据， 并且仅限于在节点上运行。下面是来自该文件的部分内容：db postgres manager</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;3&quot;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">db:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">postgres:9.4</span><br>    <span class="hljs-attr">volumes:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">db-data:/var/lib/postgresql/data</span><br>    <span class="hljs-attr">networks:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">backend</span><br>    <span class="hljs-attr">deploy:</span><br>      <span class="hljs-attr">placement:</span><br>        <span class="hljs-attr">constraints:</span> [<span class="hljs-string">node.role</span> <span class="hljs-string">==</span> <span class="hljs-string">manager</span>]<br></code></pre></td></tr></table></figure>
+
+<h4 id="46-restart"><a href="#46-restart" class="headerlink" title="46.restart"></a>46.restart</h4><p>默认值为 no ，即在任何情况下都不会重新启动容器；当值为 always 时，容器总是重新启动；当值为 on-failure 时，当出现 on-failure 报错容器退出时，容器重新启动。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">restart:</span> <span class="hljs-string">&quot;no&quot;</span><br><span class="hljs-attr">restart:</span> <span class="hljs-string">always</span><br><span class="hljs-attr">restart:</span> <span class="hljs-string">on-failure</span><br><span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="47-其他选项"><a href="#47-其他选项" class="headerlink" title="47.其他选项"></a>47.其他选项</h4><p>关于标签：cpu_shares、cpu_quota、 cpuse、domainname、hostname、 ipc、 mac_address、privileged、 read_only、 shm_size、stdin_open、tty、 user、 working_dir</p>
+<p>上面这些都是一个单值的标签，类似于使用 docker run 的效果</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">cpu_shares:</span> <span class="hljs-number">73</span><br><span class="hljs-attr">cpu_quota:</span> <span class="hljs-number">50000</span><br><span class="hljs-attr">cpuset:</span> <span class="hljs-number">0</span><span class="hljs-string">,1</span><br><br><span class="hljs-attr">user:</span> <span class="hljs-string">postgresql</span><br><span class="hljs-attr">working_dir:</span> <span class="hljs-string">/code</span><br><br><span class="hljs-attr">domainname:</span> <span class="hljs-string">foo.com</span><br><span class="hljs-attr">hostname:</span> <span class="hljs-string">foo</span><br><span class="hljs-attr">ipc:</span> <span class="hljs-string">host</span><br><span class="hljs-attr">mac_address:</span> <span class="hljs-number">02</span><span class="hljs-string">:42:ac:11:65:43</span><br><br><span class="hljs-attr">privileged:</span> <span class="hljs-literal">true</span><br><br><br><span class="hljs-attr">read_only:</span> <span class="hljs-literal">true</span><br><span class="hljs-attr">shm_size:</span> <span class="hljs-string">64M</span><br><span class="hljs-attr">stdin_open:</span> <span class="hljs-literal">true</span><br><span class="hljs-attr">tty:</span> <span class="hljs-literal">true</span><br><br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="48-持续时间"><a href="#48-持续时间" class="headerlink" title="48.持续时间"></a>48.持续时间</h4><p>某些配置选项如 check 的子选项interval以及timeout 的设置格式</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-number">2.</span>5s<br>10s<br>1m30s<br>2h32m<br>5h34m56s<br></code></pre></td></tr></table></figure>
+
+<p>支持的单位有 us、ms、s、m 以及 h</p>
+<h3 id="49-指定字节值"><a href="#49-指定字节值" class="headerlink" title="49.指定字节值"></a>49.指定字节值</h3><p>某些选项如 bulid 的子选项 shm_size</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs typescript">2b<br>1024kb<br>2048k<br>300m<br>1gb<br></code></pre></td></tr></table></figure>
+
+<p>支持的单位是 b，k，m 以及 g，或 kb， mb 和 gb。目前不支持十进制值</p>
+<h3 id="50-extends"><a href="#50-extends" class="headerlink" title="50.extends"></a>50.extends</h3><p>这个标签可以扩展另一个服务，扩展内容可以是来自在当前文件，也可以是来自其他文件，相同服务的情况下，后来者会有选择地覆盖原有配置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">extends:</span><br>  <span class="hljs-attr">file:</span> <span class="hljs-string">common.yml</span><br>  <span class="hljs-attr">service:</span> <span class="hljs-string">webapp</span><br></code></pre></td></tr></table></figure>
+
+<p>用户可以在任何地方使用这个标签，只要标签内容包含 file 和 service 两个值就可以了。file 的值可以是相对或者绝对路径，如果不指定 file 的值，那么 Compose 会读取当前 YML 文件的信息。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/docker-compose/">#docker-compose</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>docker-compose.yml 配置文件编写详解</div>
+      <div>https://pipiguai0123.github.io/2023/03/24/docker-compose/docker-compose_yaml文件/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/03/24/docker-compose/docker-compose%E5%AE%89%E8%A3%85/" title="docker-compose安装">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">docker-compose安装</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/03/24/docker/docker%E9%95%9C%E5%83%8F%E6%93%8D%E4%BD%9C%EF%BC%8C%E4%BB%A5%E5%8F%8Adocker%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/" title="docker镜像操作，以及docker命令的使用">
+                        <span class="hidden-mobile">docker镜像操作，以及docker命令的使用</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
