@@ -24,7 +24,7 @@
 <meta property="og:description" content="Dockerfile 文件全面详解Docker 可以通过读取 Dockerfile 中的指令自动构建镜像。Dockerfile 是一个文本文档，其中包含了用户创建镜像的所有命令和说明。 一、 变量 变量用 $variable_name 或者 ${variable_name} 表示。  ${variable:-word} 表示如果 variable 设置，则结果将是该值。如果 variable 未设">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-03-24T08:28:23.000Z">
-<meta property="article:modified_time" content="2023-03-24T09:50:52.913Z">
+<meta property="article:modified_time" content="2023-03-27T03:57:26.619Z">
 <meta property="article:author" content="zhenzhou_zhang">
 <meta property="article:tag" content="dockerfile">
 <meta name="twitter:card" content="summary_large_image">
@@ -310,7 +310,7 @@
 <p>变量前加 \ 可以转义成普通字符串：$foo or ${foo}，表示转换为 $foo 和 ${foo} 文字。</p>
 <p><strong>二、FROM</strong></p>
 <p>初始化一个新的构建阶段，并设置基础镜像：</p>
-<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs delphi">FROM [--<span class="hljs-keyword">platform</span>=&lt;<span class="hljs-keyword">platform</span>&gt;] &lt;image&gt; [<span class="hljs-keyword">AS</span> &lt;<span class="hljs-keyword">name</span>&gt;]<br>FROM [--<span class="hljs-keyword">platform</span>=&lt;<span class="hljs-keyword">platform</span>&gt;] &lt;image&gt;[:&lt;tag&gt;] [<span class="hljs-keyword">AS</span> &lt;<span class="hljs-keyword">name</span>&gt;]<br>FROM [--<span class="hljs-keyword">platform</span>=&lt;<span class="hljs-keyword">platform</span>&gt;] &lt;image&gt;[@&lt;digest&gt;] [<span class="hljs-keyword">AS</span> &lt;<span class="hljs-keyword">name</span>&gt;]<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">FROM [--platform=&lt;platform&gt;] &lt;image&gt; [AS &lt;name&gt;]<br>FROM [--platform=&lt;platform&gt;] &lt;image&gt;[:&lt;tag&gt;] [AS &lt;name&gt;]<br>FROM [--platform=&lt;platform&gt;] &lt;image&gt;[@&lt;digest&gt;] [AS &lt;name&gt;]<br></code></pre></td></tr></table></figure>
 
 
 
@@ -323,7 +323,7 @@
 </ul>
 <p><strong>三、RUN</strong></p>
 <p>将在当前镜像之上的新层中执行命令，在 docker build时运行。</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">RUN</span> /bin/bash -c <span class="hljs-string">&#x27;source <span class="hljs-variable">$HOME</span>/.bashrc; \</span><br><span class="hljs-string">echo <span class="hljs-variable">$HOME</span>&#x27;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">RUN /bin/bash -c <span class="hljs-string">&#x27;source $HOME/.bashrc; \</span><br><span class="hljs-string">echo $HOME&#x27;</span><br></code></pre></td></tr></table></figure>
 
 <p>RUN 有两种形式：</p>
 <ul>
@@ -338,7 +338,7 @@
 </ul>
 <p><strong>四、CMD</strong></p>
 <p>运行程序，在 docker run 时运行，但是和 run 命令不同，RUN 是在 docker build 时运行。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-tag">FROM</span> ubuntu<br>CMD <span class="hljs-selector-attr">[<span class="hljs-string">&quot;/usr/bin/wc&quot;</span>,<span class="hljs-string">&quot;--help&quot;</span>]</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">FROM ubuntu<br>CMD [<span class="hljs-string">&quot;/usr/bin/wc&quot;</span>,<span class="hljs-string">&quot;--help&quot;</span>]<br></code></pre></td></tr></table></figure>
 
 <p>支持三种格式：</p>
 <ul>
@@ -350,30 +350,30 @@
 <p>如果用户启动容器时候指定了运行的命令，则会覆盖掉 CMD 指定的命令。</p>
 <p><strong>五、LABEL</strong></p>
 <p>添加元数据：</p>
-<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs abnf">LABEL multi.label1<span class="hljs-operator">=</span><span class="hljs-string">&quot;value1&quot;</span> \<br>      multi.label2<span class="hljs-operator">=</span><span class="hljs-string">&quot;value2&quot;</span> \<br>      other<span class="hljs-operator">=</span><span class="hljs-string">&quot;value3&quot;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">LABEL multi.label1=<span class="hljs-string">&quot;value1&quot;</span> \<br>      multi.label2=<span class="hljs-string">&quot;value2&quot;</span> \<br>      other=<span class="hljs-string">&quot;value3&quot;</span><br></code></pre></td></tr></table></figure>
 
 
 
 <p><strong>六、EXPOSE</strong></p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml">EXPOSE <span class="hljs-tag">&lt;<span class="hljs-name">port</span>&gt;</span> [<span class="hljs-tag">&lt;<span class="hljs-name">port</span>&gt;</span>/<span class="hljs-tag">&lt;<span class="hljs-name">protocol</span>&gt;</span>...]<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">EXPOSE &lt;port&gt; [&lt;port&gt;/&lt;protocol&gt;...]<br></code></pre></td></tr></table></figure>
 
 <p>Docker 容器在运行时侦听指定的网络端口。可以指定端口是监听TCP还是UDP，如果不指定协议，默认为TCP。</p>
 <p>该 EXPOSE 指令实际上并未发布端口。要在运行容器时实际发布端口，docker run -P 来发布和映射一个或多个端口。</p>
 <p>默认情况下，EXPOSE 假定 TCP。您还可以指定 UDP：</p>
-<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">EXPOSE</span> <span class="hljs-number">80</span>/udp<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">EXPOSE 80/udp<br></code></pre></td></tr></table></figure>
 
 
 
 <p><strong>七、ENV</strong></p>
 <p>设置环境变量：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml">ENV <span class="hljs-tag">&lt;<span class="hljs-name">key</span>&gt;</span>=<span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span> ...<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">ENV &lt;key&gt;=&lt;value&gt; ...<br></code></pre></td></tr></table></figure>
 
 <p>设置的环境变量将持续存在，您可以使用 docker inspect 来查看。使用 docker run –env <key>&#x3D;<value> 来更改环境变量的值。</value></key></p>
 <p>如果环境变量只在构建期间需要，请考虑为单个命令设置一个值：</p>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">RUN</span> <span class="hljs-attribute">DEBIAN_FRONTEND</span>=noninteractive apt-<span class="hljs-built_in">get</span> update &amp;&amp; apt-<span class="hljs-built_in">get</span> install -y <span class="hljs-built_in">..</span>.<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">RUN DEBIAN_FRONTEND=noninteractive apt-get update &amp;&amp; apt-get install -y ...<br></code></pre></td></tr></table></figure>
 
 <p>或者使用 ARG，它不会保留在最终镜像中：</p>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros">ARG <span class="hljs-attribute">DEBIAN_FRONTEND</span>=noninteractive<br><span class="hljs-built_in">RUN</span> apt-<span class="hljs-built_in">get</span> update &amp;&amp; apt-<span class="hljs-built_in">get</span> install -y <span class="hljs-built_in">..</span>.<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">ARG DEBIAN_FRONTEND=noninteractive<br>RUN apt-get update &amp;&amp; apt-get install -y ...<br></code></pre></td></tr></table></figure>
 
 
 
@@ -382,10 +382,10 @@
 <p><src> 可以指定多个资源，但如果它们是文件或目录，则它们的路径被解释为相对于构建上下文的源，也就是 WORKDIR。</src></p>
 <p>每个都 <src> 可能包含通配符，匹配将使用 Go 的 filepath.Match 规则。例如：</src></p>
 <p>添加所有以“hom”开头的文件：</p>
-<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arcade">ADD hom* <span class="hljs-regexp">/mydir/</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">ADD hom* /mydir/<br></code></pre></td></tr></table></figure>
 
 <p>在下面的示例中，? 被替换为任何单个字符，例如“home.txt”。</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">ADD hom?.txt <span class="hljs-regexp">/mydir/</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">ADD hom?.txt /mydir/<br></code></pre></td></tr></table></figure>
 
 <p><dest> 是一个绝对路径，或相对 WORKDIR 的相对路径。</dest></p>
 <p><strong>九、COPY</strong></p>
@@ -395,16 +395,16 @@
 <p><strong>十、ENTRYPOINT</strong></p>
 <p>ENTRYPOINT 和 CMD 一样，都是在指定容器启动程序及参数，不过它不会被 docker run 的命令行参数指定的指令所覆盖。如果要覆盖的话，需要通过 docker run –entrypoint 来指定。</p>
 <p>它有2种格式：</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">ENTRYPOINT</span><span class="language-bash"> [<span class="hljs-string">&quot;executable&quot;</span>, <span class="hljs-string">&quot;param1&quot;</span>, <span class="hljs-string">&quot;param2&quot;</span>]</span><br><span class="hljs-keyword">ENTRYPOINT</span><span class="language-bash"> <span class="hljs-built_in">command</span> param1 param2</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">ENTRYPOINT [<span class="hljs-string">&quot;executable&quot;</span>, <span class="hljs-string">&quot;param1&quot;</span>, <span class="hljs-string">&quot;param2&quot;</span>]<br>ENTRYPOINT <span class="hljs-built_in">command</span> param1 param2<br></code></pre></td></tr></table></figure>
 
 <p>指定了 ENTRYPOINT 后， CMD 的内容作为参数传给 ENTRYPOINT 指令，实际执行时，将变为：</p>
-<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-section">&lt;ENTRYPOINT&gt;</span> <span class="hljs-section">&lt;CMD&gt;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">&lt;ENTRYPOINT&gt; &lt;CMD&gt;<br></code></pre></td></tr></table></figure>
 
 
 
 <p><strong>十一、VOLUME</strong></p>
 <p>创建一个具有指定名称的挂载数据卷。</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">VOLUME</span><span class="language-bash"> [<span class="hljs-string">&quot;/var/log/&quot;</span>]</span><br><span class="hljs-keyword">VOLUME</span><span class="language-bash"> /var/log</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">VOLUME [<span class="hljs-string">&quot;/var/log/&quot;</span>]<br>VOLUME /var/log<br></code></pre></td></tr></table></figure>
 
 <p>它的主要作用是：</p>
 <ul>
@@ -413,7 +413,7 @@
 </ul>
 <p><strong>十二、ARG</strong></p>
 <p>定义变量，与 ENV 作用相同，不过 ARG 变量不会像 ENV 变量那样持久化到构建好的镜像中。</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml">ARG <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>[=<span class="hljs-tag">&lt;<span class="hljs-name">default</span> <span class="hljs-attr">value</span>&gt;</span>]<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">ARG &lt;name&gt;[=&lt;default value&gt;]<br></code></pre></td></tr></table></figure>
 
 <p>Docker 有一组预定义的 ARG 变量，您可以在 Dockerfile 中没有相应指令的情况下使用这些变量。</p>
 <ul>
@@ -427,19 +427,19 @@
 <li>no_proxy</li>
 </ul>
 <p>要使用这些，请使用 –build-arg 标志在命令行上传递它们，例如：</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">docker build --build-arg HTTPS_PROXY=https:<span class="hljs-regexp">//my</span>-proxy.example.com .<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker build --build-arg HTTPS_PROXY=https://my-proxy.example.com .<br></code></pre></td></tr></table></figure>
 
 
 
 <p><strong>十三、ONBUILD</strong></p>
 <p>将一个触发指令添加到镜像中，以便稍后在该镜像用作另一个构建的基础时执行。也就是另外一个 dockerfile FROM 了这个镜像的时候执行。</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">ONBUILD ADD . <span class="hljs-regexp">/app/</span>src<br>ONBUILD RUN <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/bin/</span>python-build --dir <span class="hljs-regexp">/app/</span>src<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">ONBUILD ADD . /app/src<br>ONBUILD RUN /usr/local/bin/python-build --<span class="hljs-built_in">dir</span> /app/src<br></code></pre></td></tr></table></figure>
 
 
 
 <p><strong>十四、STOPSIGNAL</strong></p>
 <p>设置将发送到容器退出的系统调用信号。该信号可以是与内核系统调用表中的位置匹配的有效无符号数，例如 9，或格式为 SIGNAME 的信号名称，例如 SIGKILL。</p>
-<figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs qml">STOPSIGNAL <span class="hljs-keyword">signal</span><span class="hljs-string"></span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">STOPSIGNAL signal<br></code></pre></td></tr></table></figure>
 
 <p>默认的 stop-signal 是 SIGTERM，在 docker stop 的时候会给容器内 PID 为 1 的进程发送这个 signal，通过 –stop-signal 可以设置自己需要的 signal，主要目的是为了让容器内的应用程序在接收到 signal 之后可以先处理一些事物，实现容器的平滑退出，如果不做任何处理，容器将在一段时间之后强制退出，会造成业务的强制中断，默认时间是 10s。</p>
 <p><strong>十五、HEALTHCHECK</strong></p>
@@ -450,25 +450,26 @@
 </ul>
 <p><strong>十六、SHELL</strong></p>
 <p>覆盖用于命令的 shell 形式的默认 shell。Linux 上的默认 shell 是 [“&#x2F;bin&#x2F;sh”, “-c”]，Windows 上是 [“cmd”, “&#x2F;S”, “&#x2F;C”]。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">SHELL <span class="hljs-selector-attr">[<span class="hljs-string">&quot;executable&quot;</span>, <span class="hljs-string">&quot;parameters&quot;</span>]</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">SHELL [<span class="hljs-string">&quot;executable&quot;</span>, <span class="hljs-string">&quot;parameters&quot;</span>]<br></code></pre></td></tr></table></figure>
 
 <p>该 SHELL 指令在 Windows 上特别有用，因为 Windows 有两种常用且截然不同的本机 SHELL：cmd 和 powershell，以及可用的备用 shell，包括 sh。该 SHELL 指令可以出现多次。每条 SHELL 指令都会覆盖所有先前的 SHELL 指令，并影响所有后续指令。</p>
 <p><strong>十七、WORKDIR</strong></p>
 <p>工作目录，如果 WORKDIR 不存在，即使它没有在后续 Dockerfile 指令中使用，它也会被创建。</p>
 <p>docker build 构建镜像过程中，每一个 RUN 命令都会新建一层。只有通过 WORKDIR 创建的目录才会一直存在。</p>
 <p>可以设置多个 WORKDIR，如果提供了相对路径，它将相对于前一条 WORKDIR 指令的路径。例如：</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">WORKDIR</span><span class="language-bash"> /a</span><br><span class="hljs-keyword">WORKDIR</span><span class="language-bash"> b</span><br><span class="hljs-keyword">WORKDIR</span><span class="language-bash"> c</span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> <span class="hljs-built_in">pwd</span></span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">WORKDIR /a<br>WORKDIR b<br>WORKDIR c<br>RUN <span class="hljs-built_in">pwd</span><br></code></pre></td></tr></table></figure>
 
 <p>最终 pwd 命令的输出是 &#x2F;a&#x2F;b&#x2F;c。</p>
 <p>该 WORKDIR 指令可以解析先前使用 ENV，例如：</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">ENV</span> DIRPATH=/path<br><span class="hljs-keyword">WORKDIR</span><span class="language-bash"> <span class="hljs-variable">$DIRPATH</span>/<span class="hljs-variable">$DIRNAME</span></span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> <span class="hljs-built_in">pwd</span></span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">ENV DIRPATH=/path<br>WORKDIR <span class="hljs-variable">$DIRPATH</span>/<span class="hljs-variable">$DIRNAME</span><br>RUN <span class="hljs-built_in">pwd</span><br></code></pre></td></tr></table></figure>
 
 <p>最终 pwd 命令的输出是 &#x2F;path&#x2F;$DIRNAME。</p>
 <p><strong>十八、USER</strong></p>
 <p>设置用户名（或 UID）和可选的用户组（或 GID）。</p>
-<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs crmsh"><span class="hljs-keyword">USER</span> <span class="hljs-title">&lt;user</span>&gt;[:<span class="hljs-tag">&lt;group&gt;</span>]<br><span class="hljs-keyword">USER</span> <span class="hljs-title">&lt;UID</span>&gt;[:<span class="hljs-tag">&lt;GID&gt;</span>]<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">USER &lt;user&gt;[:&lt;group&gt;]<br>USER &lt;UID&gt;[:&lt;GID&gt;]<br></code></pre></td></tr></table></figure>
 
-<p>- END -</p>
+
+
 
                 
               </div>
@@ -537,6 +538,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/03/27/nginx/nginx%E5%AE%89%E8%A3%85/" title="nginx安装">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">nginx安装</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
@@ -675,10 +682,6 @@
 
   <footer>
     <div class="footer-inner">
-  
-    <div class="footer-content">
-       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
-    </div>
   
   
     <div class="statistics">

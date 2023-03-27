@@ -16,22 +16,22 @@
   <meta name="author" content="zhenzhou_zhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="docker-compose的使用和安装:通过一个yaml文件  来启动和管理多个容器 一、docker-compose的安装：Linux 上我们可以从 Github 上下载它的二进制包来使用，最新发行的版本地址：https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases 12345678910111213下载二进制包:##1.24.1版本的：下载路径https:&#x2F;&#x2F;gi">
+    <meta name="description" content="MySQL5.7升级到最新版参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_41788609&#x2F;article&#x2F;details&#x2F;118147232 一、用mysqldump备份，再安装新版本，恢复sql文件（用于数据量小的升级）mysqldump -uroot -p’123456’ –single-transaction –master-data&#x3D;1 –all-database">
 <meta property="og:type" content="article">
-<meta property="og:title" content="docker-compose安装">
-<meta property="og:url" content="https://pipiguai0123.github.io/2023/03/24/docker-compose/docker-compose%E5%AE%89%E8%A3%85/index.html">
+<meta property="og:title" content="MySQL5.7升级到最新版">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/03/27/mysql/MySQL5.7%E5%8D%87%E7%BA%A7%E5%88%B0%E6%9C%80%E6%96%B0%E7%89%88/index.html">
 <meta property="og:site_name" content="皮皮怪-page">
-<meta property="og:description" content="docker-compose的使用和安装:通过一个yaml文件  来启动和管理多个容器 一、docker-compose的安装：Linux 上我们可以从 Github 上下载它的二进制包来使用，最新发行的版本地址：https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases 12345678910111213下载二进制包:##1.24.1版本的：下载路径https:&#x2F;&#x2F;gi">
+<meta property="og:description" content="MySQL5.7升级到最新版参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_41788609&#x2F;article&#x2F;details&#x2F;118147232 一、用mysqldump备份，再安装新版本，恢复sql文件（用于数据量小的升级）mysqldump -uroot -p’123456’ –single-transaction –master-data&#x3D;1 –all-database">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-03-24T08:08:22.000Z">
-<meta property="article:modified_time" content="2023-03-24T09:49:54.260Z">
+<meta property="article:published_time" content="2023-03-27T08:57:45.000Z">
+<meta property="article:modified_time" content="2023-03-27T08:59:07.507Z">
 <meta property="article:author" content="zhenzhou_zhang">
-<meta property="article:tag" content="docker-compose">
+<meta property="article:tag" content="mysql">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>docker-compose安装 - 皮皮怪-page</title>
+  <title>MySQL5.7升级到最新版 - 皮皮怪-page</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -214,7 +214,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="docker-compose安装"></span>
+            <span id="subtitle" data-typed-text="MySQL5.7升级到最新版"></span>
           
         </div>
 
@@ -225,8 +225,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-24 16:08" pubdate>
-          2023年3月24日 下午
+        <time datetime="2023-03-27 16:57" pubdate>
+          2023年3月27日 下午
         </time>
       </span>
     
@@ -237,7 +237,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.6k 字
+          2.2k 字
         
       </span>
     
@@ -249,7 +249,7 @@
         
         
           <!-- compatible with older versions-->
-          22 分钟
+          18 分钟
         
       </span>
     
@@ -295,21 +295,37 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">docker-compose安装</h1>
+            <h1 style="display: none">MySQL5.7升级到最新版</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="docker-compose的使用和安装"><a href="#docker-compose的使用和安装" class="headerlink" title="docker-compose的使用和安装:"></a>docker-compose的使用和安装:</h1><p>通过一个yaml文件  来启动和管理多个容器</p>
-<h2 id="一、docker-compose的安装："><a href="#一、docker-compose的安装：" class="headerlink" title="一、docker-compose的安装："></a>一、docker-compose的安装：</h2><p>Linux 上我们可以从 Github 上下载它的二进制包来使用，最新发行的版本地址：<a target="_blank" rel="noopener" href="https://github.com/docker/compose/releases">https://github.com/docker/compose/releases</a></p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs sh">下载二进制包:<br><span class="hljs-comment">##1.24.1版本的：下载路径https://github.com/docker/compose/releases/download/1.24.1/docker-compose-Linux-x86_64</span><br><br>curl -L <span class="hljs-string">&quot;https://github.com/docker/compose/releases/download/1.24.1/docker-compose-<span class="hljs-subst">$(uname -s)</span>-<span class="hljs-subst">$(uname -m)</span>&quot;</span> -o /usr/local/bin/docker-compose<br><span class="hljs-comment">#要安装其他版本的 Compose，可直接替换version：1.24.1。</span><br><br><br>将可执行权限应用于二进制文件：<br>sudo <span class="hljs-built_in">chmod</span> +x /usr/local/bin/docker-compose<br><br>创建软链：<br>sudo <span class="hljs-built_in">ln</span> -s /usr/local/bin/docker-compose /usr/bin/docker-compose<br><br></code></pre></td></tr></table></figure>
+                <h1 id="MySQL5-7升级到最新版"><a href="#MySQL5-7升级到最新版" class="headerlink" title="MySQL5.7升级到最新版"></a>MySQL5.7升级到最新版</h1><p>参考文档：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41788609/article/details/118147232">https://blog.csdn.net/qq_41788609/article/details/118147232</a></p>
+<h2 id="一、用mysqldump备份，再安装新版本，恢复sql文件（用于数据量小的升级）"><a href="#一、用mysqldump备份，再安装新版本，恢复sql文件（用于数据量小的升级）" class="headerlink" title="一、用mysqldump备份，再安装新版本，恢复sql文件（用于数据量小的升级）"></a>一、用mysqldump备份，再安装新版本，恢复sql文件（用于数据量小的升级）</h2><p>mysqldump -uroot -p’123456’ –single-transaction –master-data&#x3D;1 –all-databases &gt; all.sql</p>
+<h2 id="二、以下通过mysql-upgrade升级："><a href="#二、以下通过mysql-upgrade升级：" class="headerlink" title="二、以下通过mysql_upgrade升级："></a>二、以下通过mysql_upgrade升级：</h2><p>说明：<br>mysql_upgrade是官方提供的MySQL升级工具，支持跨大版本升级，如5.0升级到5.7。但为了数据安全，在升级前务必做好备份。<br>如果是主从架构，按照先升级从库–&gt;再升级主库的步骤实现升级。主库版本不能高于从库，避免新特性在从库上不支持。<br>mysql_upgrade检查所有数据库中与mysql服务器当前版本不兼容的所有表.。<br>mysql_upgrade也会升级系统表，以便你能使用新添加的权限或功能。<br>如果mysql_upgrade发现一张表可能不兼容，将该表进行检查，如果发现问题，则试图对其进行修复。如果不能修复，则需要人工进行表和索引重建或修复。<br>每次升级mysql，都需要运行mysql_upgrade。</p>
+<p><strong>mysql安装路径为&#x2F;app&#x2F;mysql下，使用文档：《二进制安装mysql》</strong></p>
+<h3 id="1-停服"><a href="#1-停服" class="headerlink" title="1. 停服"></a>1. 停服</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">service mysqld stop<br></code></pre></td></tr></table></figure>
 
-<h2 id="二、docker-compose的使用："><a href="#二、docker-compose的使用：" class="headerlink" title="二、docker-compose的使用："></a>二、docker-compose的使用：</h2><h3 id="1-编写docker-compose-yml文件"><a href="#1-编写docker-compose-yml文件" class="headerlink" title="1.编写docker-compose.yml文件"></a>1.编写docker-compose.yml文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#例如：Docker-Compose管理MySQL和Tomcat容器，yml文件以key: value方式来指定配置信息，多个配置信息以换行+缩进的方式来区分</span><br><span class="hljs-comment">#在docker-compose.yml文件中，不要使用制表符</span><br> <br>version: <span class="hljs-string">&#x27;3.1&#x27;</span><br>services:<br>  mysql:           <span class="hljs-comment"># 服务的名称</span><br>    restart: always   <span class="hljs-comment"># 代表只要docker启动，那么这个容器就跟着一起启动</span><br>    image: daocloud.io/library/mysql:5.7.4  <span class="hljs-comment"># 指定镜像路径</span><br>    container_name: mysql  <span class="hljs-comment"># 指定容器名称</span><br>    ports:<br>      - 3306:3306   <span class="hljs-comment">#  指定端口号的映射</span><br>    environment:<br>      MYSQL_ROOT_PASSWORD: root   <span class="hljs-comment"># 指定MySQL的ROOT用户登录密码</span><br>      TZ: Asia/Shanghai        <span class="hljs-comment"># 指定时区</span><br>    volumes:<br>     - /opt/docker_mysql_tomcat/mysql_data:/var/lib/mysql   <span class="hljs-comment"># 映射数据卷</span><br>  tomcat:<br>    restart: always<br>    image: daocloud.io/library/tomcat:8.5.15-jre8<br>    container_name: tomcat<br>    ports:<br>      - 8080:8080<br>    environment:<br>      TZ: Asia/Shanghai<br>    volumes:<br>      - /opt/docker_mysql_tomcat/tomcat_webapps:/usr/local/tomcat/webapps<br>      - /opt/docker_mysql_tomcat/tomcat_logs:/usr/local/tomcat/logs<br><br></code></pre></td></tr></table></figure>
+<h3 id="2-备份："><a href="#2-备份：" class="headerlink" title="2. 备份："></a>2. 备份：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#进入二进制安装路径</span><br><span class="hljs-built_in">cd</span> /app/mysql/<br><br><span class="hljs-comment">#备份数据目录</span><br><span class="hljs-built_in">cp</span> -a data/ /root/data<br><br><span class="hljs-comment">#备份整个安装包文件</span><br><span class="hljs-built_in">mv</span> mysql-5.7.32 mysql-5.7.32-bak<br><br><span class="hljs-comment">#备份my.cnf</span><br><span class="hljs-built_in">mv</span> /etc/my.cnf /etc/my.cnfbak<br><br><span class="hljs-comment">#备份mysqld</span><br><span class="hljs-built_in">mv</span> /etc/init.d/mysqld /etc/init.d/mysqldbak<br></code></pre></td></tr></table></figure>
 
-<h3 id="2-docker-compose相关命令"><a href="#2-docker-compose相关命令" class="headerlink" title="2.docker-compose相关命令"></a>2.docker-compose相关命令</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#使用docker-compose命令时，默认会在当前目录下寻找docker-compose.yml文件</span><br><br>docker-compose up -d		<span class="hljs-comment">#启动管理的容器</span><br><br>docker-compose down 		<span class="hljs-comment">#关闭并删除容器</span><br><br>docker-compose start|restart|stop    <span class="hljs-comment">#开启|重启||关闭已经存在的由docker-compose维护的容器</span><br><br>docker-compose ps			<span class="hljs-comment">#查看由docker-compose管理的容器</span><br><br>docker-compose logs -f		<span class="hljs-comment">#查看日志</span><br><br>docker-compose -f consul-compose.yaml up -d  <span class="hljs-comment">#执行yaml文件启动</span><br><br>docker-compose -f consul-compose.yaml config <span class="hljs-comment">#检查yaml文件的错误</span><br></code></pre></td></tr></table></figure>
+<h3 id="3-安装新版本："><a href="#3-安装新版本：" class="headerlink" title="3. 安装新版本："></a>3. 安装新版本：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#解压上传的新版本文件</span><br>tar -xnf mysql-5.7.38-el7-x86_64.tar.gz<br><br><span class="hljs-comment">#更名</span><br><span class="hljs-built_in">mv</span> mysql-5.7.38-el7-x86_64 mysql-5.7.38<br><br><span class="hljs-comment">#删除旧的软链接，设置新的软链接（如果之前版本未设置软链接，则跳过该步骤）</span><br><span class="hljs-built_in">rm</span> -r /app/mysql <br><span class="hljs-built_in">ln</span> -sv /app/mysql-5.7.38 /app/mysql<br><span class="hljs-built_in">chown</span> -R mysql.mysql /app/mysql<br><br><span class="hljs-comment">#恢复my.cnf</span><br><span class="hljs-built_in">cp</span> /etc/my.cnfbak /etc/my.cnf<br><br><span class="hljs-comment">#初始化 mysqld</span><br>/app/mysql/bin/mysqld --initialize --user=mysql --basedir=/app/mysql --datadir=/app/mysql/data<br><br><span class="hljs-comment">#将启动脚本放到开机初始化目录内</span><br><span class="hljs-built_in">cp</span> /app/mysql/support-files/mysql.server /etc/init.d/mysqld <br>sed -i <span class="hljs-string">&#x27;s#/usr/local#/app#g&#x27;</span> /app/mysql/bin/mysqld_safe /etc/init.d/mysqld<br>sed -i  <span class="hljs-string">&quot;47a basedir=/app/mysql\ndatadir=/app/mysql/data&quot;</span> /etc/init.d/mysqld <br></code></pre></td></tr></table></figure>
 
-<h3 id="3-docker-compose配合Dockerfile使用"><a href="#3-docker-compose配合Dockerfile使用" class="headerlink" title="3.docker-compose配合Dockerfile使用"></a>3.docker-compose配合Dockerfile使用</h3><p>使用docker-compose.yml文件以及Dockerfile文件在生成自定义镜像的同时启动当前镜像，并且由docker-compose去管理容器</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs sh">例如：<br>docker-compose.yml文件：<br><br>version: <span class="hljs-string">&#x27;3.1&#x27;</span><br>services:                   <br>  ssm:                          <span class="hljs-comment">#服务的名称</span><br>    restart: always             <span class="hljs-comment">#代表docker启动，服务就启动</span><br>    build:                      <span class="hljs-comment">#构建自定义镜像</span><br>      context: ../              <span class="hljs-comment">#指定自定义的dockerfile文件所在的路径</span><br>      dockerfile: ssmfile       <span class="hljs-comment">#指定自定义的dockerfile文件的名称</span><br>    image: ssm:1.0.1            <span class="hljs-comment">#指定自定义的dockerfile想叫什么名称，不需要去中央仓库上取</span><br>    container_name: ssm       <br>    ports: <br>      8081:8081<br>    environment:<br>      TZ: Asia/Shanghai<br>      <br>dockerfile文件:<br><br>from daocloud.io/library/tomcat:7.0.56 <span class="hljs-comment">#依赖的Tomcat镜像地址</span><br>copy ssm.war /usr/local/tomcat/webapps <span class="hljs-comment">#将web文件ssm.war拷贝到Tomcat工作目录内</span><br><br><span class="hljs-comment">#将ssm.var  dockerfile docker-compose.yml 按照对应格式存放</span><br><br>然后进入到docker-compose目录下,可以直接启动基于docker-compose.yml以及dockerfile文件构建的自定义镜像<br>docker-compose up -d<br><span class="hljs-comment">#如果自定义镜像不存在，会帮助我们构建出自定义镜像	，如果自定义镜像已经存在，会直接运行这个自定义镜像</span><br><br><br><span class="hljs-comment">#重新构建自定义镜像</span><br>docker-compose build <br><br><span class="hljs-comment">#运行当前内容，并重新构建</span><br>docker-compose up -d --build<br></code></pre></td></tr></table></figure>
+<h3 id="4-备份新版本数据目录data"><a href="#4-备份新版本数据目录data" class="headerlink" title="4. 备份新版本数据目录data"></a>4. 备份新版本数据目录data</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mv</span> data/ databak<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-还原旧版本数据目录data"><a href="#5-还原旧版本数据目录data" class="headerlink" title="5. 还原旧版本数据目录data"></a>5. 还原旧版本数据目录data</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mv</span> /root/data /app/mysql<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-启动"><a href="#6-启动" class="headerlink" title="6. 启动"></a>6. 启动</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">service mysqld start<br></code></pre></td></tr></table></figure>
+
+<h3 id="7-执行mysql-upgrade升级"><a href="#7-执行mysql-upgrade升级" class="headerlink" title="7. 执行mysql_upgrade升级"></a>7. 执行mysql_upgrade升级</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#作用：检查所有表是否与当前版本兼容，并更新系统库</span><br><br>/app/mysql/bin/mysql_upgrade -uroot -p123456 <span class="hljs-comment">#原密码</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="8-查看版本"><a href="#8-查看版本" class="headerlink" title="8. 查看版本"></a>8. 查看版本</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">mysql -V<br></code></pre></td></tr></table></figure>
+
+<h3 id="9-登录检查"><a href="#9-登录检查" class="headerlink" title="9. 登录检查"></a>9. 登录检查</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">mysql -uroot -p123456<br>&gt;show databases;<br></code></pre></td></tr></table></figure>
+
+<h3 id="10-注意的问题"><a href="#10-注意的问题" class="headerlink" title="10. 注意的问题"></a>10. 注意的问题</h3><p>1、原来是rpm安装的话先卸载，rpm -qa | grep mysql<br>2、如果目录不是&#x2F;app&#x2F;mysql&#x2F;注意修改&#x2F;etc&#x2F;init.d&#x2F;mysqld的数据目录和pid文件路径<br>3、连接数据库的时候报错cant connect to mysql server through socket ‘&#x2F;tmp&#x2F;mysql.sock’，修改修改my.cnf的socket路径<br>4、mysql_upgrade报错找不到sock，可以用-S指定sock</p>
+<h2 id="三、主从架构数据库升级实例："><a href="#三、主从架构数据库升级实例：" class="headerlink" title="三、主从架构数据库升级实例："></a>三、主从架构数据库升级实例：</h2><p>1.一主一从升级：<br>    先停掉主库mysql，再停掉从库mysql，然后操作从库机器进行升级，从库升级后，再升级主库。<br>2.双主+一从升级：<br>    先停掉VIP（先停VIP没在的一方）systemctl stop keeplived<br>    再停掉VIP没在的主库数据库，然后停掉主库数据库，再停掉从库数据库。<br>    再依次升级从库&gt;主库(vip未在）&gt;主库（vip在)的数据库<br>    最后启动VIP，然后先启动主库(vip在的) &gt;主库（vip未在)&gt;从库的数据库
+    </p>
+
                 
               </div>
             
@@ -321,7 +337,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/docker-compose/">#docker-compose</a>
+        <a href="/tags/mysql/">#mysql</a>
       
     </div>
   
@@ -333,8 +349,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>docker-compose安装</div>
-      <div>https://pipiguai0123.github.io/2023/03/24/docker-compose/docker-compose安装/</div>
+      <div>MySQL5.7升级到最新版</div>
+      <div>https://pipiguai0123.github.io/2023/03/27/mysql/MySQL5.7升级到最新版/</div>
     </div>
     <div class="license-meta">
       
@@ -346,7 +362,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月24日</div>
+          <div>2023年3月27日</div>
         </div>
       
       
@@ -378,18 +394,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/03/24/dockerfile/dockerfile%E8%AF%A6%E8%A7%A3/" title="dockerfile详解">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">dockerfile详解</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/03/24/docker-compose/docker-compose_yaml%E6%96%87%E4%BB%B6/" title="docker-compose.yml 配置文件编写详解">
-                        <span class="hidden-mobile">docker-compose.yml 配置文件编写详解</span>
+                      <a href="/2023/03/27/mysql/mysql%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/" title="mysql主从复制">
+                        <span class="hidden-mobile">mysql主从复制</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

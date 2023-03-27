@@ -16,22 +16,22 @@
   <meta name="author" content="zhenzhou_zhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="docker-compose的使用和安装:通过一个yaml文件  来启动和管理多个容器 一、docker-compose的安装：Linux 上我们可以从 Github 上下载它的二进制包来使用，最新发行的版本地址：https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases 12345678910111213下载二进制包:##1.24.1版本的：下载路径https:&#x2F;&#x2F;gi">
+    <meta name="description" content="mysql主从复制一主二从参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_38711927&#x2F;article&#x2F;details&#x2F;107013588mysql双主参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;jpfss&#x2F;p&#x2F;11577924.html 需：版本一致、初始化表，并在后台启动mysql、修改root的密码 一、mysql一主一从配置1.修改主服务器master1234">
 <meta property="og:type" content="article">
-<meta property="og:title" content="docker-compose安装">
-<meta property="og:url" content="https://pipiguai0123.github.io/2023/03/24/docker-compose/docker-compose%E5%AE%89%E8%A3%85/index.html">
+<meta property="og:title" content="mysql主从复制">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/03/27/mysql/mysql%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/index.html">
 <meta property="og:site_name" content="皮皮怪-page">
-<meta property="og:description" content="docker-compose的使用和安装:通过一个yaml文件  来启动和管理多个容器 一、docker-compose的安装：Linux 上我们可以从 Github 上下载它的二进制包来使用，最新发行的版本地址：https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases 12345678910111213下载二进制包:##1.24.1版本的：下载路径https:&#x2F;&#x2F;gi">
+<meta property="og:description" content="mysql主从复制一主二从参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_38711927&#x2F;article&#x2F;details&#x2F;107013588mysql双主参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;jpfss&#x2F;p&#x2F;11577924.html 需：版本一致、初始化表，并在后台启动mysql、修改root的密码 一、mysql一主一从配置1.修改主服务器master1234">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-03-24T08:08:22.000Z">
-<meta property="article:modified_time" content="2023-03-24T09:49:54.260Z">
+<meta property="article:published_time" content="2023-03-27T08:45:55.000Z">
+<meta property="article:modified_time" content="2023-03-27T08:58:55.624Z">
 <meta property="article:author" content="zhenzhou_zhang">
-<meta property="article:tag" content="docker-compose">
+<meta property="article:tag" content="mysql">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>docker-compose安装 - 皮皮怪-page</title>
+  <title>mysql主从复制 - 皮皮怪-page</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -214,7 +214,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="docker-compose安装"></span>
+            <span id="subtitle" data-typed-text="mysql主从复制"></span>
           
         </div>
 
@@ -225,8 +225,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-24 16:08" pubdate>
-          2023年3月24日 下午
+        <time datetime="2023-03-27 16:45" pubdate>
+          2023年3月27日 下午
         </time>
       </span>
     
@@ -237,7 +237,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.6k 字
+          3.2k 字
         
       </span>
     
@@ -249,7 +249,7 @@
         
         
           <!-- compatible with older versions-->
-          22 分钟
+          27 分钟
         
       </span>
     
@@ -295,21 +295,28 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">docker-compose安装</h1>
+            <h1 style="display: none">mysql主从复制</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="docker-compose的使用和安装"><a href="#docker-compose的使用和安装" class="headerlink" title="docker-compose的使用和安装:"></a>docker-compose的使用和安装:</h1><p>通过一个yaml文件  来启动和管理多个容器</p>
-<h2 id="一、docker-compose的安装："><a href="#一、docker-compose的安装：" class="headerlink" title="一、docker-compose的安装："></a>一、docker-compose的安装：</h2><p>Linux 上我们可以从 Github 上下载它的二进制包来使用，最新发行的版本地址：<a target="_blank" rel="noopener" href="https://github.com/docker/compose/releases">https://github.com/docker/compose/releases</a></p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs sh">下载二进制包:<br><span class="hljs-comment">##1.24.1版本的：下载路径https://github.com/docker/compose/releases/download/1.24.1/docker-compose-Linux-x86_64</span><br><br>curl -L <span class="hljs-string">&quot;https://github.com/docker/compose/releases/download/1.24.1/docker-compose-<span class="hljs-subst">$(uname -s)</span>-<span class="hljs-subst">$(uname -m)</span>&quot;</span> -o /usr/local/bin/docker-compose<br><span class="hljs-comment">#要安装其他版本的 Compose，可直接替换version：1.24.1。</span><br><br><br>将可执行权限应用于二进制文件：<br>sudo <span class="hljs-built_in">chmod</span> +x /usr/local/bin/docker-compose<br><br>创建软链：<br>sudo <span class="hljs-built_in">ln</span> -s /usr/local/bin/docker-compose /usr/bin/docker-compose<br><br></code></pre></td></tr></table></figure>
+                <h1 id="mysql主从复制"><a href="#mysql主从复制" class="headerlink" title="mysql主从复制"></a>mysql主从复制</h1><p>一主二从参考文档：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38711927/article/details/107013588">https://blog.csdn.net/qq_38711927/article/details/107013588</a><br>mysql双主参考文档：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/jpfss/p/11577924.html">https://www.cnblogs.com/jpfss/p/11577924.html</a></p>
+<p><strong>需：版本一致、初始化表，并在后台启动mysql、修改root的密码</strong></p>
+<h2 id="一、mysql一主一从配置"><a href="#一、mysql一主一从配置" class="headerlink" title="一、mysql一主一从配置"></a>一、mysql一主一从配置</h2><h3 id="1-修改主服务器master"><a href="#1-修改主服务器master" class="headerlink" title="1.修改主服务器master"></a>1.修改主服务器master</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /etc/my.cnf<br><span class="hljs-comment">#-----------------------------------</span><br>[mysqld]<br><br>sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES<br><br>server-id=129   <span class="hljs-comment">#//[必须]服务器唯一ID，默认是1，一般取IP最后一段</span><br>log-bin=mysql-bin <span class="hljs-comment">#//[必须]启用二进制日志</span><br>binlog_format=row  <span class="hljs-comment">#mysql复制主要有三种方式：基于SQL语句的复制(statement-based replication, SBR)，基于行的复制(row-based replication, RBR)，混合模式复制(mixed-based replication, MBR)。对应的，binlog的格式也有三种：STATEMENT，ROW，MIXED。https://www.cnblogs.com/langtianya/p/5504774.html</span><br>expire_logs_days=7<br><br>slow_query_log=ON  <span class="hljs-comment">#//开启binlog日志</span><br>slow_query_log_file=/app/data/slow.log<br>long_query_time=2<br>character-set-server=utf8mb4<br><span class="hljs-comment">#/开启gtid</span><br>gtid-mode = on  <br>enforce-gtid-consistency = <span class="hljs-literal">true</span><br><br>max_connections=2000<br>lower_case_table_names=1<br><span class="hljs-comment">#---------------------------------------</span><br><br>备注：关于binlog日志，当 row_format 为mixed或者statement格式时，binlog 的大小发生改变，不管是否真的更新数据，MySQL都记录执行的sql 到binlog。基于row模式时，server层匹配到要更新的记录，发现新值和旧值一致，不做更新，就直接返回，也不记录binlog。<br></code></pre></td></tr></table></figure>
 
-<h2 id="二、docker-compose的使用："><a href="#二、docker-compose的使用：" class="headerlink" title="二、docker-compose的使用："></a>二、docker-compose的使用：</h2><h3 id="1-编写docker-compose-yml文件"><a href="#1-编写docker-compose-yml文件" class="headerlink" title="1.编写docker-compose.yml文件"></a>1.编写docker-compose.yml文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#例如：Docker-Compose管理MySQL和Tomcat容器，yml文件以key: value方式来指定配置信息，多个配置信息以换行+缩进的方式来区分</span><br><span class="hljs-comment">#在docker-compose.yml文件中，不要使用制表符</span><br> <br>version: <span class="hljs-string">&#x27;3.1&#x27;</span><br>services:<br>  mysql:           <span class="hljs-comment"># 服务的名称</span><br>    restart: always   <span class="hljs-comment"># 代表只要docker启动，那么这个容器就跟着一起启动</span><br>    image: daocloud.io/library/mysql:5.7.4  <span class="hljs-comment"># 指定镜像路径</span><br>    container_name: mysql  <span class="hljs-comment"># 指定容器名称</span><br>    ports:<br>      - 3306:3306   <span class="hljs-comment">#  指定端口号的映射</span><br>    environment:<br>      MYSQL_ROOT_PASSWORD: root   <span class="hljs-comment"># 指定MySQL的ROOT用户登录密码</span><br>      TZ: Asia/Shanghai        <span class="hljs-comment"># 指定时区</span><br>    volumes:<br>     - /opt/docker_mysql_tomcat/mysql_data:/var/lib/mysql   <span class="hljs-comment"># 映射数据卷</span><br>  tomcat:<br>    restart: always<br>    image: daocloud.io/library/tomcat:8.5.15-jre8<br>    container_name: tomcat<br>    ports:<br>      - 8080:8080<br>    environment:<br>      TZ: Asia/Shanghai<br>    volumes:<br>      - /opt/docker_mysql_tomcat/tomcat_webapps:/usr/local/tomcat/webapps<br>      - /opt/docker_mysql_tomcat/tomcat_logs:/usr/local/tomcat/logs<br><br></code></pre></td></tr></table></figure>
+<h3 id="2-修改从服务器slave"><a href="#2-修改从服务器slave" class="headerlink" title="2.修改从服务器slave"></a>2.修改从服务器slave</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /etc/my.cnf<br><span class="hljs-comment">#-----------------------------------------------------</span><br>[mysqld]<br>sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES<br><br>server-id=226      <span class="hljs-comment">#//[必须]服务器唯一ID，默认是1，一般取IP最后一段</span><br>log-bin=mysql-bin  <span class="hljs-comment">#//[不是必须]启用二进制日志</span><br><br>basedir = /app/mysql<br>datadir = /app/mysql/data<br>port = 3306<br>socket = /tmp/mysql.sock<br>character-set-server=utf8<br><br>log-error = /app/mysql/mysql/data/mysqld.log<br>pid-file = /app/mysql/mysql/data/mysqld.pid<br><br><br><span class="hljs-comment">#//开启gtid</span><br>gtid-mode = on    <br>log_slave_updates = 1<br>slave-skip-errors = all<br>enforce-gtid-consistency = <span class="hljs-literal">true</span><br><span class="hljs-comment">#----------------------------------------------------------</span><br></code></pre></td></tr></table></figure>
+<h3 id="3-重启两台服务器的mysql"><a href="#3-重启两台服务器的mysql" class="headerlink" title="3.重启两台服务器的mysql"></a>3.重启两台服务器的mysql</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">/etc/init.d/mysqld restart<br><span class="hljs-comment">#service mysqld restart</span><br></code></pre></td></tr></table></figure>
 
-<h3 id="2-docker-compose相关命令"><a href="#2-docker-compose相关命令" class="headerlink" title="2.docker-compose相关命令"></a>2.docker-compose相关命令</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#使用docker-compose命令时，默认会在当前目录下寻找docker-compose.yml文件</span><br><br>docker-compose up -d		<span class="hljs-comment">#启动管理的容器</span><br><br>docker-compose down 		<span class="hljs-comment">#关闭并删除容器</span><br><br>docker-compose start|restart|stop    <span class="hljs-comment">#开启|重启||关闭已经存在的由docker-compose维护的容器</span><br><br>docker-compose ps			<span class="hljs-comment">#查看由docker-compose管理的容器</span><br><br>docker-compose logs -f		<span class="hljs-comment">#查看日志</span><br><br>docker-compose -f consul-compose.yaml up -d  <span class="hljs-comment">#执行yaml文件启动</span><br><br>docker-compose -f consul-compose.yaml config <span class="hljs-comment">#检查yaml文件的错误</span><br></code></pre></td></tr></table></figure>
+<h3 id="4-在主服务器上建立帐户并授权slave-连接mysql"><a href="#4-在主服务器上建立帐户并授权slave-连接mysql" class="headerlink" title="4.在主服务器上建立帐户并授权slave,连接mysql"></a>4.在主服务器上建立帐户并授权slave,连接mysql</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">mysql&gt;GRANT REPLICATION SLAVE ON *.* to <span class="hljs-string">&#x27;repl&#x27;</span>@<span class="hljs-string">&#x27;%&#x27;</span> identified by <span class="hljs-string">&#x27;123456&#x27;</span>; <br><span class="hljs-comment">#一般不用root帐号，%表示所有客户端都可能连，只要帐号，密码正确，此处可用具体客户端IP代替，如192.168.145.226，加强安全。</span><br></code></pre></td></tr></table></figure>
 
-<h3 id="3-docker-compose配合Dockerfile使用"><a href="#3-docker-compose配合Dockerfile使用" class="headerlink" title="3.docker-compose配合Dockerfile使用"></a>3.docker-compose配合Dockerfile使用</h3><p>使用docker-compose.yml文件以及Dockerfile文件在生成自定义镜像的同时启动当前镜像，并且由docker-compose去管理容器</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs sh">例如：<br>docker-compose.yml文件：<br><br>version: <span class="hljs-string">&#x27;3.1&#x27;</span><br>services:                   <br>  ssm:                          <span class="hljs-comment">#服务的名称</span><br>    restart: always             <span class="hljs-comment">#代表docker启动，服务就启动</span><br>    build:                      <span class="hljs-comment">#构建自定义镜像</span><br>      context: ../              <span class="hljs-comment">#指定自定义的dockerfile文件所在的路径</span><br>      dockerfile: ssmfile       <span class="hljs-comment">#指定自定义的dockerfile文件的名称</span><br>    image: ssm:1.0.1            <span class="hljs-comment">#指定自定义的dockerfile想叫什么名称，不需要去中央仓库上取</span><br>    container_name: ssm       <br>    ports: <br>      8081:8081<br>    environment:<br>      TZ: Asia/Shanghai<br>      <br>dockerfile文件:<br><br>from daocloud.io/library/tomcat:7.0.56 <span class="hljs-comment">#依赖的Tomcat镜像地址</span><br>copy ssm.war /usr/local/tomcat/webapps <span class="hljs-comment">#将web文件ssm.war拷贝到Tomcat工作目录内</span><br><br><span class="hljs-comment">#将ssm.var  dockerfile docker-compose.yml 按照对应格式存放</span><br><br>然后进入到docker-compose目录下,可以直接启动基于docker-compose.yml以及dockerfile文件构建的自定义镜像<br>docker-compose up -d<br><span class="hljs-comment">#如果自定义镜像不存在，会帮助我们构建出自定义镜像	，如果自定义镜像已经存在，会直接运行这个自定义镜像</span><br><br><br><span class="hljs-comment">#重新构建自定义镜像</span><br>docker-compose build <br><br><span class="hljs-comment">#运行当前内容，并重新构建</span><br>docker-compose up -d --build<br></code></pre></td></tr></table></figure>
+<h3 id="5-登录主服务器的mysql，查询master的状态"><a href="#5-登录主服务器的mysql，查询master的状态" class="headerlink" title="5.登录主服务器的mysql，查询master的状态"></a>5.登录主服务器的mysql，查询master的状态</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">mysql&gt;show master status;<br><span class="hljs-comment">#注：执行完此步骤后不要再操作主服务器MYSQL，防止主服务器状态值变化</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="6-配置从服务器Slave"><a href="#6-配置从服务器Slave" class="headerlink" title="6.配置从服务器Slave"></a>6.配置从服务器Slave</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sh">mysql&gt;change master to master_host=<span class="hljs-string">&#x27;192.168.94.129&#x27;</span>,master_user=<span class="hljs-string">&#x27;repl&#x27;</span>,master_password=<span class="hljs-string">&#x27;123456&#x27;</span>,master_port=3306,MASTER_AUTO_POSITION=1;<br><br><span class="hljs-comment">#指定复制点</span><br>change master to master_host=<span class="hljs-string">&#x27;192.168.94.129&#x27;</span>,master_user=<span class="hljs-string">&#x27;repl&#x27;</span>,master_password=<span class="hljs-string">&#x27;123456&#x27;</span>,master_port=3306,MASTER_AUTO_POSITION=1,master_log_file=<span class="hljs-string">&#x27;mysql-bin.000006&#x27;</span>,master_log_pos=2192;<br><br>参数详解：<br>master_host :主服务器地址<br>master_port :端口地址<br>MASTER_AUTO_POSITION=1  :1是开启，0是关闭,开启gtid复制<br>master_log_file  :主master上show master status\G  获取的 File 一栏的信息<br>master_log_pos=2192; :主master上show master status\G 获取的Position 的信息;<br><br>       <br>Mysql&gt;start slave;    <span class="hljs-comment">#启动从服务器复制功能</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="7-检查从服务器复制功能状态"><a href="#7-检查从服务器复制功能状态" class="headerlink" title="7.检查从服务器复制功能状态"></a>7.检查从服务器复制功能状态</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sh">show slave status\G<br><br>Slave_IO_State: Waiting <span class="hljs-keyword">for</span> master to send event<br>              Master_Host: 192.168.2.222  //主服务器地址<br>              Master_User: mysync   //授权帐户名，尽量避免使用root<br>              Master_Port: 3306    //数据库端口，部分版本没有此行<br>              Connect_Retry: 60<br>              Master_Log_File: mysql-bin.000004<br>              Read_Master_Log_Pos: 600     //<span class="hljs-comment">#同步读取二进制日志的位置，大于等于Exec_Master_Log_Pos</span><br>              Relay_Log_File: ddte-relay-bin.000003<br>              Relay_Log_Pos: 251<br>              Relay_Master_Log_File: mysql-bin.000004<br>              Slave_IO_Running: Yes    //此状态必须YES<br>              Slave_SQL_Running: Yes     //此状态必须YES<br></code></pre></td></tr></table></figure>
+
+<h3 id="8-一主多从注意bin-log日志"><a href="#8-一主多从注意bin-log日志" class="headerlink" title="8.一主多从注意bin_log日志"></a>8.一主多从注意bin_log日志</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#查看bin_log日志，同步需要使用bin_log日志</span><br>show binary logs;<br><br></code></pre></td></tr></table></figure>
+
                 
               </div>
             
@@ -321,7 +328,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/docker-compose/">#docker-compose</a>
+        <a href="/tags/mysql/">#mysql</a>
       
     </div>
   
@@ -333,8 +340,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>docker-compose安装</div>
-      <div>https://pipiguai0123.github.io/2023/03/24/docker-compose/docker-compose安装/</div>
+      <div>mysql主从复制</div>
+      <div>https://pipiguai0123.github.io/2023/03/27/mysql/mysql主从复制/</div>
     </div>
     <div class="license-meta">
       
@@ -346,7 +353,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月24日</div>
+          <div>2023年3月27日</div>
         </div>
       
       
@@ -378,9 +385,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/03/24/dockerfile/dockerfile%E8%AF%A6%E8%A7%A3/" title="dockerfile详解">
+                      <a href="/2023/03/27/mysql/MySQL5.7%E5%8D%87%E7%BA%A7%E5%88%B0%E6%9C%80%E6%96%B0%E7%89%88/" title="MySQL5.7升级到最新版">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">dockerfile详解</span>
+                        <span class="hidden-mobile">MySQL5.7升级到最新版</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -388,8 +395,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/03/24/docker-compose/docker-compose_yaml%E6%96%87%E4%BB%B6/" title="docker-compose.yml 配置文件编写详解">
-                        <span class="hidden-mobile">docker-compose.yml 配置文件编写详解</span>
+                      <a href="/2023/03/27/mysql/docker%E8%BF%90%E8%A1%8Cmysql%E5%8D%95%E8%8A%82%E7%82%B9%E5%92%8C%E4%B8%BB%E4%BB%8E%E8%8A%82%E7%82%B9/" title="docker运行mysql单节点和主从节点">
+                        <span class="hidden-mobile">docker运行mysql单节点和主从节点</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
