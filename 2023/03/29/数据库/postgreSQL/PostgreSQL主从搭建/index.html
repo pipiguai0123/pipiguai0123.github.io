@@ -1,0 +1,810 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="postgresql主从搭建12参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;guapitomjoy&#x2F;p&#x2F;15330079.html参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;ezgod&#x2F;p&#x2F;15843221.html   一、机器规划基于pgpool中间件实现postgresql一主多从集群部署，这里用两台服务器作一主一从示例    主机名 IP 主从划分    pgs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="postgresql主从搭建">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/PostgreSQL%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="postgresql主从搭建12参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;guapitomjoy&#x2F;p&#x2F;15330079.html参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;ezgod&#x2F;p&#x2F;15843221.html   一、机器规划基于pgpool中间件实现postgresql一主多从集群部署，这里用两台服务器作一主一从示例    主机名 IP 主从划分    pgs">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/PostgreSQL%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA/postgresql%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA%5Cimage-20221028174953304.png">
+<meta property="article:published_time" content="2023-03-29T02:16:23.000Z">
+<meta property="article:modified_time" content="2023-03-29T03:34:55.910Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="PostgreSQL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pipiguai0123.github.io/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/PostgreSQL%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA/postgresql%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA%5Cimage-20221028174953304.png">
+  
+  
+  
+  <title>postgresql主从搭建 - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="postgresql主从搭建"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-29 10:16" pubdate>
+          2023年3月29日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          41 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">postgresql主从搭建</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="postgresql主从搭建"><a href="#postgresql主从搭建" class="headerlink" title="postgresql主从搭建"></a>postgresql主从搭建</h1><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">参考文档：https://www.cnblogs.com/guapitomjoy/p/15330079.html<br>参考文档：https://www.cnblogs.com/ezgod/p/15843221.html<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="一、机器规划"><a href="#一、机器规划" class="headerlink" title="一、机器规划"></a>一、机器规划</h2><p>基于pgpool中间件实现postgresql一主多从集群部署，这里用两台服务器作一主一从示例</p>
+<table>
+<thead>
+<tr>
+<th>主机名</th>
+<th>IP</th>
+<th>主从划分</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>pgsql-1</td>
+<td>192.168.62.129</td>
+<td>主库</td>
+</tr>
+<tr>
+<td>pgsql-2</td>
+<td>192.168.62.130</td>
+<td>从库</td>
+</tr>
+</tbody></table>
+<h2 id="二、整体架构"><a href="#二、整体架构" class="headerlink" title="二、整体架构"></a>二、整体架构</h2><p><img src="/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/PostgreSQL%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA/postgresql%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA%5Cimage-20221028174953304.png" srcset="/img/loading.gif" lazyload alt="image-20221028174953304"></p>
+<h2 id="三、安装postgresql"><a href="#三、安装postgresql" class="headerlink" title="三、安装postgresql"></a>三、安装postgresql</h2><h3 id="3-1、安装postgresql-14"><a href="#3-1、安装postgresql-14" class="headerlink" title="3.1、安装postgresql-14"></a>3.1、安装postgresql-14</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs sh">sudo yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm<br><br><span class="hljs-comment"># 安装 PostgreSQL：</span><br>sudo yum install -y postgresql14-server<br><br><span class="hljs-comment"># 可选择初始化数据库并启用自动启动：</span><br>sudo /usr/pgsql-14/bin/postgresql-14-setup initdb<br>sudo systemctl <span class="hljs-built_in">enable</span> postgresql-14<br>sudo systemctl start postgresql-14<br><br><span class="hljs-comment"># 安装核心数据库服务器</span><br>yum install postgresql14-server postgresql14-contrib -y<br><br><span class="hljs-comment">#postgresql相关路径</span><br>/var/lib/pgsql/14/data/  <span class="hljs-comment">#conf文件路径</span><br><br><span class="hljs-comment">#测试是否能正常连接</span><br>su - postgres<br>psql<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2、主节点配置"><a href="#3-2、主节点配置" class="headerlink" title="3.2、主节点配置"></a>3.2、主节点配置</h3><h4 id="3-2-1）创建用于主从访问的用户，-修改postgres用户的密码，用于远程登录。-切换到postgres用户操作"><a href="#3-2-1）创建用于主从访问的用户，-修改postgres用户的密码，用于远程登录。-切换到postgres用户操作" class="headerlink" title="3.2.1）创建用于主从访问的用户， 修改postgres用户的密码，用于远程登录。(切换到postgres用户操作)"></a>3.2.1）创建用于主从访问的用户， 修改postgres用户的密码，用于远程登录。(切换到postgres用户操作)</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#切换到postgres用户操作</span><br>su - postgres<br>psql<br><br><span class="hljs-comment">#创建用于主从访问的用户</span><br><span class="hljs-comment">#创建数据库账号replica并设置密码及登录权限和备份权限</span><br>create role replica login replication encrypted password <span class="hljs-string">&#x27;replica123&#x27;</span>;<br><br><span class="hljs-comment">#修改postgres用户的密码，用于远程登录</span><br>alter USER postgres with password <span class="hljs-string">&#x27;postgres&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-2-2）修改pg-hba-conf和postgresql-conf配置："><a href="#3-2-2）修改pg-hba-conf和postgresql-conf配置：" class="headerlink" title="3.2.2）修改pg_hba.conf和postgresql.conf配置："></a>3.2.2）修改pg_hba.conf和postgresql.conf配置：</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#运行以下命令，打开pg_hba.conf文件，设置replica用户白名单</span><br>vim /var/lib/pgsql/14/data/pg_hba.conf<br><br><span class="hljs-comment">##添加以下数据</span><br><span class="hljs-comment">##允许replica用户从replication数据库进行数据同步</span><br>host replication replica 192.168.62.129/24 trust<br>host replication replica 192.168.62.130/24 trust<br><span class="hljs-comment">#允许VPC网段中md5密码认证连接</span><br>host    all    all    192.168.0.0/24    md5<br>host    all    all     0.0.0.0/0 md5<br><br><br><span class="hljs-comment">#运行以下命令，打开postgresql.conf文件</span><br>vim /var/lib/pgsql/14/data/postgresql.conf<br><br>listen_addresses = <span class="hljs-string">&#x27;*&#x27;</span>     <span class="hljs-comment">#监听的IP地址</span><br>max_connections = 100      <span class="hljs-comment">#最大连接数，从库的max_connections必须要大于主库的</span><br><span class="hljs-comment">#archive_mode = on  		# 允许归档</span><br><span class="hljs-comment">#archive_command = &#x27;cp %p /opt/pgsql/pg_archive/%f&#x27; ## 通过命令指定归档路径/</span><br>wal_level = logical    <span class="hljs-comment">#写入WAL的级别(minimal:不能通过基础备份和wal日志恢复数据库; replica: 支持wal归档和复制; logical: 在replica级别添加了逻辑解码所需的信息)</span><br>synchronous_commit = on    <span class="hljs-comment">#开启同步复制</span><br>max_wal_senders = 32       <span class="hljs-comment"># 允许最多的流复制连接发送数量， 根据从节点数量来设定</span><br>wal_sender_timeout = 60s   <span class="hljs-comment">#流复制主机发送数据的超时时间</span><br><br><br><span class="hljs-comment">#如果postgresql.conf中的hot_standby参数设置为on（默认值），并且数据目录中存在Standby.signal文件，则replication slave将在“热备”模式下运行。</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-2-3）重启主节点服务"><a href="#3-2-3）重启主节点服务" class="headerlink" title="3.2.3）重启主节点服务"></a>3.2.3）重启主节点服务</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl restart postgresql-14.service<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-3、配置PostgreSQL从节点（从节点的操作建议全部在postgres用户下进行。）"><a href="#3-3、配置PostgreSQL从节点（从节点的操作建议全部在postgres用户下进行。）" class="headerlink" title="3.3、配置PostgreSQL从节点（从节点的操作建议全部在postgres用户下进行。）"></a>3.3、配置PostgreSQL从节点（从节点的操作建议全部在postgres用户下进行。）</h3><h4 id="3-3-1）切换postgres用户"><a href="#3-3-1）切换postgres用户" class="headerlink" title="3.3.1）切换postgres用户"></a>3.3.1）切换postgres用户</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">su - postgres<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-3-2-将主节点的数据进行备份到从节点"><a href="#3-3-2-将主节点的数据进行备份到从节点" class="headerlink" title="3.3.2) 将主节点的数据进行备份到从节点"></a>3.3.2) 将主节点的数据进行备份到从节点</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">rm</span> -rf /var/lib/pgsql/14/data/*<br><br><span class="hljs-comment">#复制后从节点的配置文件会和主节点的一样，并且一并复制的还有数据库文件，里面的数据也一样，意味着主节点有什么用户数据从节点也有</span><br>pg_basebackup -h 192.168.62.129 -D /var/lib/pgsql/14/data -U replica -P -v  -R -X stream -C -S pgstandby1 <br><br>参数详解：<br>-h –指定作为主服务器的主机。<br>-D –指定数据目录。<br>-U –指定连接用户。<br>-P –启用进度报告。<br>-v –启用详细模式。<br>-R–启用恢复配置的创建：创建一个standby.signal文件，并将连接设置附加到数据目录下的postgresql.auto.conf。<br>-X–用于在备份中包括所需的预写日志文件（WAL文件）。流的值表示在创建备份时流式传输WAL。<br>-C –在开始备份之前，允许创建由-S选项命名的复制插槽。<br>-S –指定复制插槽名称。<br><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#备份过程完成后，会在data目录下创建了一个standby.signal，并将primary_conninfo写入postgresql.auto.conf</span><br><span class="hljs-built_in">cat</span> /var/lib/pgsql/14/data/postgresql.auto.conf <br><span class="hljs-comment">#输出信息：</span><br><span class="hljs-comment"># Do not edit this file manually!</span><br><span class="hljs-comment"># It will be overwritten by the ALTER SYSTEM command.</span><br>primary_conninfo = <span class="hljs-string">&#x27;user=replica passfile=&#x27;</span><span class="hljs-string">&#x27;/var/lib/pgsql/.pgpass&#x27;</span><span class="hljs-string">&#x27; channel_binding=prefer host=192.168.62.129 port=5432 sslmode=prefer sslcompression=0 sslsni=1 ssl_min_protocol_version=TLSv1.2 gssencmode=prefer krbsrvname=postgres target_session_attrs=any&#x27;</span><br>primary_slot_name = <span class="hljs-string">&#x27;pgstandby1&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-3-3）启动从节点"><a href="#3-3-3）启动从节点" class="headerlink" title="3.3.3）启动从节点"></a>3.3.3）启动从节点</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl start postgresql-14<br></code></pre></td></tr></table></figure>
+
+<h2 id="四、验证主从，读写测试"><a href="#四、验证主从，读写测试" class="headerlink" title="四、验证主从，读写测试"></a>四、验证主从，读写测试</h2><h3 id="4-1、验证主从信息"><a href="#4-1、验证主从信息" class="headerlink" title="4.1、验证主从信息"></a>4.1、验证主从信息</h3><h4 id="4-1-1）查看主节点复制插槽-主节点执行"><a href="#4-1-1）查看主节点复制插槽-主节点执行" class="headerlink" title="4.1.1）查看主节点复制插槽(主节点执行)"></a>4.1.1）查看主节点复制插槽(主节点执行)</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">su - postgres<br>psql -c <span class="hljs-string">&quot;SELECT * FROM pg_replication_slots;&quot;</span><br>psql -c <span class="hljs-string">&#x27;select client_addr,sync_state from pg_stat_replication;&#x27;</span><br><span class="hljs-built_in">exit</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="4-1-2）查看从节点接收状态：-此信息只有从节点才会有"><a href="#4-1-2）查看从节点接收状态：-此信息只有从节点才会有" class="headerlink" title="4.1.2）查看从节点接收状态：(#此信息只有从节点才会有)"></a>4.1.2）查看从节点接收状态：(#此信息只有从节点才会有)</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">su - postgres<br>psql -c <span class="hljs-string">&quot;\x&quot;</span> -c <span class="hljs-string">&quot;SELECT * FROM pg_stat_wal_receiver;&quot;</span><br><br></code></pre></td></tr></table></figure>
+
+<h4 id="4-1-3）查看主节点发送状态：-此信息只有主节点才会有"><a href="#4-1-3）查看主节点发送状态：-此信息只有主节点才会有" class="headerlink" title="4.1.3）查看主节点发送状态：(#此信息只有主节点才会有)"></a>4.1.3）查看主节点发送状态：(#此信息只有主节点才会有)</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">su - postgres<br>psql -c <span class="hljs-string">&quot;\x&quot;</span> -c <span class="hljs-string">&quot;SELECT * FROM pg_stat_replication;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2、读写测试"><a href="#4-2、读写测试" class="headerlink" title="4.2、读写测试"></a>4.2、读写测试</h3><h4 id="4-2-1）在主节点写数据，从节点读数据。"><a href="#4-2-1）在主节点写数据，从节点读数据。" class="headerlink" title="4.2.1）在主节点写数据，从节点读数据。"></a>4.2.1）在主节点写数据，从节点读数据。</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">create database <span class="hljs-built_in">test</span>;<br>\l<br></code></pre></td></tr></table></figure>
+
+<h4 id="4-2-2）在从节点上查看创建之后的数据库。可以看见，数据库同步了。"><a href="#4-2-2）在从节点上查看创建之后的数据库。可以看见，数据库同步了。" class="headerlink" title="4.2.2）在从节点上查看创建之后的数据库。可以看见，数据库同步了。"></a>4.2.2）在从节点上查看创建之后的数据库。可以看见，数据库同步了。</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">\l<br></code></pre></td></tr></table></figure>
+
+<hr>
+<hr>
+<h2 id="五、postgres用户间免密登录"><a href="#五、postgres用户间免密登录" class="headerlink" title="五、postgres用户间免密登录"></a>五、postgres用户间免密登录</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#给postgres用户更改密码</span><br>passwd postgres<br><br><span class="hljs-comment">#生成并同步密钥</span><br>su postgres<br>ssh-keygen<br>ssh-copy-id 192.168.62.130<br><br><span class="hljs-comment">#测试免密</span><br>ssh  192.168.62.130<br>ip addr<br></code></pre></td></tr></table></figure>
+
+<h2 id="六、安装pgpool"><a href="#六、安装pgpool" class="headerlink" title="六、安装pgpool"></a>六、安装pgpool</h2><p>pgpool介绍：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_35241223/article/details/105453826">https://blog.csdn.net/qq_35241223/article/details/105453826</a><br>简介：可以实现自动故障转移、负载均衡、在线恢复、连接池、复制、限制超出连接、看门狗、内存查询缓存</p>
+<h3 id="6-1、安装-两台机器都需要安装"><a href="#6-1、安装-两台机器都需要安装" class="headerlink" title="6.1、安装(两台机器都需要安装)"></a>6.1、安装(两台机器都需要安装)</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#Pgpool-II安装</span><br>vim /etc/yum.repos.d/pgdg-redhat-all.repo<br><span class="hljs-comment">#在pgdg后面添加exclude=pgpool*</span><br>[pgdg-common]<br>...<br>exclude=pgpool*<br>[pgdg14]<br>...<br>exclude=pgpool*<br>[pgdg13]<br>...<br>exclude=pgpool*<br>[pgdg12]<br>...<br>exclude=pgpool*<br>[pgdg11]<br><span class="hljs-comment">#...</span><br>exclude=pgpool*<br><br>[pgdg10]<br><span class="hljs-comment">#...</span><br>exclude=pgpool*<br>[pgdg9]<br>...<br>exclude=pgpool*<br><br><span class="hljs-comment"># 添加源</span><br>yum install -y https://www.pgpool.net/yum/rpms/4.3/redhat/rhel-7-x86_64/pgpool-II-release-4.3-1.noarch.rpm<br><span class="hljs-comment"># 安装</span><br>yum install -y pgpool-II-pg14-*<br><br><span class="hljs-comment">## 安装完之后pgpool的配置文件在/etc/pgpool-II/下</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="6-2、修改配置（两台机器都需要配置）"><a href="#6-2、修改配置（两台机器都需要配置）" class="headerlink" title="6.2、修改配置（两台机器都需要配置）"></a>6.2、修改配置（两台机器都需要配置）</h3><p>pool_hba.conf和之前配置的PostgreSQL中的配置时一样的</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /etc/pgpool-II/pool_hba.conf<br>host    replication replica     192.168.62.129/24    trust<br>host    replication replica     192.168.62.130/24    trust<br>host    all          all        192.168.0.0/24       md5<br>host    all          all        0.0.0.0/0 		     md5<br></code></pre></td></tr></table></figure>
+<h3 id="6-3、对postgres的密码进行加密。将postgres的密码设置为和用户名相同"><a href="#6-3、对postgres的密码进行加密。将postgres的密码设置为和用户名相同" class="headerlink" title="6.3、对postgres的密码进行加密。将postgres的密码设置为和用户名相同"></a>6.3、对postgres的密码进行加密。将postgres的密码设置为和用户名相同</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#密码加密</span><br>pg_md5 postgres<br>&gt;&gt;e8a48653851e28c69d0506508fb27fc5<br><br><span class="hljs-comment">#将加密结果复制，并粘贴到pcp.conf中相应的位置，取消掉该行的注释</span><br>vim /etc/pgpool-II/pcp.conf<br>postgres:e8a48653851e28c69d0506508fb27fc5<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-4、执行命令-先切换到postgres用户再执行然后输入密码"><a href="#6-4、执行命令-先切换到postgres用户再执行然后输入密码" class="headerlink" title="6.4、执行命令(先切换到postgres用户再执行然后输入密码):"></a>6.4、执行命令(先切换到postgres用户再执行然后输入密码):</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">pg_md5 -m -p -u postgres pool_passwd<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/PostgreSQL/" class="category-chain-item">PostgreSQL</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/PostgreSQL/">#PostgreSQL</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>postgresql主从搭建</div>
+      <div>https://pipiguai0123.github.io/2023/03/29/数据库/postgreSQL/PostgreSQL主从搭建/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/PostgreSQL%E5%8D%95%E8%8A%82%E7%82%B9%E6%90%AD%E5%BB%BA/" title="PostgreSQL单节点搭建">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">PostgreSQL单节点搭建</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/Docker%E5%AE%89%E8%A3%85PostgreSQL/" title="Docker安装PostgreSQL">
+                        <span class="hidden-mobile">Docker安装PostgreSQL</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

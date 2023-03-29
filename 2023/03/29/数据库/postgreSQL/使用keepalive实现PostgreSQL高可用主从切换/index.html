@@ -1,0 +1,865 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="使用keepalive实现postgresql高可用主从切换1参考文档：https:&#x2F;&#x2F;cloud.tencent.com&#x2F;developer&#x2F;article&#x2F;1894340  一、机器规划、环境准备基于keepalived实现postgresql高可用，这里用两台服务器作一主一从示例    主机名 IP 备注    pgsql-1 192.168.62.129 主库   pgsql-2 192.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用keepalive实现postgresql高可用主从切换">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/%E4%BD%BF%E7%94%A8keepalive%E5%AE%9E%E7%8E%B0PostgreSQL%E9%AB%98%E5%8F%AF%E7%94%A8%E4%B8%BB%E4%BB%8E%E5%88%87%E6%8D%A2/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="使用keepalive实现postgresql高可用主从切换1参考文档：https:&#x2F;&#x2F;cloud.tencent.com&#x2F;developer&#x2F;article&#x2F;1894340  一、机器规划、环境准备基于keepalived实现postgresql高可用，这里用两台服务器作一主一从示例    主机名 IP 备注    pgsql-1 192.168.62.129 主库   pgsql-2 192.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/%E4%BD%BF%E7%94%A8keepalive%E5%AE%9E%E7%8E%B0PostgreSQL%E9%AB%98%E5%8F%AF%E7%94%A8%E4%B8%BB%E4%BB%8E%E5%88%87%E6%8D%A2/image-20230329110234099.png">
+<meta property="article:published_time" content="2023-03-29T03:42:43.000Z">
+<meta property="article:modified_time" content="2023-03-29T03:35:02.518Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="PostgreSQL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pipiguai0123.github.io/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/%E4%BD%BF%E7%94%A8keepalive%E5%AE%9E%E7%8E%B0PostgreSQL%E9%AB%98%E5%8F%AF%E7%94%A8%E4%B8%BB%E4%BB%8E%E5%88%87%E6%8D%A2/image-20230329110234099.png">
+  
+  
+  
+  <title>使用keepalive实现postgresql高可用主从切换 - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="使用keepalive实现postgresql高可用主从切换"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-29 11:42" pubdate>
+          2023年3月29日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          14k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          116 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">使用keepalive实现postgresql高可用主从切换</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="使用keepalive实现postgresql高可用主从切换"><a href="#使用keepalive实现postgresql高可用主从切换" class="headerlink" title="使用keepalive实现postgresql高可用主从切换"></a>使用keepalive实现postgresql高可用主从切换</h1><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs txt">参考文档：https://cloud.tencent.com/developer/article/1894340<br></code></pre></td></tr></table></figure>
+
+<h2 id="一、机器规划、环境准备"><a href="#一、机器规划、环境准备" class="headerlink" title="一、机器规划、环境准备"></a>一、机器规划、环境准备</h2><p>基于keepalived实现postgresql高可用，这里用两台服务器作一主一从示例</p>
+<table>
+<thead>
+<tr>
+<th>主机名</th>
+<th>IP</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>pgsql-1</td>
+<td>192.168.62.129</td>
+<td>主库</td>
+</tr>
+<tr>
+<td>pgsql-2</td>
+<td>192.168.62.130</td>
+<td>从库</td>
+</tr>
+<tr>
+<td>VIP</td>
+<td>192.168.62.123</td>
+<td>VIP（虚拟ip）</td>
+</tr>
+</tbody></table>
+<p>备注：机器均时间同步、关闭了防火墙和selinux</p>
+<h2 id="二、整体架构"><a href="#二、整体架构" class="headerlink" title="二、整体架构"></a>二、整体架构</h2><p><img src="/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/%E4%BD%BF%E7%94%A8keepalive%E5%AE%9E%E7%8E%B0PostgreSQL%E9%AB%98%E5%8F%AF%E7%94%A8%E4%B8%BB%E4%BB%8E%E5%88%87%E6%8D%A2/image-20230329110234099.png" srcset="/img/loading.gif" lazyload alt="image-20230329110234099"></p>
+<h2 id="三、安装Keepalived"><a href="#三、安装Keepalived" class="headerlink" title="三、安装Keepalived"></a>三、安装Keepalived</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#安装依赖</span><br>yum install gcc openssl openssl‐devel libnl libnl‐devel ipvsadm -y<br><br><span class="hljs-comment">#在线安装</span><br>yum install -y keepalived<br></code></pre></td></tr></table></figure>
+
+<h2 id="四、安装postgresql"><a href="#四、安装postgresql" class="headerlink" title="四、安装postgresql"></a>四、安装postgresql</h2><h3 id="安装postgresql-14"><a href="#安装postgresql-14" class="headerlink" title="安装postgresql-14"></a>安装postgresql-14</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs sh">sudo yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm<br><br><span class="hljs-comment"># 安装 PostgreSQL：</span><br>sudo yum install -y postgresql14-server<br><br><span class="hljs-comment"># 安装核心数据库服务器</span><br>yum install postgresql14-server postgresql14-contrib -y<br><br><span class="hljs-comment"># 可选择初始化数据库并启用自动启动：</span><br>sudo /usr/pgsql-14/bin/postgresql-14-setup initdb<br>sudo systemctl <span class="hljs-built_in">enable</span> postgresql-14<br>sudo systemctl start postgresql-14<br><br><span class="hljs-comment">#postgresql相关路径</span><br>/var/lib/pgsql/14/data/  <span class="hljs-comment">#conf文件路径</span><br>/usr/pgsql-14/bin/      <span class="hljs-comment">#pg相关工具路径</span><br><br><span class="hljs-comment">#测试是否能正常连接</span><br>su - postgres<br>psql<br></code></pre></td></tr></table></figure>
+
+<h2 id="五、搭建主从环境"><a href="#五、搭建主从环境" class="headerlink" title="五、搭建主从环境"></a>五、搭建主从环境</h2><h3 id="5-1、主节点配置"><a href="#5-1、主节点配置" class="headerlink" title="5.1、主节点配置"></a>5.1、主节点配置</h3><h4 id="5-1-1）创建用于主从访问的用户，-修改postgres用户的密码，用于远程登录。-切换到postgres用户操作"><a href="#5-1-1）创建用于主从访问的用户，-修改postgres用户的密码，用于远程登录。-切换到postgres用户操作" class="headerlink" title="5.1.1）创建用于主从访问的用户， 修改postgres用户的密码，用于远程登录。(切换到postgres用户操作)"></a>5.1.1）创建用于主从访问的用户， 修改postgres用户的密码，用于远程登录。(切换到postgres用户操作)</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#切换到postgres用户操作</span><br>su - postgres<br>psql<br><br><span class="hljs-comment">#创建用于主从访问的用户</span><br><span class="hljs-comment">#创建数据库账号replica并设置密码及登录权限和备份权限</span><br>create role replica login replication encrypted password <span class="hljs-string">&#x27;replica123&#x27;</span>;<br><br><span class="hljs-comment">#修改postgres用户的密码，用于远程登录</span><br>alter USER postgres with password <span class="hljs-string">&#x27;postgres&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<h4 id="5-1-2）修改pg-hba-conf和postgresql-conf配置："><a href="#5-1-2）修改pg-hba-conf和postgresql-conf配置：" class="headerlink" title="5.1.2）修改pg_hba.conf和postgresql.conf配置："></a>5.1.2）修改pg_hba.conf和postgresql.conf配置：</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#运行以下命令，打开pg_hba.conf文件，设置replica用户白名单</span><br>vim /var/lib/pgsql/14/data/pg_hba.conf<br><span class="hljs-comment">##添加以下数据：</span><br><br><span class="hljs-comment">#------------------------注释原有的，替换如下的----------------------</span><br><br><span class="hljs-built_in">local</span>   all             all                                     trust<br><span class="hljs-comment">#允许任意ip地址的用户使用md5加密方式认证连接</span><br>host    all             all            0.0.0.0/0                md5<br>host    all             all             ::1/128                 md5<br><span class="hljs-comment">#允许所有用户使用local方式连接replication</span><br><span class="hljs-built_in">local</span>   replication     all                                     trust<br><span class="hljs-comment">#允许所有的用户使用md5加密方式连接replication数据库</span><br>host    replication     all             0.0.0.0/0               md5<br>host    replication     all             ::1/128                 md5<br><br>备注：pg_hba.conf参照如下格式设置：<br>详解文档：https://blog.csdn.net/hmxz2nn/article/details/83717663<br>连接方式  连接的数据库  连接的用户 连接的主机IP 认证方式<br>例如：<br><span class="hljs-comment">##允许固定ip地址的replica用户从replication数据库进行数据同步</span><br>host replication replica 192.168.62.129/24 trust<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#运行以下命令，打开postgresql.conf文件</span><br>vim /var/lib/pgsql/14/data/postgresql.conf<br><br>listen_addresses = <span class="hljs-string">&#x27;*&#x27;</span>     <span class="hljs-comment">#监听的IP地址</span><br>max_connections = 1000      <span class="hljs-comment">#最大连接数，从库的max_connections必须要大于主库的</span><br>archive_mode = on      <span class="hljs-comment"># 允许归档</span><br>archive_command = <span class="hljs-string">&#x27;cp %p /var/lib/pgsql/14/data/pg_archive/%f&#x27;</span> <span class="hljs-comment">## 通过命令指定归档路径/  路径需要存在，不存在日志将报错</span><br>wal_level = replica    <span class="hljs-comment">#写入WAL的级别(minimal:不能通过基础备份和wal日志恢复数据库; replica: 支持wal归档和复制; logical: 在replica级别添加了逻辑解码所需的信息)</span><br>wal_log_hints = on <br>max_wal_senders = 32       <span class="hljs-comment"># 允许最多的流复制连接发送数量， 根据从节点数量来设定</span><br>hot_standby = on           <span class="hljs-comment">#热备模式</span><br>archive_timeout = 3600  <span class="hljs-comment">#在此之后强制进行日志文件段切换</span><br><br><span class="hljs-comment">#synchronous_commit = on    #开启同步复制</span><br><span class="hljs-comment">#wal_sender_timeout = 60s   #流复制主机发送数据的超时时间</span><br><span class="hljs-comment">#如果postgresql.conf中的hot_standby参数设置为on（默认值），并且数据目录中存在Standby.signal文件，则replication slave将在“热备”模式下运行。</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="5-1-3）重启主节点服务"><a href="#5-1-3）重启主节点服务" class="headerlink" title="5.1.3）重启主节点服务"></a>5.1.3）重启主节点服务</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl restart postgresql-14.service<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-2、配置PostgreSQL从节点（从节点的操作建议全部在postgres用户下进行。）"><a href="#5-2、配置PostgreSQL从节点（从节点的操作建议全部在postgres用户下进行。）" class="headerlink" title="5.2、配置PostgreSQL从节点（从节点的操作建议全部在postgres用户下进行。）"></a>5.2、配置PostgreSQL从节点（从节点的操作建议全部在postgres用户下进行。）</h3><h4 id="5-2-1）切换postgres用户"><a href="#5-2-1）切换postgres用户" class="headerlink" title="5.2.1）切换postgres用户"></a>5.2.1）切换postgres用户</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">su - postgres<br></code></pre></td></tr></table></figure>
+
+<h4 id="5-2-2-将主节点的数据进行备份到从节点"><a href="#5-2-2-将主节点的数据进行备份到从节点" class="headerlink" title="5.2.2) 将主节点的数据进行备份到从节点"></a>5.2.2) 将主节点的数据进行备份到从节点</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">rm</span> -rf /var/lib/pgsql/14/data/*<br><br><span class="hljs-comment">#复制后从节点的配置文件会和主节点的一样，并且一并复制的还有数据库文件，里面的数据也一样，意味着主节点有什么用户数据从节点也有</span><br>pg_basebackup -h 192.168.62.129 -D /var/lib/pgsql/14/data -U replica -P -v  -R -X stream -C -S pgstandby1 <br><br>passwd&gt;replica123<br>参数详解：<br>-h –指定作为主服务器的主机。<br>-D –指定数据目录。<br>-U –指定连接用户。<br>-P –启用进度报告。<br>-v –启用详细模式。<br>-R–启用恢复配置的创建：创建一个standby.signal文件，并将连接设置附加到数据目录下的postgresql.auto.conf。<br>-X–用于在备份中包括所需的预写日志文件（WAL文件）。流的值表示在创建备份时流式传输WAL。<br>-C –在开始备份之前，允许创建由-S选项命名的复制插槽。<br>-S –指定复制插槽名称。<br><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#备份过程完成后，会在data目录下创建了一个standby.signal，并将primary_conninfo写入postgresql.auto.conf</span><br><span class="hljs-built_in">cat</span> /var/lib/pgsql/14/data/postgresql.auto.conf <br><span class="hljs-comment">#输出信息：</span><br><span class="hljs-comment"># Do not edit this file manually!</span><br><span class="hljs-comment"># It will be overwritten by the ALTER SYSTEM command.</span><br>primary_conninfo = <span class="hljs-string">&#x27;user=replica passfile=&#x27;</span><span class="hljs-string">&#x27;/var/lib/pgsql/.pgpass&#x27;</span><span class="hljs-string">&#x27; channel_binding=prefer host=192.168.62.129 port=5432 sslmode=prefer sslcompression=0 sslsni=1 ssl_min_protocol_version=TLSv1.2 gssencmode=prefer krbsrvname=postgres target_session_attrs=any&#x27;</span><br>primary_slot_name = <span class="hljs-string">&#x27;pgstandby1&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="5-2-3）启动从节点"><a href="#5-2-3）启动从节点" class="headerlink" title="5.2.3）启动从节点"></a>5.2.3）启动从节点</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl start postgresql-14<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-3、查看主从信息"><a href="#5-3、查看主从信息" class="headerlink" title="5.3、查看主从信息"></a>5.3、查看主从信息</h3><h4 id="5-3-1）查看主节点复制插槽-主节点执行"><a href="#5-3-1）查看主节点复制插槽-主节点执行" class="headerlink" title="5.3.1）查看主节点复制插槽(主节点执行)"></a>5.3.1）查看主节点复制插槽(主节点执行)</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">su - postgres<br>psql -c <span class="hljs-string">&quot;SELECT * FROM pg_replication_slots;&quot;</span><br>psql -c <span class="hljs-string">&#x27;select client_addr,sync_state from pg_stat_replication;&#x27;</span><br><span class="hljs-built_in">exit</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="5-3-2）查看从节点接收状态：-此信息只有从节点才会有"><a href="#5-3-2）查看从节点接收状态：-此信息只有从节点才会有" class="headerlink" title="5.3.2）查看从节点接收状态：(#此信息只有从节点才会有)"></a>5.3.2）查看从节点接收状态：(#此信息只有从节点才会有)</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">su - postgres<br>psql -c <span class="hljs-string">&quot;\x&quot;</span> -c <span class="hljs-string">&quot;SELECT * FROM pg_stat_wal_receiver;&quot;</span><br><br></code></pre></td></tr></table></figure>
+
+<h4 id="5-3-3）查看主节点发送状态：-此信息只有主节点才会有"><a href="#5-3-3）查看主节点发送状态：-此信息只有主节点才会有" class="headerlink" title="5.3.3）查看主节点发送状态：(此信息只有主节点才会有)"></a>5.3.3）查看主节点发送状态：(此信息只有主节点才会有)</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">su - postgres<br>psql -c <span class="hljs-string">&quot;\x&quot;</span> -c <span class="hljs-string">&quot;SELECT * FROM pg_stat_replication;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="5-4、读写测试"><a href="#5-4、读写测试" class="headerlink" title="5.4、读写测试"></a>5.4、读写测试</h3><h4 id="5-4-1）在主节点写数据，从节点读数据。"><a href="#5-4-1）在主节点写数据，从节点读数据。" class="headerlink" title="5.4.1）在主节点写数据，从节点读数据。"></a>5.4.1）在主节点写数据，从节点读数据。</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">create database <span class="hljs-built_in">test</span>;<br>\l<br></code></pre></td></tr></table></figure>
+<h4 id="5-4-2）在从节点上查看创建之后的数据库。可以看见，数据库同步了。"><a href="#5-4-2）在从节点上查看创建之后的数据库。可以看见，数据库同步了。" class="headerlink" title="5.4.2）在从节点上查看创建之后的数据库。可以看见，数据库同步了。"></a>5.4.2）在从节点上查看创建之后的数据库。可以看见，数据库同步了。</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">\l<br></code></pre></td></tr></table></figure>
+
+<h2 id="六、创建数据库Keepalived"><a href="#六、创建数据库Keepalived" class="headerlink" title="六、创建数据库Keepalived"></a>六、创建数据库Keepalived</h2><p><strong>创建数据库Keepalived，并且创建表探测表sr_delay，后续Keepalived探测，刷新sr_delay表的last_alive字段为当前探测时间。这张表用来判断主备延迟情况，数据库故障切换时会用到这张表。</strong></p>
+<h3 id="6-1、创建keepalived数据库、表、账号密码。（主节点上操作，会同步）"><a href="#6-1、创建keepalived数据库、表、账号密码。（主节点上操作，会同步）" class="headerlink" title="6.1、创建keepalived数据库、表、账号密码。（主节点上操作，会同步）"></a>6.1、创建keepalived数据库、表、账号密码。（主节点上操作，会同步）</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#创建用户并设置密码</span><br>create user keepalived password <span class="hljs-string">&#x27;123qwert&#x27;</span> CONNECTION LIMIT 4 ;<br><br><span class="hljs-comment">#创建数据库</span><br>create database keepalived owner keepalived;<br><br><span class="hljs-comment">#连接到keepalived数据库</span><br>\c keepalived keepalived<br><br><span class="hljs-comment">#创建探测表sr_delay</span><br>create table sr_delay(<span class="hljs-built_in">id</span> int4, last_alive timestamp(0) without time zone);<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-2、设置sr-delay表"><a href="#6-2、设置sr-delay表" class="headerlink" title="6.2、设置sr_delay表"></a>6.2、设置sr_delay表</h3><p><strong>只允许写入一条记录并且不允许删除此表数据，通过触发器实现。创建触发器函数</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#设置规则</span><br>CREATE FUNCTION cannt_delete () <br>RETURNS trigger <br>LANGUAGE plpgsql AS $$ <br>BEGIN <br>RAISE EXCEPTION <span class="hljs-string">&#x27;Table sr_delay can not delete !&#x27;</span>;<br>END; <br>$$;<br><br><span class="hljs-comment">#创建触发器函数</span><br>CREATE TRIGGER trigger_sr_delay_del <br>BEFORE DELETE ON sr_delay <br>FOR EACH ROW EXECUTE PROCEDURE cannt_delete() ; <br>CREATE TRIGGER trigger_sr_delay_tru BEFORE TRUNCATE ON sr_delay FOR STATEMENT EXECUTE PROCEDURE cannt_delete() ;<br><br>插入数据<br>INSERT INTO sr_delay VALUES(1,now()) ;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="七、配置Keepalived"><a href="#七、配置Keepalived" class="headerlink" title="七、配置Keepalived"></a>七、配置Keepalived</h2><p>创建所会用到的目录</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#keepalive所用的的脚本存放路径</span><br><span class="hljs-built_in">mkdir</span> -p /etc/keepalived/scripts<br><br><span class="hljs-comment">#后文执行脚本过程中记录的日志文件存放路径</span><br><span class="hljs-built_in">mkdir</span> -p /etc/keepalived/log<br><br><span class="hljs-comment">#创建归档文件夹</span><br><span class="hljs-built_in">mkdir</span> -p /var/lib/pgsql/14/data/pg_archive<br><span class="hljs-built_in">chown</span> postgres:postgres /var/lib/pgsql/14/data/pg_archive<br></code></pre></td></tr></table></figure>
+
+<h3 id="7-1、配置keepalive-conf文件"><a href="#7-1、配置keepalive-conf文件" class="headerlink" title="7.1、配置keepalive.conf文件"></a>7.1、配置keepalive.conf文件</h3><p>以下是Keepalived主节点的配置</p>
+<p>备注：Keepalived备节点只需要priority参数为99，router_id改成主机名（pg-2)其余参数配置一样。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /etc/keepalived/keepalived.conf<br><br>! Configuration File <span class="hljs-keyword">for</span> keepalived<br>global_defs &#123;<br><span class="hljs-comment">## 邮件通知信息</span><br><span class="hljs-comment">#  notification_email &#123;</span><br><span class="hljs-comment">#    # 定义收件人</span><br><span class="hljs-comment">#    1962821461@qq.com</span><br><span class="hljs-comment">#  &#125;</span><br><span class="hljs-comment">#  # SMTP服务器地址</span><br><span class="hljs-comment">#  smtp_server 192.168.62.129</span><br><span class="hljs-comment">#  smtp_connect_timeout 30</span><br>    <span class="hljs-comment">#路由器标识，一般不用改，也可以写成每个主机自己的主机名</span><br>   router_id pg-1<br>&#125;<br><br><span class="hljs-comment"># 定义用于实例执行的脚本内容，比如可以在线降低优先级，用于强制切换</span><br>vrrp_script check_pg_alived &#123;<br>        script <span class="hljs-string">&quot;/etc/keepalived/scripts/check_pg.sh&quot;</span><br>        interval 5<br>        fall 3 <span class="hljs-comment"># require 3 failures for KO</span><br>&#125;<br><br><span class="hljs-comment">#virtual_server 192.168.62.123 5432 &#123;</span><br><span class="hljs-comment">#    delay_loop 6 # 每个6秒查询Realserver状态</span><br><span class="hljs-comment">#    lb_algo rr   # lvs算法</span><br><span class="hljs-comment">#    lb_kind DR   # Direct Route</span><br><span class="hljs-comment">#    persistence_timeout 0 # 同一IP链接60秒内被分配到同一台realserver</span><br><span class="hljs-comment">#    protocol TCP            #用tcp协议检查realserver状态</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment">#    real_server 192.168.62.129 5432&#123;</span><br><span class="hljs-comment">#        weight 100</span><br><span class="hljs-comment">#        TCP_CHECK &#123;</span><br><span class="hljs-comment">#            connect_timeout 5 #10秒钟无响应超时</span><br><span class="hljs-comment">#            nb_get_retry 3</span><br><span class="hljs-comment">#            delay_before_retry 3</span><br><span class="hljs-comment">#            connect_port 5432</span><br><span class="hljs-comment">#        &#125;</span><br><span class="hljs-comment">#    &#125;</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment">#    real_server 192.168.62.130 5432&#123;</span><br><span class="hljs-comment">#        weight 100</span><br><span class="hljs-comment">#        TCP_CHECK &#123;</span><br><span class="hljs-comment">#            connect_timeout 5 #10秒钟无响应超时</span><br><span class="hljs-comment">#            nb_get_retry 3</span><br><span class="hljs-comment">#            delay_before_retry 3</span><br><span class="hljs-comment">#            connect_port 5432</span><br><span class="hljs-comment">#        &#125;</span><br><span class="hljs-comment">#    &#125;</span><br><span class="hljs-comment">#&#125;</span><br><br><span class="hljs-comment"># 一个vrrp_instance就是定义一个虚拟路由器的，实例名称</span><br>vrrp_instance VI_1 &#123;<br>  <span class="hljs-comment"># 定义初始状态</span><br>    state BACKUP<br>    <span class="hljs-comment">#非抢占模式</span><br>    nopreempt<br>    <span class="hljs-comment"># 工作接口（网卡名），通告选举使用哪个接口进行</span><br>    interface ens33<br>    <span class="hljs-comment"># 虚拟路由ID，如果是一组虚拟路由就定义一个ID，如果是多组就要定义多个，而且这个虚拟</span><br>    <span class="hljs-comment"># ID还是虚拟MAC最后一段地址的信息，取值范围0-255</span><br>    virtual_router_id 51<br>    <span class="hljs-comment">#权重 备库的priority小于主库的，同时大于主库priority + weight 的值</span><br>    priority 100<br>    <span class="hljs-comment"># 通信认证机制，这里是明文认证还有一种是加密认证</span><br>    advert_int 1<br>    authentication &#123;<br>        auth_type PASS<br>        auth_pass abcdefgh<br>    &#125;<br>    <span class="hljs-comment"># 追踪脚本，通常用于去执行上面的vrrp_script定义的脚本内容</span><br>    track_script &#123;<br>        check_pg_alived<br>    &#125;<br>  <span class="hljs-comment"># 设置虚拟VIP地址</span><br>    virtual_ipaddress &#123;<br>        192.168.62.123<br>    &#125;<br>   smtp_alert<br>   <span class="hljs-comment"># 如果主机状态变成Master|Backup|Fault之后会去执行的通知脚本，脚本要自己写</span><br>      notify_master <span class="hljs-string">&quot;/etc/keepalived/scripts/failover.sh&quot;</span><br>      notify_fault <span class="hljs-string">&quot;/etc/keepalived/scripts/fault.sh&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="7-2、-数据库监控脚本（check-pg-sh）"><a href="#7-2、-数据库监控脚本（check-pg-sh）" class="headerlink" title="7.2、 数据库监控脚本（check_pg.sh）"></a>7.2、 数据库监控脚本（check_pg.sh）</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /etc/keepalived/scripts/check_pg.sh<br><br><span class="hljs-comment">#!/bin/bash</span><br><span class="hljs-comment">#数据库、端口、用户名、数据库密码、日志文件路径</span><br><span class="hljs-built_in">export</span> PGDATABASE=keepalived<br><span class="hljs-built_in">export</span> PGPORT=5432<br><span class="hljs-built_in">export</span> PGUSER=keepalived<br><span class="hljs-built_in">export</span> PGHOME=/usr/pgsql-14/bin<br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:<span class="hljs-variable">$PGHOME</span><br>pgpwd=<span class="hljs-string">&#x27;123qwert&#x27;</span><br><span class="hljs-built_in">export</span> PGPASSWORD=<span class="hljs-variable">$pgpwd</span><br><span class="hljs-built_in">export</span> PGMIP=127.0.0.1<br>LOGFILE=/etc/keepalived/log/pg_status.log<br>keeplognums=30000<br><br>SQL1=<span class="hljs-string">&#x27;SELECT pg_is_in_recovery from pg_is_in_recovery();&#x27;</span><br><span class="hljs-comment">#SQL2=&#x27;update sr_delay set sr_date = now() where id =1;&#x27;</span><br>SQL2=<span class="hljs-string">&#x27;UPDATE sr_delay SET last_alive= now();&#x27;</span><br>SQL3=<span class="hljs-string">&#x27;SELECT 1;&#x27;</span><br><br><span class="hljs-comment">#pg_port_status=`lsof -i :$PGPORT | grep LISTEN | wc -l`</span><br><span class="hljs-comment">#pg_port_status=`ps -ef | grep LISTEN | wc -l`</span><br><span class="hljs-comment">#if [ $pg_port_status -lt 1 ];then</span><br><span class="hljs-comment">#    echo -e `date +&quot;%F %T&quot;` &quot;ERROR：postgreSQL 没有运行，请检查 postgreSQL 服务器状态！&quot; &gt;&gt; $LOGFILE</span><br><span class="hljs-comment">#    exit 1</span><br><span class="hljs-comment">#fi</span><br><br><span class="hljs-comment"># 备库不检查存活,主库更新状态</span><br>db_role=`<span class="hljs-built_in">echo</span> <span class="hljs-variable">$SQL1</span>  | <span class="hljs-variable">$PGHOME</span>/psql  -d <span class="hljs-variable">$PGDATABASE</span> -U <span class="hljs-variable">$PGUSER</span> -At -w`<br><br><span class="hljs-keyword">if</span> [ <span class="hljs-variable">$db_role</span> == <span class="hljs-string">&#x27;t&#x27;</span> ];<span class="hljs-keyword">then</span><br>   <span class="hljs-built_in">echo</span> -e `<span class="hljs-built_in">date</span> +<span class="hljs-string">&quot;%F %T&quot;</span>` <span class="hljs-string">&quot;注意：当前数据库为standby DB！&quot;</span> &gt;&gt; <span class="hljs-variable">$LOGFILE</span><br>   <span class="hljs-built_in">exit</span> 0<br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment">#判断主库是否可用</span><br><span class="hljs-built_in">echo</span> <span class="hljs-variable">$SQL3</span> | psql -p <span class="hljs-variable">$PGPORT</span> -d <span class="hljs-variable">$PGDATABASE</span> -U <span class="hljs-variable">$PGUSER</span> -At -w<br><span class="hljs-keyword">if</span> [ $? -eq 0 ] ;<span class="hljs-keyword">then</span><br>   <span class="hljs-comment">#当主库可用时，主库更新sr_delay 表</span><br>   <span class="hljs-built_in">echo</span> <span class="hljs-variable">$SQL2</span> | psql -p <span class="hljs-variable">$PGPORT</span> -d <span class="hljs-variable">$PGDATABASE</span> -U <span class="hljs-variable">$PGUSER</span> -At -w<br>   <span class="hljs-built_in">echo</span> -e `<span class="hljs-built_in">date</span> +<span class="hljs-string">&quot;%F %T&quot;</span>` <span class="hljs-string">&quot;Success：更新master sr_delay成功！&quot;</span> &gt;&gt; <span class="hljs-variable">$LOGFILE</span><br>   <span class="hljs-built_in">exit</span> 0<br><span class="hljs-keyword">else</span><br>   <span class="hljs-built_in">echo</span> -e `<span class="hljs-built_in">date</span> +<span class="hljs-string">&quot;%F %T&quot;</span>` <span class="hljs-string">&quot;Error:服务是否正在运行？&quot;</span> &gt;&gt; <span class="hljs-variable">$LOGFILE</span><br>   <span class="hljs-built_in">exit</span> 1<br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment">#日志保留 keeplognums 行</span><br><span class="hljs-keyword">if</span> [ ! -f <span class="hljs-variable">$&#123;MONITOR_LOG&#125;</span> ] ;<span class="hljs-keyword">then</span> <span class="hljs-built_in">touch</span> <span class="hljs-variable">$&#123;MONITOR_LOG&#125;</span>;<span class="hljs-keyword">fi</span> <br>lognums=`<span class="hljs-built_in">cat</span> <span class="hljs-variable">$&#123;MONITOR_LOG&#125;</span> |<span class="hljs-built_in">wc</span> -l`<br>catnum=$((<span class="hljs-variable">$&#123;lognums&#125;</span> -<span class="hljs-variable">$&#123;keeplognums&#125;</span>))<br><span class="hljs-keyword">if</span> [[ <span class="hljs-variable">$lognums</span> -gt <span class="hljs-variable">$&#123;keeplognums&#125;</span> ]] ; <span class="hljs-keyword">then</span> sed -i <span class="hljs-string">&quot;1,<span class="hljs-variable">$&#123;catnum&#125;</span>d&quot;</span> <span class="hljs-variable">$&#123;MONITOR_LOG&#125;</span>; <span class="hljs-keyword">fi</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="7-3、当主库挂掉后，切换脚本-failover-sh"><a href="#7-3、当主库挂掉后，切换脚本-failover-sh" class="headerlink" title="7.3、当主库挂掉后，切换脚本 failover.sh"></a>7.3、当主库挂掉后，切换脚本 failover.sh</h3><p>此脚本每隔10秒执行一次，执行频率由keepalived.conf配置文件中interval参数设置， 脚本主要作用为：检测主库是否存活、更新sr_delay表last_alive字段为当前探测时间。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /etc/keepalived/scripts/failover.sh<br><br><span class="hljs-comment">#!/bin/bash </span><br><span class="hljs-built_in">export</span> PGPORT=5432 <br><span class="hljs-built_in">export</span> PGUSER=keepalived <br><span class="hljs-built_in">export</span> PG_OS_USER=postgres <br><span class="hljs-built_in">export</span> PGDBNAME=keepalived <br><span class="hljs-built_in">export</span> LANG=en_US.UTF-8<br><span class="hljs-built_in">export</span> PGPATH=/usr/pgsql-14/bin/ <br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:<span class="hljs-variable">$PGPATH</span> <br><span class="hljs-built_in">export</span> PGMIP=127.0.0.1 <br>LOGFILE=<span class="hljs-string">&#x27;/etc/keepalived/log/failover.log&#x27;</span><br><span class="hljs-comment"># 主备数据库同步时延，单位为秒 </span><br>sr_allowed_delay_time=100<br><br>SQL1=<span class="hljs-string">&#x27;select pg_is_in_recovery from pg_is_in_recovery();&#x27;</span> <br>SQL2=<span class="hljs-string">&quot;select count(1) as delay_time from sr_delay where now()&lt;(last_alive + interval &#x27;<span class="hljs-variable">$&#123;sr_allowed_delay_time&#125;</span> seconds&#x27;);&quot;</span><br><span class="hljs-comment">#SQL2=&quot;select count(1) as delay_time from sr_delay where now()&lt;(last_alive + interval &#x27;100 seconds&#x27;);&quot; </span><br><span class="hljs-built_in">sleep</span> <span class="hljs-variable">$sr_allowed_delay_time</span><br>db_role=`<span class="hljs-built_in">echo</span> <span class="hljs-variable">$SQL1</span> | psql -At -p <span class="hljs-variable">$PGPORT</span> -U <span class="hljs-variable">$PGUSER</span> -d <span class="hljs-variable">$PGDBNAME</span> -w` <br>db_sr_delaytime=`<span class="hljs-built_in">echo</span> <span class="hljs-variable">$SQL2</span> | psql -p <span class="hljs-variable">$PGPORT</span> -d <span class="hljs-variable">$PGDBNAME</span> -U <span class="hljs-variable">$PGUSER</span> -At -w` <br><span class="hljs-comment">#执行命令 pg_ctl promote 激活备库</span><br>SWITCH_COMMAND=<span class="hljs-string">&#x27;/usr/pgsql-14/bin/pg_ctl promote -D /var/lib/pgsql/14/data/&#x27;</span> <br><span class="hljs-comment"># 如果为备库，且延迟大于指定时间则切换为主库</span><br>f 表示为主库<br><span class="hljs-keyword">if</span> [ <span class="hljs-variable">$&#123;db_role&#125;</span> == <span class="hljs-string">&#x27;f&#x27;</span> ];<br><span class="hljs-keyword">then</span> <br>  <span class="hljs-built_in">echo</span> -e `<span class="hljs-built_in">date</span> +<span class="hljs-string">&quot;%F %T&quot;</span>` <span class="hljs-string">&quot;注意：当前postgreSQL DB为master数据库，不能切换！&quot;</span> &gt;&gt; <span class="hljs-variable">$LOGFILE</span> <br>  <span class="hljs-built_in">exit</span> 0 <br><span class="hljs-keyword">fi</span><br><br><span class="hljs-keyword">if</span> [ <span class="hljs-variable">$db_sr_delaytime</span> -gt 0 ];<br><span class="hljs-keyword">then</span> <br>  <span class="hljs-built_in">echo</span> -e `<span class="hljs-built_in">date</span> +<span class="hljs-string">&quot;%F %T&quot;</span>` <span class="hljs-string">&quot;注意：当前主数据库健康，备用数据库不能切换！&quot;</span> &gt;&gt; <span class="hljs-variable">$LOGFILE</span> <br>  <span class="hljs-built_in">exit</span> 0 <br><span class="hljs-keyword">fi</span><br><br><span class="hljs-keyword">if</span> [ !<span class="hljs-variable">$db_sr_delaytime</span> ];<br><span class="hljs-keyword">then</span> <br>  <span class="hljs-built_in">echo</span> -e `<span class="hljs-built_in">date</span> +<span class="hljs-string">&quot;%F %T&quot;</span>` <span class="hljs-string">&quot;注意：当前数据库为statndby，准备切换master数据库！&quot;</span> &gt;&gt; <span class="hljs-variable">$LOGFILE</span> <br>  su - <span class="hljs-variable">$PG_OS_USER</span> -c <span class="hljs-string">&quot;<span class="hljs-variable">$SWITCH_COMMAND</span>&quot;</span> <br><span class="hljs-keyword">elif</span> [ $? -eq 0 ];<br><span class="hljs-keyword">then</span><br>  <span class="hljs-built_in">echo</span> -e `<span class="hljs-built_in">date</span> +<span class="hljs-string">&quot;%F %T&quot;</span>` <span class="hljs-string">&quot;success：当前备库切换主PG库成功！&quot;</span> &gt;&gt; <span class="hljs-variable">$LOGFILE</span> <br>  <span class="hljs-built_in">exit</span> 0 <br><span class="hljs-keyword">else</span> <br>  <span class="hljs-built_in">echo</span> -e `<span class="hljs-built_in">date</span> +<span class="hljs-string">&quot;%F %T&quot;</span>` <span class="hljs-string">&quot;error：备库切换主PG库失败！，请查收！&quot;</span> &gt;&gt; <span class="hljs-variable">$LOGFILE</span> <br>  <span class="hljs-built_in">exit</span> 1<br><span class="hljs-keyword">fi</span><br><br></code></pre></td></tr></table></figure>
+
+<h3 id="7-4、keepalived-进入错误状态时执行的脚本-fault-sh"><a href="#7-4、keepalived-进入错误状态时执行的脚本-fault-sh" class="headerlink" title="7.4、keepalived 进入错误状态时执行的脚本 fault.sh"></a>7.4、keepalived 进入错误状态时执行的脚本 fault.sh</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /etc/keepalived/scripts/fault.sh<br><br><span class="hljs-comment">#!/bin/bash</span><br>LOGGFILE=/etc/keepalived/log/pg_db_fault.log<br>PGPORT=5432<br>PGMIP=192.168.62.129<br><span class="hljs-built_in">echo</span> -e `<span class="hljs-built_in">date</span> +<span class="hljs-string">&quot;%F %T&quot;</span>` <span class="hljs-string">&quot;错误：由于主数据库发生了一些未知问题，所以关闭PostgreSQL数据库！&quot;</span> &gt;&gt; <span class="hljs-variable">$LOGFILE</span><br><br><span class="hljs-comment">#PGCOUNT=`ps -ef|grep &#x27;/usr/pgsql-14/bin/postgres -D /var/lib/pgsql/14/data&#x27; |wc -l`</span><br><br><span class="hljs-comment">#if [ $PGCOUNT -gt 1 ];then</span><br><span class="hljs-comment">#  PGPID=&quot;`netstat -anp|grep $PGPORT |awk &#x27;&#123;printf $7&#125;&#x27;|cut -d/ -f1`&quot;</span><br><span class="hljs-comment">#  kill -9 $PGPID</span><br><span class="hljs-comment">#  echo -e `date +&quot;%F %T&quot;` &quot;ERROR：由于主数据库发生了一些未知问题，所以关闭PostgreSQL数据库！&quot; &gt;&gt; $LOGFILE</span><br><span class="hljs-comment">#  exit 1</span><br><span class="hljs-comment">#fi</span><br><br>PGPID=<span class="hljs-string">&quot;`netstat -anp|grep <span class="hljs-variable">$PGPORT</span> |awk &#x27;&#123;printf <span class="hljs-variable">$7</span>&#125;&#x27;|cut -d/ -f1`&quot;</span><br>systemctl stop keepalived<br><br><span class="hljs-built_in">kill</span> -9 <span class="hljs-variable">$PGPID</span><br><span class="hljs-keyword">if</span> [ $? -eq 0 ];<span class="hljs-keyword">then</span><br>  <span class="hljs-built_in">echo</span> -e `<span class="hljs-built_in">date</span> +<span class="hljs-string">&quot;%F %T&quot;</span>` <span class="hljs-string">&quot;ERROR：由于主数据库发生了一些未知问题，所以关闭PostgreSQL数据库！&quot;</span> &gt;&gt; <span class="hljs-variable">$LOGFILE</span><br>  systemctl stop keepalived <br>  <span class="hljs-built_in">exit</span> 1<br><span class="hljs-keyword">fi</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="7-5、配置权限并分发到备节点"><a href="#7-5、配置权限并分发到备节点" class="headerlink" title="7.5、配置权限并分发到备节点"></a>7.5、配置权限并分发到备节点</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">chmod</span> 755 /etc/keepalived/scripts/*<br><br>scp /etc/keepalived/scripts/* root@192.168.62.130:/etc/keepalived/scripts/<br></code></pre></td></tr></table></figure>
+
+<h3 id="7-6、启动keepalived"><a href="#7-6、启动keepalived" class="headerlink" title="7.6、启动keepalived"></a>7.6、启动keepalived</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl start keepalived<br>systemctl <span class="hljs-built_in">enable</span> keepalived<br>systemctl status keepalived<br></code></pre></td></tr></table></figure>
+
+<h2 id="八、测试主备是否切换"><a href="#八、测试主备是否切换" class="headerlink" title="八、测试主备是否切换"></a>八、测试主备是否切换</h2><p><strong>测试down掉主机后，查看备库是否能够写入数据</strong></p>
+<h3 id="8-1、在192-168-62-129上停掉数据库"><a href="#8-1、在192-168-62-129上停掉数据库" class="headerlink" title="8.1、在192.168.62.129上停掉数据库"></a>8.1、在192.168.62.129上停掉数据库</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl stop postgresql-14<br></code></pre></td></tr></table></figure>
+
+<h3 id="8-2、测试备库是否能够写入数据"><a href="#8-2、测试备库是否能够写入数据" class="headerlink" title="8.2、测试备库是否能够写入数据"></a>8.2、测试备库是否能够写入数据</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#查看ip是否切换</span><br>ip add | grep 192.128.62.123<br><br><span class="hljs-comment">#如果有Navicat连接工具可直接测试是否能够连接并写入数据，没有的话按照下述步骤测试是否能写入数据！（因为执行切换时需要时间，所以请在down机后三分钟测试是否能写入数据）</span><br><span class="hljs-comment">#可通过查看/etc/keepalived/log/failover.log日志判断是否切换成功！</span><br><br><span class="hljs-comment">#无工具测试：</span><br><span class="hljs-comment">##切换完成后在130机器上，连接数据库</span><br><span class="hljs-comment">##创建测试表</span><br>CREATE TABLE <span class="hljs-built_in">test</span>(ID VARCHAR(20));<br><span class="hljs-comment">##插入测试数据</span><br>INSERT INTO <span class="hljs-built_in">test</span>(ID) VALUES (<span class="hljs-string">&#x27;1234554321&#x27;</span>);<br><span class="hljs-comment">##查询数据是否写入</span><br>SELECT * from <span class="hljs-built_in">test</span>;<br><span class="hljs-comment">##删除测试表</span><br>DROP TABLE IF EXISTS <span class="hljs-built_in">test</span>;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="8-3、修复192-168-62-129"><a href="#8-3、修复192-168-62-129" class="headerlink" title="8.3、修复192.168.62.129"></a>8.3、修复192.168.62.129</h3><p>使用pg_rewind 同步新主库的数据到原主库：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">su - postgres<br><br>/usr/pgsql-14/bin/pg_rewind -R --target-pgdata <span class="hljs-string">&#x27;/var/lib/pgsql/14/data/&#x27;</span> --source-server <span class="hljs-string">&#x27;host=192.168.62.130 port=5432 user=postgres password=postgres dbname=postgres&#x27;</span><br><br></code></pre></td></tr></table></figure>
+<p>如果这个地方咱们的wal日志已经被覆盖了了很多，那么就需要将我们的归档备份日志&#x2F;pg_archive&#x2F;给scp过来<br>注意：需要注意新主和备上面TimeLineID的差异</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">scp postgres@192.168.62.130:/var/lib/pgsql/14/data/pg_archive/00000002*  /var/lib/pgsql/14/data/pg_archive/<br></code></pre></td></tr></table></figure>
+
+<p>启动数据库，然后检查主备是否正常</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl start postgresql-14<br><br><span class="hljs-comment">#检查主备wal sender和receiver是否正常</span><br>ps axu |grep walreceiver<br><br>检查数据是否正常：根据5.3步骤来进行查看<br></code></pre></td></tr></table></figure>
+
+<p>启动Keepalived，查看Keepalived状态</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl  start keepalived<br>systemctl status keepalived<br></code></pre></td></tr></table></figure>
+
+<p><em><strong>再次切换测试数据是否正常</strong></em></p>
+<h3 id="8-4、再次切换测试"><a href="#8-4、再次切换测试" class="headerlink" title="8.4、再次切换测试"></a>8.4、再次切换测试</h3><p>在做切换前，先要检查192.168.62.129和192.168.62.130上面的Keepalived正常以及vip和主从正常，在192.168.62.130上停掉数据库:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">192.168.62.130上停掉数据库:<br><br>systemctl stop postgresql-14<br></code></pre></td></tr></table></figure>
+
+<h3 id="8-5、查看是否切换成功，测试是否能够写入数据"><a href="#8-5、查看是否切换成功，测试是否能够写入数据" class="headerlink" title="8.5、查看是否切换成功，测试是否能够写入数据"></a>8.5、查看是否切换成功，测试是否能够写入数据</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#查看ip是否切换</span><br>ip add | grep 192.128.62.123<br><br><span class="hljs-comment">#如果有Navicat连接工具可直接测试是否能够连接并写入数据，没有的话按照下述步骤测试是否能写入数据！（因为执行切换时需要时间，所以请在down机后三分钟测试是否能写入数据）</span><br><span class="hljs-comment">#可通过查看/etc/keepalived/log/failover.log日志判断是否切换成功！</span><br><br><span class="hljs-comment">#无工具测试：</span><br><span class="hljs-comment">##切换完成后在129机器上，连接数据库</span><br><span class="hljs-comment">##创建测试表</span><br>CREATE TABLE <span class="hljs-built_in">test</span>(ID VARCHAR(20));<br><span class="hljs-comment">##插入测试数据</span><br>INSERT INTO <span class="hljs-built_in">test</span>(ID) VALUES (<span class="hljs-string">&#x27;1234554321&#x27;</span>);<br><span class="hljs-comment">##查询数据是否写入</span><br>SELECT * from <span class="hljs-built_in">test</span>;<br><span class="hljs-comment">##删除测试表</span><br>DROP TABLE IF EXISTS <span class="hljs-built_in">test</span>;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="8-6、修复192-168-62-130"><a href="#8-6、修复192-168-62-130" class="headerlink" title="8.6、修复192.168.62.130"></a>8.6、修复192.168.62.130</h3><p>使用pg_rewind 同步新主库的数据到原主库：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">su - postgres<br><br>/usr/pgsql-14/bin/pg_rewind -R --target-pgdata <span class="hljs-string">&#x27;/var/lib/pgsql/14/data/&#x27;</span> --source-server <span class="hljs-string">&#x27;host=192.168.62.129 port=5432 user=postgres password=postgres dbname=postgres&#x27;</span><br><br></code></pre></td></tr></table></figure>
+
+<p>如果这个地方咱们的wal日志已经被覆盖了了很多，那么就需要将我们的归档备份日志&#x2F;pg_archive&#x2F;给scp过来<br>注意：需要注意新主和备上面TimeLineID的差异</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">scp postgres@192.168.62.129:/var/lib/pgsql/14/data/pg_archive/00000002*  /var/lib/pgsql/14/data/pg_archive/<br></code></pre></td></tr></table></figure>
+
+<p>启动数据库，然后检查主备是否正常</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl start postgresql-14<br><br><span class="hljs-comment">#检查主备wal sender和receiver是否正常</span><br>ps axu |grep walreceiver<br><br>检查数据是否正常：根据5.3步骤来进行查看<br></code></pre></td></tr></table></figure>
+
+<p>启动Keepalived，查看Keepalived状态</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl  start keepalived<br>systemctl status keepalived<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/PostgreSQL/" class="category-chain-item">PostgreSQL</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/PostgreSQL/">#PostgreSQL</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>使用keepalive实现postgresql高可用主从切换</div>
+      <div>https://pipiguai0123.github.io/2023/03/29/数据库/postgreSQL/使用keepalive实现PostgreSQL高可用主从切换/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/mongodb/MongoDB%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E8%A3%85/" title="MongoDB二进制安装">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MongoDB二进制安装</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/PostgreSQL%E5%8D%95%E8%8A%82%E7%82%B9%E6%90%AD%E5%BB%BA/" title="PostgreSQL单节点搭建">
+                        <span class="hidden-mobile">PostgreSQL单节点搭建</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

@@ -1,0 +1,819 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="SonarQube安装部署1234567官方文档：https:&#x2F;&#x2F;docs.sonarqube.org&#x2F;latest&#x2F;setup&#x2F;install-server&#x2F;参考文档：https:&#x2F;&#x2F;cloud.tencent.com&#x2F;developer&#x2F;article&#x2F;1600167SonarQube+SonarScanner 最全安装步骤：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;xiaozi&#x2F;p&#x2F;1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SonarQube安装部署">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/03/29/devops/sonarQube/sonarQube%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="SonarQube安装部署1234567官方文档：https:&#x2F;&#x2F;docs.sonarqube.org&#x2F;latest&#x2F;setup&#x2F;install-server&#x2F;参考文档：https:&#x2F;&#x2F;cloud.tencent.com&#x2F;developer&#x2F;article&#x2F;1600167SonarQube+SonarScanner 最全安装步骤：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;xiaozi&#x2F;p&#x2F;1">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/sonarQube/sonarQube%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/image-20220908145251627.png">
+<meta property="article:published_time" content="2023-03-29T09:20:27.000Z">
+<meta property="article:modified_time" content="2023-03-29T08:12:17.359Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="SonarQube">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pipiguai0123.github.io/2023/03/29/devops/sonarQube/sonarQube%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/image-20220908145251627.png">
+  
+  
+  
+  <title>SonarQube安装部署 - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="SonarQube安装部署"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-29 17:20" pubdate>
+          2023年3月29日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          32 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">SonarQube安装部署</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="SonarQube安装部署"><a href="#SonarQube安装部署" class="headerlink" title="SonarQube安装部署"></a>SonarQube安装部署</h1><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs awk">官方文档：https:<span class="hljs-regexp">//</span>docs.sonarqube.org<span class="hljs-regexp">/latest/</span>setup<span class="hljs-regexp">/install-server/</span><br><br>参考文档：https:<span class="hljs-regexp">//</span>cloud.tencent.com<span class="hljs-regexp">/developer/</span>article/<span class="hljs-number">1600167</span><br><br>SonarQube+SonarScanner 最全安装步骤：https:<span class="hljs-regexp">//</span>www.cnblogs.com<span class="hljs-regexp">/xiaozi/</span>p/<span class="hljs-number">15503311</span>.html<br><br>k8s安装：https:<span class="hljs-regexp">//</span>wqblogs.com<span class="hljs-regexp">/2021/</span><span class="hljs-number">08</span><span class="hljs-regexp">/09/</span>sonarqube%E9%<span class="hljs-number">83</span>%A8%E7%BD%B2%E5%AE%<span class="hljs-number">89</span>%E8%A3%<span class="hljs-number">85</span>/<br></code></pre></td></tr></table></figure>
+<h2 id="一、简介："><a href="#一、简介：" class="headerlink" title="一、简介："></a>一、简介：</h2><p><strong>Sonar (SonarQube)是一个开源平台，用于管理源代码的质量。</strong><br><strong>Sonar 不只是一个质量数据报告工具，更是代码质量管理平台。</strong><br>支持Java, C#, C&#x2F;C++, PL&#x2F;SQL, Cobol, JavaScrip, Groovy 等等二十几种编程语言的代码质量管理与检测。</p>
+<p>Sonar可以从以下七个维度检测代码质量，而作为开发人员至少需要处理前5种代码质量问题。</p>
+<ol>
+<li>不遵循代码标准<br>sonar可以通过PMD,CheckStyle,Findbugs等等代码规则检测工具规范代码编写。</li>
+<li>潜在的缺陷<br>sonar可以通过PMD,CheckStyle,Findbugs等等代码规则检测工具检 测出潜在的缺陷。</li>
+<li>糟糕的复杂度分布<br>文件、类、方法等，如果复杂度过高将难以改变，这会使得开发人员 难以理解它们, 且如果没有自动化的单元测试，对于程序中的任何组件的改变都将可能导致需要全面的回归测试。</li>
+<li>重复<br>显然程序中包含大量复制粘贴的代码是质量低下的，sonar可以展示 源码中重复严重的地方。</li>
+<li>注释不足或者过多<br>没有注释将使代码可读性变差，特别是当不可避免地出现人员变动 时，程序的可读性将大幅下降 而过多的注释又会使得开发人员将精力过多地花费在阅读注释上，亦违背初衷。</li>
+<li>缺乏单元测试<br>sonar可以很方便地统计并展示单元测试覆盖率。</li>
+<li>糟糕的设计<br>通过sonar可以找出循环，展示包与包、类与类之间的相互依赖关系，可以检测自定义的架构规则 通过sonar可以管理第三方的jar包，可以利用LCOM4检测单个任务规则的应用情况， 检测藕合。</li>
+</ol>
+<h2 id="二、安装前准备以及注意事项："><a href="#二、安装前准备以及注意事项：" class="headerlink" title="二、安装前准备以及注意事项："></a>二、安装前准备以及注意事项：</h2><p><strong>安装前准备环境：</strong></p>
+<table>
+<thead>
+<tr>
+<th>环境&#x2F;工具&#x2F;服务器</th>
+<th>版本</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>192.168.94.154</td>
+<td>centos7.9</td>
+</tr>
+<tr>
+<td>jdk</td>
+<td>11.0.14</td>
+</tr>
+<tr>
+<td>sonarqube</td>
+<td>9.6.1</td>
+</tr>
+<tr>
+<td><strong>环境&#x2F;工具&#x2F;服务器</strong></td>
+<td><strong>版本</strong></td>
+</tr>
+<tr>
+<td>192.168.94.155</td>
+<td>centos7.9</td>
+</tr>
+<tr>
+<td>postgres</td>
+<td>docker安装</td>
+</tr>
+</tbody></table>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs txt">下载对应操作系统的安装包，官网下载链接：https://www.sonarqube.org/downloads/<br>sonarqube7.9及以上使用postgres为数据库使用<br>sonarqube7.8版本使用mysql `https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-7.8.zip`<br></code></pre></td></tr></table></figure>
+
+<p><strong>注意事项：</strong></p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs txt">1.SonarQube安装使用依赖JDK，需提前安装配置好JDK相关信息<br><br>2.为了获得最佳性能，SonarQube 服务器和数据库应该安装在不同的主机上，并且服务器主机应该是专用的。服务器和数据库主机应位于同一网络中。<br><br>3.所有主机必须是时间同步的。<br></code></pre></td></tr></table></figure>
+
+<h2 id="三、安装过程："><a href="#三、安装过程：" class="headerlink" title="三、安装过程："></a>三、安装过程：</h2><h3 id="1-下载sonarqube安装包"><a href="#1-下载sonarqube安装包" class="headerlink" title="1.下载sonarqube安装包"></a>1.下载sonarqube安装包</h3><p>下载安装包后，上传到&#x2F;app目录</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">unzip sonarqube-9.6.1.59531.zip<br><span class="hljs-built_in">cd</span> sonarqube-9.6.1.59531/<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-添加sonar系统用户"><a href="#2-添加sonar系统用户" class="headerlink" title="2.添加sonar系统用户"></a>2.添加sonar系统用户</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sh">groupadd sonar<br><br><span class="hljs-comment">#创建sonar用户，设置无法登录(无法登录可去掉)</span><br>useradd -g sonar -s /sbin/nologin sonar<br><br><span class="hljs-comment"># 设置权限</span><br><span class="hljs-built_in">chown</span> sonar:sonar -R /app/sonarqube/<br><br>su -s /bin/bash - sonar<br><br>注：SonarQube必须以普通用户运行，不能使用root用户<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-更改配置文件"><a href="#3-更改配置文件" class="headerlink" title="3.更改配置文件"></a>3.更改配置文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /app/sonarqube/sonarqube-9.6.1.59531/conf/sonar.properties<br><br><span class="hljs-comment">#已使用docker在192.168.94.155机器上安装postgres，安装postgres可参考文档</span><br>sonar.jdbc.username=postgres<br>sonar.jdbc.password=123456<br>sonar.jdbc.url=jdbc:postgresql://192.168.94.155:5432/sonar<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-启动SonarQube"><a href="#4-启动SonarQube" class="headerlink" title="4.启动SonarQube"></a>4.启动SonarQube</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">##第一次服务启动时，使用该命令，方便定位问题</span><br>/app/sonarqube/sonarqube-9.6.1.59531/bin/linux-x86-64/sonar.sh console<br><br><span class="hljs-comment">#无问题后</span><br>/app/sonarqube/sonarqube-9.6.1.59531/bin/linux-x86-64/sonar.sh start<br></code></pre></td></tr></table></figure>
+
+<h4 id="可能会遇到的问题处理："><a href="#可能会遇到的问题处理：" class="headerlink" title="可能会遇到的问题处理："></a>可能会遇到的问题处理：</h4><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs smali">问题：<br>	ERROR: [1] bootstrap checks failed. You must address the points described in the following [1] lines before starting Elasticsearch.<br>bootstrap<span class="hljs-built_in"> check </span>failure [1] of [1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]<br><br>处理方法：<br>vim /etc/sysctl.conf<br><br><span class="hljs-comment">#最后一行添加,并保存退出</span><br>vm.max_map_count=262144<br><br><span class="hljs-comment">#加载使其生效</span><br>sysctl -p<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-登录配置"><a href="#5-登录配置" class="headerlink" title="5.登录配置"></a>5.登录配置</h3><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs txt">启动成功：访问：192.168.94.154:9000<br>（1）默认账户admin/admin，首次登录，强制修改密码<br><br>（2）安装汉化插件：选择 Administration -&gt; Marketplace -&gt; Plugins 中搜索 Chinese pack ，然后Install.<br><br>![image-20220907102018599](sonarQube安装部署/image-20220907102018599.png)<br><br>注意：如遇到Chinese pack 插件不能直接在Marketplace中直接安装，可采用以下方式：<br><br>- 访问插件GitHub项目库：<br>https://github.com/xuhuisheng/sonar-l10n-zh/releases/tag/sonar-l10n-zh-plugin-9.4<br>- 下载Chinese pack jar包<br>- 把jar包放在SonarQube服务文件夹下的extensions/plugins中<br>举例：将jar包放置/app/sonarqube/sonarqube-9.6.1.59531/extensions/plugins<br>- 然后重启即可： ./sonar.sh restart<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="SonarScanner扫描"><a href="#SonarScanner扫描" class="headerlink" title="SonarScanner扫描"></a><strong>SonarScanner扫描</strong></h2><h3 id="1、下载地址：https-docs-sonarqube-org-latest-analysis-scan-sonarscanner"><a href="#1、下载地址：https-docs-sonarqube-org-latest-analysis-scan-sonarscanner" class="headerlink" title="1、下载地址：https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/"></a>1、下载地址：<code>https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/</code></h3><p><img src="/2023/03/29/devops/sonarQube/sonarQube%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/image-20220908145251627.png" srcset="/img/loading.gif" lazyload alt="image-20220908145251627"></p>
+<h3 id="2、解压文件并配置环境变量"><a href="#2、解压文件并配置环境变量" class="headerlink" title="2、解压文件并配置环境变量"></a>2、解压文件并配置环境变量</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#解压文件到指定目录</span><br>unzip sonar-scanner-cli-4.7.0.2747-linux.zip -d /opt/Sonar-scanner<br><br><span class="hljs-comment">#配置环境变量</span><br>vim /etc/profile<br><span class="hljs-comment">#按GG到最后一行，添加如下内容</span><br><span class="hljs-comment"># sonar-scanner</span><br><span class="hljs-built_in">export</span> Sonar_Home=/opt/Sonar-scanner<br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$Sonar_Home</span>/bin:<span class="hljs-variable">$PATH</span><br><br><span class="hljs-comment">#使配置生效</span><br><span class="hljs-built_in">source</span> /etc/profile<br></code></pre></td></tr></table></figure>
+
+<p>扫描方式：可参考上面《SonarQube+SonarScanner 最全安装步骤》文献</p>
+<h3 id="3、如果在项目的根目录下无法创建-sonar-project-properties-文件，有几种替代方法："><a href="#3、如果在项目的根目录下无法创建-sonar-project-properties-文件，有几种替代方法：" class="headerlink" title="3、如果在项目的根目录下无法创建 sonar-project.properties 文件，有几种替代方法："></a>3、如果在项目的根目录下无法创建 sonar-project.properties 文件，有几种替代方法：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">可以通过命令行直接指定属性：<br>sonar-scanner -Dsonar.projectKey=myproject -Dsonar.sources=src1<br><br>属性 project.settings 可用于指定项目配置文件的路径（该选项与该sonar.projectBaseDir属性不兼容）：<br>sonar-scanner -Dproject.settings=../myproject.properties<br><br>sonar.projectBaseDir从 SonarScanner 2.4 开始，可以通过属性设置要分析的项目的根文件夹。sonar-project.properties如果sonar.projectKey未在命令行中指定，此文件夹必须包含文件。可以在此项目配置文件中或通过命令行参数定义其他分析参数。<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Devops/" class="category-chain-item">Devops</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Devops/SonarQube/" class="category-chain-item">SonarQube</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/SonarQube/">#SonarQube</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>SonarQube安装部署</div>
+      <div>https://pipiguai0123.github.io/2023/03/29/devops/sonarQube/sonarQube安装部署/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/Jenkins-%E6%9E%84%E5%BB%BA%E8%A7%A6%E5%8F%91%E5%99%A8-webhook/" title="Jenkins-构建触发器-webhook">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Jenkins-构建触发器-webhook</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/03/29/devops/nexus/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8CNexus%E6%90%AD%E5%BB%BAMaven%E7%A7%81%E6%9C%8D/" title="使用docker运行Nexus搭建Maven私服">
+                        <span class="hidden-mobile">使用docker运行Nexus搭建Maven私服</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

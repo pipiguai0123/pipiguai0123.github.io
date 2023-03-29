@@ -1,0 +1,783 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="MongoDB全量备份和增量备份一、准备工作：构建mongodb 副本集测试环境以下为机器ip：    机器名 IP地址    node0 192.168.94.154    node1 192.168.94.155   node2 192.168.94.156   副本集：123456789node0&gt;:rs.isMaster();&amp;#123;    &quot;hosts&quot; :">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MongoDB全量备份和增量备份">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/mongodb/MongoDB%E5%85%A8%E9%87%8F%E5%A4%87%E4%BB%BD%E5%92%8C%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="MongoDB全量备份和增量备份一、准备工作：构建mongodb 副本集测试环境以下为机器ip：    机器名 IP地址    node0 192.168.94.154    node1 192.168.94.155   node2 192.168.94.156   副本集：123456789node0&gt;:rs.isMaster();&amp;#123;    &quot;hosts&quot; :">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-03-29T06:06:02.000Z">
+<meta property="article:modified_time" content="2023-03-29T07:19:07.474Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="MongoDB">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>MongoDB全量备份和增量备份 - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MongoDB全量备份和增量备份"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-29 14:06" pubdate>
+          2023年3月29日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          10k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          87 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">MongoDB全量备份和增量备份</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="MongoDB全量备份和增量备份"><a href="#MongoDB全量备份和增量备份" class="headerlink" title="MongoDB全量备份和增量备份"></a>MongoDB全量备份和增量备份</h1><h2 id="一、准备工作：构建mongodb-副本集测试环境"><a href="#一、准备工作：构建mongodb-副本集测试环境" class="headerlink" title="一、准备工作：构建mongodb 副本集测试环境"></a>一、准备工作：构建mongodb 副本集测试环境</h2><p><strong>以下为机器ip：</strong></p>
+<table>
+<thead>
+<tr>
+<th>机器名</th>
+<th>IP地址</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>node0</td>
+<td>192.168.94.154 <PRIMARY></PRIMARY></td>
+</tr>
+<tr>
+<td>node1</td>
+<td>192.168.94.155</td>
+</tr>
+<tr>
+<td>node2</td>
+<td>192.168.94.156</td>
+</tr>
+</tbody></table>
+<h3 id="副本集："><a href="#副本集：" class="headerlink" title="副本集："></a>副本集：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh">node0&gt;:rs.isMaster();<br>&#123;<br>    <span class="hljs-string">&quot;hosts&quot;</span> : [<br>        <span class="hljs-string">&quot;192.168.94.154:9009&quot;</span>,<br>        <span class="hljs-string">&quot;192.168.94.155:9009&quot;</span>,<br>        <span class="hljs-string">&quot;192.168.94.156:9009&quot;</span><br>    ]<br>&#125;<br>...<br></code></pre></td></tr></table></figure>
+
+<h3 id="接下来往集群里写入测试数据："><a href="#接下来往集群里写入测试数据：" class="headerlink" title="接下来往集群里写入测试数据："></a>接下来往集群里写入测试数据：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sh">node0:PRIMARY&gt; <span class="hljs-keyword">for</span>(var i=1;i&lt;=10000;i++) db.users.insert(&#123;<span class="hljs-built_in">id</span>:i, name:<span class="hljs-string">&quot;hello，world~&quot;</span>,city:<span class="hljs-string">&quot;bei&#x27;jing&quot;</span>&#125;);<br>WriteResult(&#123; <span class="hljs-string">&quot;nInserted&quot;</span> : 1 &#125;)<br><br>node0:PRIMARY&gt; show dbs;<br>admin   0.000GB<br>config  0.000GB<br><span class="hljs-built_in">local</span>   0.000GB<br><span class="hljs-built_in">test</span>    0.000GB<br><br>node0:PRIMARY&gt; use <span class="hljs-built_in">test</span><br>switched to db <span class="hljs-built_in">test</span><br><br>node0:PRIMARY&gt; db.users.count();<br>10000<br></code></pre></td></tr></table></figure>
+<p><em><strong>以上就是准备工作！</strong></em></p>
+<h2 id="二、mongodb-全量备份及恢复"><a href="#二、mongodb-全量备份及恢复" class="headerlink" title="二、mongodb 全量备份及恢复"></a>二、mongodb 全量备份及恢复</h2><h3 id="1、全备脚本-mongodb-back-all-sh-如下："><a href="#1、全备脚本-mongodb-back-all-sh-如下：" class="headerlink" title="1、全备脚本 [ mongodb_back_all.sh ] 如下："></a>1、全备脚本 [ mongodb_back_all.sh ] 如下：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/bash</span><br><span class="hljs-comment"># </span><br><span class="hljs-comment"># 主节点ip、端口</span><br>host=<span class="hljs-string">&#x27;192.168.94.154&#x27;</span><br>port=<span class="hljs-string">&#x27;9009&#x27;</span><br><br><span class="hljs-comment">#启动文件所在目录</span><br>sourcepath=<span class="hljs-string">&#x27;/app/mongodb/mongodb/bin&#x27;</span><br><span class="hljs-comment">#备份文件存放路径</span><br>targetpath=<span class="hljs-string">&#x27;/app/mongodb/backup&#x27;</span><br><span class="hljs-comment">#时间</span><br>nowtime=$(<span class="hljs-built_in">date</span> <span class="hljs-string">&quot;+%Y%m%d&quot;</span>)<br> <br> <br><span class="hljs-function"><span class="hljs-title">start</span></span>()&#123;<br>    <span class="hljs-variable">$sourcepath</span>/mongodump --host <span class="hljs-variable">$host</span> --port <span class="hljs-variable">$port</span> --oplog --gzip --out <span class="hljs-variable">$&#123;targetpath&#125;</span>/<span class="hljs-variable">$&#123;nowtime&#125;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;mongodump is ok&quot;</span><br>&#125;<br> <br><span class="hljs-function"><span class="hljs-title">execute</span></span>()&#123;<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;=========================<span class="hljs-subst">$(date)</span> backup all mongodb back start  <span class="hljs-variable">$&#123;nowtime&#125;</span>=========&quot;</span><br>start<br><span class="hljs-comment">#if [ $? -eq 0 ]代表如果上一条命令结束状态是0的话就执行then后面的语句。成功就是0，失败为1</span><br><span class="hljs-keyword">if</span> [ $? -eq 0 ];<span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;The MongoDB BackUp Successfully!&quot;</span><br><span class="hljs-keyword">else</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;The MongoDB BackUp Failure&quot;</span><br><span class="hljs-keyword">fi</span><br>&#125;<br><span class="hljs-comment">#如果没有这文件，就创建</span><br><span class="hljs-keyword">if</span> [ ! -d <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;targetpath&#125;</span>/<span class="hljs-variable">$&#123;nowtime&#125;</span>&quot;</span> ];<span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">mkdir</span> -p <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;targetpath&#125;</span>/<span class="hljs-variable">$&#123;nowtime&#125;</span>&quot;</span><br><span class="hljs-keyword">fi</span><br> <br>execute<br><br><span class="hljs-comment">#删除7天前的备份</span><br>backtime=$(<span class="hljs-built_in">date</span> -d <span class="hljs-string">&#x27;-7 days&#x27;</span> <span class="hljs-string">&quot;+%Y%m%d&quot;</span>)<br><span class="hljs-keyword">if</span> [ -d <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;targetpath&#125;</span>/<span class="hljs-variable">$&#123;backtime&#125;</span>/&quot;</span> ];<span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">rm</span> -rf <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;targetpath&#125;</span>/<span class="hljs-variable">$&#123;backtime&#125;</span>/&quot;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;=======<span class="hljs-variable">$&#123;targetpath&#125;</span>/<span class="hljs-variable">$&#123;backtime&#125;</span>/===删除完毕==&quot;</span><br><span class="hljs-keyword">fi</span><br> <br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;========================= <span class="hljs-subst">$(date)</span> backup all mongodb back end <span class="hljs-variable">$&#123;nowtime&#125;</span>=========&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2、全库还原脚本-mongodb-restore-all-sh-如下："><a href="#2、全库还原脚本-mongodb-restore-all-sh-如下：" class="headerlink" title="2、全库还原脚本 [ mongodb_restore_all.sh ] 如下："></a>2、全库还原脚本 [ mongodb_restore_all.sh ] 如下：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/bash</span><br><span class="hljs-comment">#</span><br><span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;\033[31;1m*****[ Mongodb ] 全库恢复脚本*****\033[0m&quot;</span><br><span class="hljs-comment">#定义恢复节点的ip、端口</span><br>host=192.168.94.154<br>port=<span class="hljs-string">&#x27;9009&#x27;</span><br><span class="hljs-comment">#启动文件所在目录</span><br>mongo_bin=/app/mongodb/mongodb/bin<br><span class="hljs-comment">#备份的文件所在目录</span><br>backpath=<span class="hljs-string">&#x27;/app/mongodb/backup&#x27;</span><br> <br><span class="hljs-comment">#获取备份文件夹备份的文件名</span><br><span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;\033[32;1m[ 选择要恢复全库的日期 ] \033[0m&quot;</span><br><span class="hljs-keyword">for</span> backfile <span class="hljs-keyword">in</span> `<span class="hljs-built_in">ls</span> <span class="hljs-variable">$backpath</span>`; <span class="hljs-keyword">do</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-variable">$backfile</span><br><span class="hljs-keyword">done</span><br><br><span class="hljs-comment">#获取输入的全库日期</span><br><span class="hljs-built_in">read</span> -p <span class="hljs-string">&quot;&gt;&gt;&gt;&quot;</span> date_bak<br><br><br><span class="hljs-keyword">if</span> [[ <span class="hljs-variable">$date_bak</span> == <span class="hljs-string">&quot;&quot;</span> ]] || [[ <span class="hljs-variable">$date_bak</span> == <span class="hljs-string">&#x27;.&#x27;</span> ]] || [[ <span class="hljs-variable">$date_bak</span> == <span class="hljs-string">&#x27;..&#x27;</span> ]]; <span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;\033[31;1m输入不能为特殊字符.\033[0m&quot;</span><br>    <span class="hljs-built_in">exit</span> 1<br><span class="hljs-keyword">fi</span><br><br><span class="hljs-keyword">if</span> [ -d <span class="hljs-variable">$backpath</span>/<span class="hljs-variable">$date_bak</span> ];<span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">read</span> -p <span class="hljs-string">&quot;请确认是否恢复全库备份[y/n]:&quot;</span> choice<br> <br>    <span class="hljs-keyword">if</span> [ <span class="hljs-string">&quot;<span class="hljs-variable">$choice</span>&quot;</span> == <span class="hljs-string">&quot;y&quot;</span> ];<span class="hljs-keyword">then</span><br>        <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;\033[32;1m正在恢复全库备份，请稍后...\033[0m&quot;</span><br>        <span class="hljs-variable">$mongo_bin</span>/mongorestore --host <span class="hljs-variable">$host</span> --port <span class="hljs-variable">$port</span> --oplogReplay --gzip <span class="hljs-variable">$backpath</span>/<span class="hljs-variable">$date_bak</span>/<br>        <span class="hljs-comment">#if [ $? -eq 0 ]代表如果上一条命令结束状态是0的话就执行then后面的语句。成功就是0，失败为1</span><br>        <span class="hljs-keyword">if</span> [ $? -eq 0 ];<span class="hljs-keyword">then</span><br>            <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;\033[32;1m--------全库恢复成功.--------\033[0m&quot;</span><br>        <span class="hljs-keyword">else</span><br>            <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;\033[31;1m恢复失败,请手动检查!\033[0m&quot;</span><br>            <span class="hljs-built_in">exit</span> 3<br>        <span class="hljs-keyword">fi</span><br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-built_in">exit</span> 2<br>    <span class="hljs-keyword">fi</span><br><span class="hljs-keyword">else</span><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;\033[31;1m输入信息错误。\033[0m&quot;</span><br>    <span class="hljs-built_in">exit</span> 1<br><span class="hljs-keyword">fi</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="测试全库备份以及恢复脚本："><a href="#测试全库备份以及恢复脚本：" class="headerlink" title="测试全库备份以及恢复脚本："></a>测试全库备份以及恢复脚本：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#首先执行全库备份脚本</span><br>sh mongodb_back_all.sh<br><br><span class="hljs-comment">#然后进入主的mongod节点机器，删除之前的一万行数据</span><br>node0:PRIMARY&gt; use <span class="hljs-built_in">test</span>;<br>switched to db <span class="hljs-built_in">test</span><br>node0:PRIMARY&gt; db.users.count();<br>10000<br>node0:PRIMARY&gt; db.dropDatabase();<br>node0:PRIMARY&gt; show dbs<br>admin   0.000GB<br>config  0.000GB<br><span class="hljs-built_in">local</span>   0.001GB<br><br><span class="hljs-comment">#再执行全库恢复脚本</span><br>sh mongodb_restore_all.sh<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="三、mongodb-增量备份及恢复"><a href="#三、mongodb-增量备份及恢复" class="headerlink" title="三、mongodb 增量备份及恢复"></a>三、mongodb 增量备份及恢复</h2><p><strong>增量备份的思路是通过 oplog 来实现的，Oplog 是用于存储 MongoDB 数据库所有数据的操作记录的(实际只记录增删改和一些系统命令操作，查是不会记录的)，有点类似于 mysql 的 binlog 日志。</strong></p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">#了解Oplog可以参考：https://www.cnblogs.com/operationhome/p/10688798.html<br>#增量备份详解：https://www.cnblogs.com/xuliuzai/p/9917137.html<br></code></pre></td></tr></table></figure>
+
+<h3 id="1、增量备份-mongodb-backup-incremental-sh-脚本"><a href="#1、增量备份-mongodb-backup-incremental-sh-脚本" class="headerlink" title="1、增量备份 [ mongodb_backup_incremental.sh ] 脚本"></a>1、增量备份 [ mongodb_backup_incremental.sh ] 脚本</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/bash</span><br><span class="hljs-comment">#定义mongdb执行命令路径</span><br>command_linebin=<span class="hljs-string">&#x27;/app/mongodb/mongodb/bin/mongo&#x27;</span><br><span class="hljs-comment">#定义启动文件路径</span><br>sourcepath=<span class="hljs-string">&#x27;/app/mongodb/mongodb/bin&#x27;</span><br><span class="hljs-comment">#定义存放back的存放路径</span><br>peichern=<span class="hljs-string">&#x27;/app/mongodb/backup/mongodbOplog_bak&#x27;</span><br><span class="hljs-comment">#定义端口和ip</span><br>host=192.168.94.154<br>port=9009<br><br><span class="hljs-comment">#新建文件存放路径</span><br><span class="hljs-keyword">if</span> [ ! -d <span class="hljs-string">&quot;<span class="hljs-variable">$peichern</span>/mongo-<span class="hljs-variable">$port</span>&quot;</span> ];<span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">mkdir</span> -p <span class="hljs-variable">$peichern</span>/mongo-<span class="hljs-variable">$port</span><br><span class="hljs-keyword">fi</span><br><span class="hljs-keyword">if</span> [ ! -d <span class="hljs-string">&quot;<span class="hljs-variable">$peichern</span>/log-<span class="hljs-variable">$port</span>&quot;</span> ];<span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">mkdir</span> -p <span class="hljs-variable">$peichern</span>/log-<span class="hljs-variable">$port</span><br><span class="hljs-keyword">fi</span><br><span class="hljs-comment">#备份文件存放的路径</span><br>bkdatapath=<span class="hljs-variable">$peichern</span>/mongo-<span class="hljs-variable">$port</span><br><span class="hljs-comment">#备份记录的log日志</span><br>bklogpath=<span class="hljs-variable">$peichern</span>/log-<span class="hljs-variable">$port</span><br><span class="hljs-comment">#执行过程的log日志名称</span><br>logfilename=$(<span class="hljs-built_in">date</span> +<span class="hljs-string">&quot;%Y%m%d&quot;</span>)<br><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;===MongoDB 端口为&quot;</span> <span class="hljs-variable">$port</span> <span class="hljs-string">&quot;的差异备份开始，开始时间为：&quot;</span> $(<span class="hljs-built_in">date</span> -d today +<span class="hljs-string">&quot;%Y-%m-%d %H:%M:%S&quot;</span>) &gt;&gt; <span class="hljs-variable">$bklogpath</span>/<span class="hljs-variable">$logfilename</span>.<span class="hljs-built_in">log</span><br><br><span class="hljs-comment">#定义导出备份文件oplog中参数的结束时间</span><br>paramBakEndDate=$(<span class="hljs-built_in">date</span> +%s)<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;===本次备份时间参数中的结束时间为：&quot;</span> <span class="hljs-variable">$paramBakEndDate</span> &gt;&gt; <span class="hljs-variable">$bklogpath</span>/<span class="hljs-variable">$logfilename</span>.<span class="hljs-built_in">log</span><br><br><span class="hljs-comment">#设置备份的间隔时间</span><br>diffTime=$(<span class="hljs-built_in">expr</span> 65 \* 60)<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;===备份设置的间隔时间为：&quot;</span> <span class="hljs-variable">$diffTime</span> &gt;&gt; <span class="hljs-variable">$bklogpath</span>/<span class="hljs-variable">$logfilename</span>.<span class="hljs-built_in">log</span><br><br><span class="hljs-comment">#定义导出的备份文件oplog中参数的开始时间</span><br>paramBakStartDate=$(<span class="hljs-built_in">expr</span> <span class="hljs-variable">$paramBakEndDate</span> - <span class="hljs-variable">$diffTime</span>)<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;===本次备份时间参数中的开始时间为：&quot;</span> <span class="hljs-variable">$paramBakStartDate</span> &gt;&gt; <span class="hljs-variable">$bklogpath</span>/<span class="hljs-variable">$logfilename</span>.<span class="hljs-built_in">log</span><br><br><span class="hljs-comment">#定义mongo命令路径</span><br>command_linebin=<span class="hljs-variable">$sourcepath</span>/mongo <br><span class="hljs-comment">#定义连接mongdb参数</span><br>command_line=<span class="hljs-string">&quot;<span class="hljs-variable">$&#123;command_linebin&#125;</span> <span class="hljs-variable">$host</span>:<span class="hljs-variable">$port</span>&quot;</span><br><span class="hljs-comment">#command_line=&quot;$sourcepath/mongo $host:$port&quot;</span><br><br><span class="hljs-comment">#获取mongodb内db.printReplicationInfo()的信息</span><br>opmes=$(/bin/echo <span class="hljs-string">&quot;db.printReplicationInfo()&quot;</span> | <span class="hljs-variable">$command_line</span> --quiet)<br><span class="hljs-comment">#将获取的信息输出到tmp内</span><br><span class="hljs-built_in">echo</span> <span class="hljs-variable">$opmes</span> &gt; /tmp/opdoctime<span class="hljs-variable">$port</span>.tmplog<br>opbktmplogfile=/tmp/opdoctime<span class="hljs-variable">$port</span>.tmplog<br><span class="hljs-comment">#获取文件夹内的：oplog first event time</span><br>opstartmes=$(grep <span class="hljs-string">&quot;oplog first event time&quot;</span> <span class="hljs-variable">$opbktmplogfile</span> | awk -F <span class="hljs-string">&#x27;CST&#x27;</span> <span class="hljs-string">&#x27;&#123;print $1&#125;&#x27;</span> | awk -F <span class="hljs-string">&#x27;oplog first event time: &#x27;</span>  <span class="hljs-string">&#x27;&#123;print $2&#125;&#x27;</span> | awk -F <span class="hljs-string">&#x27; GMT&#x27;</span> <span class="hljs-string">&#x27;&#123;print $1&#125;&#x27;</span>  )<br><span class="hljs-comment">#将获取的时间转换为秒</span><br>oplogRecordFirst=$(<span class="hljs-built_in">date</span> -d <span class="hljs-string">&quot;<span class="hljs-variable">$opstartmes</span>&quot;</span>  +%s)<br><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;===oplog集合记录的开始时间为[格式化]：&quot;</span> <span class="hljs-variable">$oplogRecordFirst</span> &gt;&gt; <span class="hljs-variable">$bklogpath</span>/<span class="hljs-variable">$logfilename</span>.<span class="hljs-built_in">log</span><br><br><span class="hljs-comment">#如果获取的时间小于或等于备份开始的时间（目的是为了记录突然往mongodb内写入了大量的数据，oplog的size如果太小了，写入oplog里面导致之前的时间被覆盖，做一个判断）</span><br><span class="hljs-keyword">if</span> [ <span class="hljs-variable">$oplogRecordFirst</span> -le <span class="hljs-variable">$paramBakStartDate</span> ]; <span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Message --检查设置备份时间合理。备份参数的开始时间在oplog记录的时间范围内。&quot;</span> &gt;&gt; <span class="hljs-variable">$bklogpath</span>/<span class="hljs-variable">$logfilename</span>.<span class="hljs-built_in">log</span><br><span class="hljs-keyword">else</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Fatal Error --检查设置的备份时间不合理合理。备份参数的开始时间不在oplog记录的时间范围内。请调整oplog size或调整备份频率。本次备份可以持续进行，但还原时数据完整性丢失。&quot;</span> &gt;&gt; <span class="hljs-variable">$bklogpath</span>/<span class="hljs-variable">$logfilename</span>.<span class="hljs-built_in">log</span><br><span class="hljs-keyword">fi</span><br><span class="hljs-comment">#定义备份文件名称</span><br>bkfilename=$(<span class="hljs-built_in">date</span> -d today +<span class="hljs-string">&quot;%Y%m%d%H%M%S&quot;</span>)<br><span class="hljs-comment">#获取设定的时间区间的oplog文件数据，并进行备份</span><br><span class="hljs-variable">$sourcepath</span>/mongodump -h <span class="hljs-variable">$host</span> --port <span class="hljs-variable">$port</span>  -d <span class="hljs-built_in">local</span> -c oplog.rs  --query <span class="hljs-string">&#x27;&#123;&quot;ts&quot;:&#123;&quot;$gt&quot;: &#123;&quot;$timestamp&quot;:&#123;&quot;t&quot;:&#x27;</span><span class="hljs-variable">$paramBakStartDate</span><span class="hljs-string">&#x27;, &quot;i&quot;:1&#125;&#125;,&quot;$lte&quot;:&#123;&quot;$timestamp&quot;:&#123;&quot;t&quot;:&#x27;</span><span class="hljs-variable">$paramBakEndDate</span><span class="hljs-string">&#x27;, &quot;i&quot;:9999&#125;&#125;&#125;&#125;&#x27;</span> -o <span class="hljs-variable">$bkdatapath</span>/mongodboplog<span class="hljs-variable">$bkfilename</span> &gt;&gt; <span class="hljs-variable">$bklogpath</span>/<span class="hljs-variable">$logfilename</span>.<span class="hljs-built_in">log</span><br><span class="hljs-comment">#/mongodb/bin/mongodump -h $host --port $port  -d local -c oplog.rs  --query &#x27;&#123;ts:&#123;$gte:Timestamp(&#x27;$paramBakStartDate&#x27;,1),$lte:Timestamp(&#x27;$paramBakEndDate&#x27;,9999)&#125;&#125;&#x27; -o $bkdatapath/mongodboplog$bkfilename</span><br><br><span class="hljs-comment">##再次检查，防止导出oplog数据过程耗时过长，因oplog是固定集合，如果操作期间有大量的操作，则oplog中新的数据会覆盖掉旧的数据，就可能导致导出的数据不完整，无法保证增量文件间的时间连续性。因此备份后再次检查</span><br>opmes=$(/bin/echo <span class="hljs-string">&quot;db.printReplicationInfo()&quot;</span> | <span class="hljs-variable">$command_line</span> --quiet)<br><span class="hljs-built_in">echo</span> <span class="hljs-variable">$opmes</span> &gt; /tmp/opdoctime<span class="hljs-variable">$port</span>.tmplog<br>opbktmplogfile=/tmp/opdoctime<span class="hljs-variable">$port</span>.tmplog<br>opstartmes=$(grep <span class="hljs-string">&quot;oplog first event time&quot;</span> <span class="hljs-variable">$opbktmplogfile</span> | awk -F <span class="hljs-string">&#x27;CST&#x27;</span> <span class="hljs-string">&#x27;&#123;print $1&#125;&#x27;</span> | awk -F <span class="hljs-string">&#x27;oplog first event time: &#x27;</span>  <span class="hljs-string">&#x27;&#123;print $2&#125;&#x27;</span> | awk -F <span class="hljs-string">&#x27; GMT&#x27;</span> <span class="hljs-string">&#x27;&#123;print $1&#125;&#x27;</span>  )<br>oplogRecordFirst=$(<span class="hljs-built_in">date</span> -d <span class="hljs-string">&quot;<span class="hljs-variable">$opstartmes</span>&quot;</span>  +%s)<br><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;===执行备份后,oplog集合记录的开始时间为[时间格式化]:&quot;</span> <span class="hljs-variable">$oplogRecordFirst</span> <br><br><br><span class="hljs-comment">#为了避免数据增长过快，覆盖了还未备份的数据的，比较的依据是 mongodb内db.printReplicationInfo(); 的 oplog first event time 时间。下面设定的是61分钟</span><br>diffTime=$(<span class="hljs-built_in">expr</span> 61 \* 60)<br>paramAfterBakRequestStartDate=$(<span class="hljs-built_in">expr</span> <span class="hljs-variable">$paramBakEndDate</span> - <span class="hljs-variable">$diffTime</span>)<br><span class="hljs-comment">#转义成时间</span><br>zhuanhuandate=$( <span class="hljs-built_in">date</span> -d <span class="hljs-variable">$paramAfterBakRequestStartDate</span> +<span class="hljs-string">&quot;%Y-%m-%d %H:%M:%S&quot;</span> )<br><span class="hljs-comment">#echo &quot;===为保证备份的连续性,本次备份后,oplog中的开始时间需小于：&quot; $paramAfterBakRequestStartDate</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;===为保证备份的连续性,本次备份后,oplog中的开始时间需小于：&quot;</span> <span class="hljs-variable">$zhuanhuandate</span> &gt;&gt; <span class="hljs-variable">$bklogpath</span>/<span class="hljs-variable">$logfilename</span>.<span class="hljs-built_in">log</span><br><br><br><span class="hljs-comment">#如果db.printReplicationInfo()的oplog first event time小于或等于设定的间隔时间</span><br><span class="hljs-keyword">if</span> [ <span class="hljs-variable">$oplogRecordFirst</span> -le <span class="hljs-variable">$paramAfterBakRequestStartDate</span> ]; <span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Message --备份后，检查oplog集合中数据的开始时间，即集合中最早的一笔数据，时间不小于61分钟的时间（即参数 paramAfterBakRequestStartDate）。这样可以保证每个增量备份含有最近一个小时的全部op操作，满足文件的持续完整性，逐个还原无丢失数据风险。&quot;</span> &gt;&gt; <span class="hljs-variable">$bklogpath</span>/<span class="hljs-variable">$logfilename</span>.<span class="hljs-built_in">log</span><br><span class="hljs-keyword">else</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Fatal Error --备份后，检查oplog集合的涵盖的时间范围过小（小于61min）。设置的备份时间不合理合理，备份后的文件不能完全涵盖最近60分钟的数据。请调整oplog size或调整备份频率。本次备份可以持续进行，但还原时数据完整性丢失。&quot;</span> &gt;&gt; <span class="hljs-variable">$bklogpath</span>/<span class="hljs-variable">$logfilename</span>.<span class="hljs-built_in">log</span><br><span class="hljs-keyword">fi</span><br><br><br><span class="hljs-comment">#判断是否备份了这个文件</span><br><span class="hljs-keyword">if</span> [ -d <span class="hljs-string">&quot;<span class="hljs-variable">$bkdatapath</span>/mongodboplog<span class="hljs-variable">$bkfilename</span>&quot;</span> ]<br><span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Message --检查此次备份文件已经产生.文件信息为:&quot;</span> <span class="hljs-variable">$bkdatapath</span>/mongodboplog<span class="hljs-variable">$bkfilename</span> &gt;&gt; <span class="hljs-variable">$bklogpath</span>/<span class="hljs-variable">$logfilename</span>.<span class="hljs-built_in">log</span><br><span class="hljs-keyword">else</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Fatal Error --备份过程已执行，但是未检测到备份产生的文件，请检查！&quot;</span> &gt;&gt; <span class="hljs-variable">$bklogpath</span>/<span class="hljs-variable">$logfilename</span>.<span class="hljs-built_in">log</span><br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment">#删除三天前的数据</span><br>keepbaktime=$(<span class="hljs-built_in">date</span> -d <span class="hljs-string">&#x27;-3 days&#x27;</span> <span class="hljs-string">&quot;+%Y%m%d%H&quot;</span>)*<br><span class="hljs-keyword">if</span> [ -d <span class="hljs-variable">$bkdatapath</span>/mongodboplog<span class="hljs-variable">$keepbaktime</span> ]; <span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">rm</span> -rf <span class="hljs-variable">$bkdatapath</span>/mongodboplog<span class="hljs-variable">$keepbaktime</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Message -- <span class="hljs-variable">$bkdatapath</span>/mongodboplog<span class="hljs-variable">$keepbaktime</span> 删除完毕&quot;</span> &gt;&gt; <span class="hljs-variable">$bklogpath</span>/<span class="hljs-variable">$logfilename</span>.<span class="hljs-built_in">log</span><br><span class="hljs-keyword">fi</span><br> <br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;===MongoDB 端口为&quot;</span> <span class="hljs-variable">$port</span> <span class="hljs-string">&quot;的差异备份结束，结束时间为：&quot;</span> $(<span class="hljs-built_in">date</span> -d today +<span class="hljs-string">&quot;%Y%m%d%H%M%S&quot;</span>) &gt;&gt; <span class="hljs-variable">$bklogpath</span>/<span class="hljs-variable">$logfilename</span>.<span class="hljs-built_in">log</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="2-增量备份还原-mongodb-backup-incremental-sh-脚本"><a href="#2-增量备份还原-mongodb-backup-incremental-sh-脚本" class="headerlink" title="2.增量备份还原 [ mongodb_backup_incremental.sh ] 脚本"></a>2.增量备份还原 [ mongodb_backup_incremental.sh ] 脚本</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/bash</span><br><span class="hljs-comment">#</span><br>host=192.168.94.154<br>port=9009<br><span class="hljs-comment">#启动文件所在路径</span><br>mongo_bin=/app/mongodb/mongodb/bin/<br><span class="hljs-comment">#备份存放脚本</span><br>backpath=<span class="hljs-string">&#x27;/app/mongodb/backup/mongodbOplog_bak/mongo-$port&#x27;</span><br> <br><span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;\033[31;1m*****[ Mongodb ] 增量恢复脚本*****\033[0m&quot;</span><br> <br><span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;\033[32;1m[ 选择要恢复增量的日期(格式：年月日时分秒) ] \033[0m&quot;</span><br><span class="hljs-keyword">for</span> time_file <span class="hljs-keyword">in</span> `<span class="hljs-built_in">ls</span> <span class="hljs-variable">$backpath</span>`; <span class="hljs-keyword">do</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-variable">$time_file</span><br><span class="hljs-keyword">done</span><br> <br><span class="hljs-built_in">read</span> -p <span class="hljs-string">&quot;&gt;&gt;&gt;&quot;</span> date_bak<br><span class="hljs-keyword">if</span> [[ <span class="hljs-variable">$date_bak</span> == <span class="hljs-string">&quot;&quot;</span> ]] || [[ <span class="hljs-variable">$date_bak</span> == <span class="hljs-string">&#x27;.&#x27;</span> ]] || [[ <span class="hljs-variable">$date_bak</span> == <span class="hljs-string">&#x27;..&#x27;</span> ]]; <span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;\033[31;1m输入不能为特殊字符.\033[0m&quot;</span><br>    <span class="hljs-built_in">exit</span> 1<br><span class="hljs-keyword">fi</span><br><span class="hljs-keyword">if</span> [ -d <span class="hljs-variable">$backpath</span>/<span class="hljs-variable">$date_bak</span> ]; <span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">read</span> -p <span class="hljs-string">&quot;请确认是否恢复[<span class="hljs-variable">$date_bak</span>]增量备份[y/n]:&quot;</span> choice<br>    <span class="hljs-keyword">if</span> [ <span class="hljs-string">&quot;<span class="hljs-variable">$choice</span>&quot;</span> == <span class="hljs-string">&quot;y&quot;</span> ];<span class="hljs-keyword">then</span><br>        <span class="hljs-built_in">mkdir</span> -p /tmp/mongodb/ &amp;&amp; <span class="hljs-built_in">cp</span> -a <span class="hljs-variable">$backpath</span>/<span class="hljs-variable">$date_bak</span>/local/oplog.rs.bson /tmp/mongodb/oplog.bson<br>        <span class="hljs-variable">$mongo_bin</span>/mongorestore --host <span class="hljs-variable">$host</span> --port <span class="hljs-variable">$port</span> --oplogReplay /tmp/mongodb/ &amp;&amp; <span class="hljs-built_in">rm</span> -rf /tmp/mongodb/<br>        <span class="hljs-keyword">if</span> [ $? -eq 0 ];<span class="hljs-keyword">then</span><br>            <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;\033[32;1m--------[<span class="hljs-variable">$date_bak</span>]增量恢复成功.--------\033[0m&quot;</span><br>        <span class="hljs-keyword">else</span><br>            <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;\033[31;1m恢复失败,请手动检查!\033[0m&quot;</span><br>            <span class="hljs-built_in">exit</span> 3<br>        <span class="hljs-keyword">fi</span><br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-built_in">exit</span> 2<br>    <span class="hljs-keyword">fi</span><br><span class="hljs-keyword">else</span><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;\033[31;1m输入信息错误.\033[0m&quot;</span><br>    <span class="hljs-built_in">exit</span> 1<br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment">#增量备份的使用方法可以为：每天执行一次全量备份，再每小时执行一次增量备份脚本</span><br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MongoDB/" class="category-chain-item">MongoDB</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/MongoDB/">#MongoDB</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MongoDB全量备份和增量备份</div>
+      <div>https://pipiguai0123.github.io/2023/03/29/数据库/mongodb/MongoDB全量备份和增量备份/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/03/29/devops/%E4%BD%BF%E7%94%A8jenkins%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%EF%BC%8C%E7%BC%96%E8%AF%91%EF%BC%8C%E6%89%93%E5%8C%85%E9%83%A8%E7%BD%B2%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="使用jenkins持续集成；编译，打包部署微服务">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">使用jenkins持续集成；编译，打包部署微服务</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/mongodb/MongoDB%E5%89%AF%E6%9C%AC%E9%9B%86%E6%90%AD%E5%BB%BA%E5%8F%8A%E6%B5%8B%E8%AF%95/" title="MongoDB全量备份和增量备份">
+                        <span class="hidden-mobile">MongoDB全量备份和增量备份</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

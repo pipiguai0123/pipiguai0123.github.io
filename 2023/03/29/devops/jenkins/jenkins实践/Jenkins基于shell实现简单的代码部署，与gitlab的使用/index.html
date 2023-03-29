@@ -1,0 +1,888 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Jenkins基于shell实现简单的代码部署，与gitlab的使用12#参考视频：https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV16v411V7CQ?p&#x3D;4#全文档：https:&#x2F;&#x2F;github.com&#x2F;pipiguai0123&#x2F;Jenkinsdoc  先测试使用ssh进行代码克隆：首先在Jenkins服务器上生成ssh秘钥： 1ssh-keygen -t rsa -P &amp;q">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jenkins基于shell实现简单的代码部署，与gitlab的使用">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="Jenkins基于shell实现简单的代码部署，与gitlab的使用12#参考视频：https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV16v411V7CQ?p&#x3D;4#全文档：https:&#x2F;&#x2F;github.com&#x2F;pipiguai0123&#x2F;Jenkinsdoc  先测试使用ssh进行代码克隆：首先在Jenkins服务器上生成ssh秘钥： 1ssh-keygen -t rsa -P &amp;q">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211221112220027.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211221113051193.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223154834727.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211221172045756.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223155001524.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223112134104.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223154138145.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223142334979.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223142825593.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220512150151024.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223151906344.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223154552810.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223160446723.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223160621391.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223162022256.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220512151250724.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513113508025.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513113626357.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513114401449.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513151121013.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513152026055.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513160011024.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513154954595.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513160257439.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513160856924.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513163848298.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220516163449538.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220516163808779.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220516163648835.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220516170143369.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220520145838621.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220519100701675.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220519100309698.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220519101520819.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220519101704757.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220520143652198.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609165726963.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609165811130.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609165914728.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609160829641.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609164938179.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609165143255.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609170329170.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609170426188.png">
+<meta property="article:published_time" content="2023-03-29T09:48:47.000Z">
+<meta property="article:modified_time" content="2023-03-29T10:20:50.795Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="Devops">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211221112220027.png">
+  
+  
+  
+  <title>Jenkins基于shell实现简单的代码部署，与gitlab的使用 - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Jenkins基于shell实现简单的代码部署，与gitlab的使用"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-29 17:48" pubdate>
+          2023年3月29日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          65 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Jenkins基于shell实现简单的代码部署，与gitlab的使用</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Jenkins基于shell实现简单的代码部署，与gitlab的使用"><a href="#Jenkins基于shell实现简单的代码部署，与gitlab的使用" class="headerlink" title="Jenkins基于shell实现简单的代码部署，与gitlab的使用"></a>Jenkins基于shell实现简单的代码部署，与gitlab的使用</h1><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">#参考视频：https://www.bilibili.com/video/BV16v411V7CQ?p=4<br>#全文档：https://github.com/pipiguai0123/Jenkinsdoc<br></code></pre></td></tr></table></figure>
+
+<h2 id="先测试使用ssh进行代码克隆："><a href="#先测试使用ssh进行代码克隆：" class="headerlink" title="先测试使用ssh进行代码克隆："></a>先测试使用ssh进行代码克隆：</h2><p>首先在Jenkins服务器上生成ssh秘钥：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">ssh-keygen -t rsa -P <span class="hljs-string">&quot;&quot;</span> -f ~/.ssh/id_rsa<br></code></pre></td></tr></table></figure>
+
+<p>生成了公钥（id_rsa.pub）和私钥（id_rsa)</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211221112220027.png" srcset="/img/loading.gif" lazyload alt="image-20211221112220027"></p>
+<p>将生成的公钥（id_rsa.pub）复制到gitlab的SSH秘钥内</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211221113051193.png" srcset="/img/loading.gif" lazyload alt="image-20211221113051193"></p>
+<p>在Jenkins服务器上使用git命令测试是否能远程拷贝gitlab代码仓库内数据</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223154834727.png" srcset="/img/loading.gif" lazyload alt="image-20211223154834727"></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">git <span class="hljs-built_in">clone</span> ssh://git@192.168.94.188:2222/jiangzhenzhou/devops.git<br></code></pre></td></tr></table></figure>
+
+<p><strong>我这里git使用的2222端口：采用的是docker运行的gitlab，2222端口映射的是gitlab容器22端口</strong></p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211221172045756.png" srcset="/img/loading.gif" lazyload alt="image-20211221172045756"></p>
+<p>执行命令后，发现已经拉取成功，成功显示如下：</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223155001524.png" srcset="/img/loading.gif" lazyload alt="image-20211223155001524"></p>
+<h2 id="一、通过jenkins自动化clone代码："><a href="#一、通过jenkins自动化clone代码：" class="headerlink" title="一、通过jenkins自动化clone代码："></a>一、通过jenkins自动化clone代码：</h2><h3 id="1-1、登录到Jenkins，新建一个任务：我这里用test名称"><a href="#1-1、登录到Jenkins，新建一个任务：我这里用test名称" class="headerlink" title="1.1、登录到Jenkins，新建一个任务：我这里用test名称"></a>1.1、登录到Jenkins，新建一个任务：我这里用test名称</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223112134104.png" srcset="/img/loading.gif" lazyload alt="image-20211223112134104"></p>
+<h3 id="1-2、源码管理-gt-gt-Git-gt-gt-添加URL-gt-gt-添加凭据"><a href="#1-2、源码管理-gt-gt-Git-gt-gt-添加URL-gt-gt-添加凭据" class="headerlink" title="1.2、源码管理&gt;&gt;Git&gt;&gt;添加URL&gt;&gt;添加凭据"></a>1.2、源码管理&gt;&gt;Git&gt;&gt;添加URL&gt;&gt;添加凭据</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223154138145.png" srcset="/img/loading.gif" lazyload alt="image-20211223154138145"></p>
+<h3 id="1-3、凭据类型选择-gt-gt-SSH-Username-with-private-key-gt-gt-添加私钥"><a href="#1-3、凭据类型选择-gt-gt-SSH-Username-with-private-key-gt-gt-添加私钥" class="headerlink" title="1.3、凭据类型选择&gt;&gt;SSH Username with private key &gt;&gt;添加私钥"></a>1.3、凭据类型选择&gt;&gt;SSH Username with private key &gt;&gt;添加私钥</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223142334979.png" srcset="/img/loading.gif" lazyload alt="image-20211223142334979"></p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223142825593.png" srcset="/img/loading.gif" lazyload alt="image-20211223142825593"></p>
+<h3 id="1-4、复制私钥："><a href="#1-4、复制私钥：" class="headerlink" title="1.4、复制私钥："></a>1.4、复制私钥：</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">cat <span class="hljs-regexp">/root/</span>.ssh/id_rsa<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220512150151024.png" srcset="/img/loading.gif" lazyload alt="image-20220512150151024"></p>
+<h3 id="1-5、添加私钥以后，选择root。并指定代码拉取的分支"><a href="#1-5、添加私钥以后，选择root。并指定代码拉取的分支" class="headerlink" title="1.5、添加私钥以后，选择root。并指定代码拉取的分支"></a>1.5、添加私钥以后，选择root。并指定代码拉取的分支</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223151906344.png" srcset="/img/loading.gif" lazyload alt="image-20211223151906344"></p>
+<h3 id="1-6、应用并保存后-gt-gt-点击“立即构建”即可完成"><a href="#1-6、应用并保存后-gt-gt-点击“立即构建”即可完成" class="headerlink" title="1.6、应用并保存后&gt;&gt;点击“立即构建”即可完成"></a>1.6、应用并保存后&gt;&gt;点击“立即构建”即可完成</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223154552810.png" srcset="/img/loading.gif" lazyload alt="image-20211223154552810"></p>
+<h3 id="1-7、以上步骤即可使用Jenkins系统拉取gitlab代码仓库代码"><a href="#1-7、以上步骤即可使用Jenkins系统拉取gitlab代码仓库代码" class="headerlink" title="1.7、以上步骤即可使用Jenkins系统拉取gitlab代码仓库代码"></a>1.7、以上步骤即可使用Jenkins系统拉取gitlab代码仓库代码</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223160446723.png" srcset="/img/loading.gif" lazyload alt="image-20211223160446723"></p>
+<h3 id="1-8、构建-gt-gt-选择执行shell-gt-gt-即可添加源shell命令，我添加命令：-ip-add-做测试"><a href="#1-8、构建-gt-gt-选择执行shell-gt-gt-即可添加源shell命令，我添加命令：-ip-add-做测试" class="headerlink" title="1.8、构建&gt;&gt;选择执行shell&gt;&gt;即可添加源shell命令，我添加命令： ip add 做测试"></a>1.8、构建&gt;&gt;选择执行shell&gt;&gt;即可添加源shell命令，我添加命令： ip add 做测试</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223160621391.png" srcset="/img/loading.gif" lazyload alt="image-20211223160621391"></p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20211223162022256.png" srcset="/img/loading.gif" lazyload alt="image-20211223162022256"></p>
+<h3 id="1-9、点击“立即构建”以后，即可在日志内看到执行的命令，在输出的日志中进入工作空间，能看到代码已经被克隆"><a href="#1-9、点击“立即构建”以后，即可在日志内看到执行的命令，在输出的日志中进入工作空间，能看到代码已经被克隆" class="headerlink" title="1.9、点击“立即构建”以后，即可在日志内看到执行的命令，在输出的日志中进入工作空间，能看到代码已经被克隆"></a>1.9、点击“立即构建”以后，即可在日志内看到执行的命令，在输出的日志中进入工作空间，能看到代码已经被克隆</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220512151250724.png" srcset="/img/loading.gif" lazyload alt="image-20220512151250724"></p>
+<h2 id="二、通过shell命令clone代码并部署Tomcat项目"><a href="#二、通过shell命令clone代码并部署Tomcat项目" class="headerlink" title="二、通过shell命令clone代码并部署Tomcat项目"></a>二、通过shell命令clone代码并部署Tomcat项目</h2><h3 id="2-1、tomcat服务器信息："><a href="#2-1、tomcat服务器信息：" class="headerlink" title="2.1、tomcat服务器信息："></a>2.1、tomcat服务器信息：</h3><p>服务器ip：192.168.94.155<br>浏览器页面访问：192.168.94.155:8080<br>html放置路径：&#x2F;app&#x2F;html&#x2F;www&#x2F;<br>tomcat安装路径：&#x2F;usr&#x2F;local&#x2F;tomcat&#x2F;</p>
+<h3 id="2-2、在jenkins上根据之前的配置完成后，编写执行的代码"><a href="#2-2、在jenkins上根据之前的配置完成后，编写执行的代码" class="headerlink" title="2.2、在jenkins上根据之前的配置完成后，编写执行的代码"></a>2.2、在jenkins上根据之前的配置完成后，编写执行的代码</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#将从gitlab克隆的web项目打包</span><br>tar -acvf web.tar.gz ./*<br><span class="hljs-comment">#停止tomcat服务</span><br>ssh root@192.168.94.155 &lt;&lt;<span class="hljs-string">EOF</span><br><span class="hljs-string">/usr/local/tomcat/bin/shutdown.sh</span><br><span class="hljs-string">EOF</span><br><span class="hljs-comment">#将压缩包分发</span><br>scp web.tar.gz 192.168.94.155:/app/html/www<br><span class="hljs-comment">#解压文件,并启动tomcat</span><br>ssh root@192.168.94.155 &lt;&lt;<span class="hljs-string">EOF</span><br><span class="hljs-string">tar -xnf /app/html/www/web.tar.gz  -C /app/html/www/</span><br><span class="hljs-string">ls -l /app/html/www</span><br><span class="hljs-string">/usr/local/tomcat/bin/startup.sh</span><br><span class="hljs-string">EOF</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513113508025.png" srcset="/img/loading.gif" lazyload alt="image-20220513113508025"></p>
+<h3 id="2-3、点击立即构建，查看控制台输出。显示SUCCESS，代表已经部署成功！"><a href="#2-3、点击立即构建，查看控制台输出。显示SUCCESS，代表已经部署成功！" class="headerlink" title="2.3、点击立即构建，查看控制台输出。显示SUCCESS，代表已经部署成功！"></a>2.3、点击立即构建，查看控制台输出。显示SUCCESS，代表已经部署成功！</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513113626357.png" srcset="/img/loading.gif" lazyload alt="image-20220513113626357"></p>
+<h3 id="2-4、访问tomcat网页，发现项目已经部署！"><a href="#2-4、访问tomcat网页，发现项目已经部署！" class="headerlink" title="2.4、访问tomcat网页，发现项目已经部署！"></a>2.4、访问tomcat网页，发现项目已经部署！</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513114401449.png" srcset="/img/loading.gif" lazyload alt="image-20220513114401449"></p>
+<h2 id="三、jenkins新增节点"><a href="#三、jenkins新增节点" class="headerlink" title="三、jenkins新增节点"></a>三、jenkins新增节点</h2><p>新节点准备工作：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-number">1</span>、安装特定的jdk版本<br><span class="hljs-number">2</span>、创建与master机器一样的工作目录，一般默认为：<span class="hljs-regexp">/var/</span>lib/jenkins<br>mkdir -p <span class="hljs-regexp">/var/</span>lib/jenkins<br><span class="hljs-number">3</span>、安装git<br>yum install git -y<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-1、点击系统管理-gt-gt-节点管理-gt-gt-新建节点-gt-gt-输入节点名称，并勾选固定节点-gt-gt-create"><a href="#3-1、点击系统管理-gt-gt-节点管理-gt-gt-新建节点-gt-gt-输入节点名称，并勾选固定节点-gt-gt-create" class="headerlink" title="3.1、点击系统管理&gt;&gt;节点管理&gt;&gt;新建节点&gt;&gt;输入节点名称，并勾选固定节点&gt;&gt;create"></a>3.1、点击系统管理&gt;&gt;节点管理&gt;&gt;新建节点&gt;&gt;输入节点名称，并勾选固定节点&gt;&gt;create</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513151121013.png" srcset="/img/loading.gif" lazyload alt="image-20220513151121013"></p>
+<h3 id="3-2、填写相关的信息"><a href="#3-2、填写相关的信息" class="headerlink" title="3.2、填写相关的信息"></a>3.2、填写相关的信息</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513152026055.png" srcset="/img/loading.gif" lazyload alt="image-20220513152026055"></p>
+<p> #备注：选择只运行绑定到这个机器的job：可以实现：根据项目来进行部署，该节点机器设置免密认证等。实现项目管控。</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513160011024.png" srcset="/img/loading.gif" lazyload alt="image-20220513160011024"></p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513154954595.png" srcset="/img/loading.gif" lazyload alt="image-20220513154954595"></p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513160257439.png" srcset="/img/loading.gif" lazyload alt="image-20220513160257439"></p>
+<p><strong>备注：节点属性根据用途和实际情况进行添加</strong></p>
+<h3 id="3-3、点击保存后，刷新状态，可以看到jenkins-agent1已经添加成功"><a href="#3-3、点击保存后，刷新状态，可以看到jenkins-agent1已经添加成功" class="headerlink" title="3.3、点击保存后，刷新状态，可以看到jenkins-agent1已经添加成功"></a>3.3、点击保存后，刷新状态，可以看到jenkins-agent1已经添加成功</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513160856924.png" srcset="/img/loading.gif" lazyload alt="image-20220513160856924"></p>
+<p><strong>备注：如果有报错和故障提示，可以通过查看执行的日志进行问题排查</strong></p>
+<h2 id="四、使用Jenkins-Pipline实现部署Tomcat项目"><a href="#四、使用Jenkins-Pipline实现部署Tomcat项目" class="headerlink" title="四、使用Jenkins Pipline实现部署Tomcat项目"></a>四、使用Jenkins Pipline实现部署Tomcat项目</h2><p>官网：<a target="_blank" rel="noopener" href="https://www.jenkins.io/zh/doc/book/pipeline/">https://www.jenkins.io/zh/doc/book/pipeline/</a></p>
+<h3 id="4-1、新建任务-gt-gt-输入任务名称-gt-gt-选择流水线"><a href="#4-1、新建任务-gt-gt-输入任务名称-gt-gt-选择流水线" class="headerlink" title="4.1、新建任务&gt;&gt;输入任务名称&gt;&gt;选择流水线"></a>4.1、新建任务&gt;&gt;输入任务名称&gt;&gt;选择流水线</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220513163848298.png" srcset="/img/loading.gif" lazyload alt="image-20220513163848298"></p>
+<h3 id="4-2、选择流水线"><a href="#4-2、选择流水线" class="headerlink" title="4.2、选择流水线"></a>4.2、选择流水线</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220516163449538.png" srcset="/img/loading.gif" lazyload alt="image-20220516163449538"></p>
+<h3 id="4-3、写好Pipline语句（Pipline的语法使用，和生成，请阅读《五、流水线语法的使用》）"><a href="#4-3、写好Pipline语句（Pipline的语法使用，和生成，请阅读《五、流水线语法的使用》）" class="headerlink" title="4.3、写好Pipline语句（Pipline的语法使用，和生成，请阅读《五、流水线语法的使用》）"></a>4.3、写好Pipline语句（Pipline的语法使用，和生成，请阅读《五、流水线语法的使用》）</h3><p>以下代码实现，流水线clone代码并部署Tomcat项目（脚本式）</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#采用脚本式格式编写：	</span><br>node&#123;<br>    stage(<span class="hljs-string">&quot;克隆代码&quot;</span>) &#123;<br>        <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;克隆代码&quot;</span><br>		sh <span class="hljs-string">&quot;cd /var/lib/jenkins/workspace/test-web &amp;&amp; rm -rf ./*&quot;</span><br>        git branch: <span class="hljs-string">&#x27;main&#x27;</span>, credentialsId: <span class="hljs-string">&#x27;81fe0c81-01bd-4d7e-8e08-a5d22d8fd6a9&#x27;</span>, url: <span class="hljs-string">&#x27;ssh://git@192.168.31.194:2222/root/web.git&#x27;</span><br>      &#125;<br>	stage(<span class="hljs-string">&quot;打包项目&quot;</span>) &#123;<br>        sh <span class="hljs-string">&quot;tar -acvf web.tar.gz ./* &quot;</span><br>      &#125;<br>    stage(<span class="hljs-string">&quot;关闭服务&quot;</span>) &#123;<br>        <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;关闭服务&quot;</span><br>		sh <span class="hljs-string">&#x27;ssh root@192.168.94.155 &quot;/bin/bash /usr/local/tomcat/bin/shutdown.sh &amp;&amp; rm -rf /app/html/www/*&quot;&#x27;</span><br>      &#125;<br>    stage(<span class="hljs-string">&quot;代码部署&quot;</span>) &#123;<br>        sh <span class="hljs-string">&#x27;scp web.tar.gz 192.168.94.155:/app/html/www&#x27;</span><br>	    sh <span class="hljs-string">&#x27;ssh root@192.168.94.155 &quot;tar -xnf /app/html/www/web.tar.gz  -C /app/html/www/ &amp;&amp; ls -l /app/html/www&quot;&#x27;</span><br>      &#125;<br>    stage(<span class="hljs-string">&quot;开启服务&quot;</span>) &#123;<br>	    sh <span class="hljs-string">&#x27;ssh root@192.168.94.155 &quot;/usr/local/tomcat/bin/startup.sh&quot;&#x27;</span><br>      &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>直接点击构建即可：</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220516163808779.png" srcset="/img/loading.gif" lazyload alt="image-20220516163808779"></p>
+<h2 id="五、流水线语法的使用："><a href="#五、流水线语法的使用：" class="headerlink" title="五、流水线语法的使用："></a>五、流水线语法的使用：</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">pipline语法:<br>	Stage:阶段,一个pipline可以划分为若干个stage，每个stage都是一个操作步骤，比如 <span class="hljs-built_in">clone</span>代码、代码编译、代码测试和代码部署，阶段是一个逻辑分组，可以跨多个node执行<br>	Node:节点，每个node都是一个jenkins节点，可以是jenkins master也可以是jenkins agent，node是执行step的具体服务器。<br>    Step:步骤，step是jenkins pipline最基本的操作单元，从在服务器创建目录到构建容器镜像，由各类Jenkins 插件提供实现，一个stage中可以有多个step，例如: sh“make<span class="hljs-string">&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="5-1、jenkins自带了流水线的语法生成："><a href="#5-1、jenkins自带了流水线的语法生成：" class="headerlink" title="5.1、jenkins自带了流水线的语法生成："></a>5.1、jenkins自带了流水线的语法生成：</h3><p>例如：自动生成git的连接串</p>
+<p>选择流水线语法&gt;&gt;选择示例步骤&gt;&gt;选择git&gt;&gt;填写信息后，生成流水线脚本</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220516163648835.png" srcset="/img/loading.gif" lazyload alt="image-20220516163648835"></p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220516170143369.png" srcset="/img/loading.gif" lazyload alt="image-20220516170143369"></p>
+<h3 id="5-2、pipline脚本式流水线与声明式流水线"><a href="#5-2、pipline脚本式流水线与声明式流水线" class="headerlink" title="5.2、pipline脚本式流水线与声明式流水线"></a>5.2、pipline脚本式流水线与声明式流水线</h3><p>以下为脚本式流水线：	</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">//node的jenkins-agent1:指在代理jenkins-agent1上执行<br>node(<span class="hljs-string">&quot;jenkins-agent1&quot;</span>)&#123; <br>      stage(<span class="hljs-string">&quot;克隆代码&quot;</span>) &#123;  // 定义 <span class="hljs-string">&quot;克隆代码&quot;</span> 阶段。<br>           <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;克隆代码&quot;</span><br>		  sh <span class="hljs-string">&quot;cd /var/lib/jenkins/workspace/test-web &amp;&amp; rm -rf ./*&quot;</span><br>           git branch: <span class="hljs-string">&#x27;main&#x27;</span>, credentialsId: <span class="hljs-string">&#x27;81fe0c81-01bd-4d7e-8e08-a5d22d8fd6a9&#x27;</span>, url: <span class="hljs-string">&#x27;ssh://git@192.168.31.194:2222/root/web.git&#x27;</span><br>        &#125;<br></code></pre></td></tr></table></figure>
+
+<p>以下为声明式流水线 :</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><code class="hljs sh"> pipeline &#123;<br>    agent any //在任何可用的代理上，执行流水线或它的任何阶段<br>    //agent &#123; node &#123; label <span class="hljs-string">&#x27;jenkins-agent1&#x27;</span>   //在代理jenkins-agent1上执行<br>    //		  customWorkspace <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;workspace&#125;</span>&quot;</span> //指定运行的工作目录（不写为默认路径）<br>    //      &#125;    &#125; <br>    options &#123;<br>        timestamps()          //日志会有时间<br>        skipDefaultCheckout() //删除隐式checkout scm语句<br>        disableConcurrentBuilds() //禁止并行<br>        <span class="hljs-built_in">timeout</span>(time: 1, unit: <span class="hljs-string">&#x27;HOURS&#x27;</span> )  //流水线超时设置1h，超时自动结束<br>    &#125;<br>    stages &#123;<br>        stage(<span class="hljs-string">&#x27;Build&#x27;</span>) &#123;  // 定义 <span class="hljs-string">&quot;Build&quot;</span> 阶段。<br>            steps &#123;<br>              //agent &#123; label <span class="hljs-string">&#x27;master1&#x27;</span>&#125;  该步骤在master1上执行<br>              <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;克隆代码&quot;</span><br>              sh <span class="hljs-string">&quot;cd /var/lib/jenkins/workspace/test-web &amp;&amp; rm -rf ./*&quot;</span>  /<br>              //执行与 <span class="hljs-string">&quot;Build&quot;</span> 阶段相关的步骤。<br>            &#125;<br>        &#125;<br>        stage(<span class="hljs-string">&#x27;Test&#x27;</span>) &#123; <br>            steps &#123;<br>                // <br>            &#125;<br>        &#125;<br>    &#125;<br>    //构建后操作<br>    post &#123;<br>       always &#123;<br>           script&#123;<br>               println(<span class="hljs-string">&quot;always&quot;</span>)<br>           &#125;<br>       &#125;<br>       success &#123; //成功后执行<br>           script&#123;<br>           		currentBuild.description = <span class="hljs-string">&quot;\n 构建成功！&quot;</span><br>           &#125;<br>       &#125;<br>       failure &#123; //失败后执行<br>       	    script&#123;<br>       	    	currentBuild.description = <span class="hljs-string">&quot;\n 构建失败！&quot;</span><br>       	    &#125;<br>       &#125;<br>       aborted &#123; //取消后执行<br>      		 script&#123;<br>       	    	currentBuild.description = <span class="hljs-string">&quot;\n 构建取消！&quot;</span>  //全局构建描述<br>       	    &#125;<br>       &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-3、实战："><a href="#5-3、实战：" class="headerlink" title="5.3、实战："></a>5.3、实战：</h3><p>根据《四、使用Jenkins Pipline实现部署Tomcat项目》4.3 中编写流水线</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs sh">pipeline &#123;<br>		agent &#123;<br>			    label <span class="hljs-string">&#x27;master&#x27;</span><br>		&#125;<br>		options &#123;<br>			    timestamps()<br>			    <span class="hljs-built_in">timeout</span>(time: 1, unit: <span class="hljs-string">&#x27;HOURS&#x27;</span> )<br>		&#125;<br>		stages &#123;<br>			stage(<span class="hljs-string">&#x27;克隆代码&#x27;</span>) &#123;<br>				steps &#123;<br>					sh <span class="hljs-string">&quot;cd /var/lib/jenkins/workspace/test-web &amp;&amp; rm -rf ./*&quot;</span><br>					git branch: <span class="hljs-string">&#x27;main&#x27;</span>, credentialsId: <span class="hljs-string">&#x27;81fe0c81-01bd-4d7e-8e08-a5d22d8fd6a9&#x27;</span>, url: <span class="hljs-string">&#x27;ssh://git@192.168.31.194:2222/root/web.git&#x27;</span><br>              &#125;<br>			&#125;<br>			stage(<span class="hljs-string">&#x27;打包项目&#x27;</span>) &#123;<br>				steps &#123;<br>					sh <span class="hljs-string">&quot;tar -acvf web.tar.gz ./* &quot;</span><br>					<br>				&#125;<br>			&#125;<br>			stage(<span class="hljs-string">&#x27;关闭服务&#x27;</span>) &#123;<br>				steps &#123;<br>					sh <span class="hljs-string">&#x27;ssh root@192.168.94.155 &quot;/bin/bash /usr/local/tomcat/bin/shutdown.sh &amp;&amp; rm -rf /app/html/www/*&quot;&#x27;</span>	<br>				&#125;<br>			&#125;<br>			stage(<span class="hljs-string">&#x27;代码部署&#x27;</span>) &#123;<br>				steps &#123;<br>					sh <span class="hljs-string">&#x27;scp web.tar.gz 192.168.94.155:/app/html/www&#x27;</span><br>					sh <span class="hljs-string">&#x27;ssh root@192.168.94.155 &quot;tar -xnf /app/html/www/web.tar.gz  -C /app/html/www/ &amp;&amp; ls -l /app/html/www&quot;&#x27;</span>	<br>				&#125;<br>			&#125;<br>			stage(<span class="hljs-string">&#x27;开启服务&#x27;</span>) &#123;<br>				steps &#123;<br>					sh <span class="hljs-string">&#x27;ssh root@192.168.94.155 &quot;/usr/local/tomcat/bin/startup.sh&quot;&#x27;</span><br>					<br>				&#125;<br>			&#125;<br>		&#125;<br>		post &#123;<br>			failure &#123; //失败后执行<br>					script&#123;<br>					currentBuild.description = <span class="hljs-string">&quot;\n 构建失败！&quot;</span><br>					&#125;<br>			&#125;	<br>		&#125;	<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<p>构建后，输出结果：</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220520145838621.png" srcset="/img/loading.gif" lazyload alt="image-20220520145838621"></p>
+<h3 id="5-4、设置流水线语法的版本控制。"><a href="#5-4、设置流水线语法的版本控制。" class="headerlink" title="5.4、设置流水线语法的版本控制。"></a>5.4、设置流水线语法的版本控制。</h3><p>创建Jenkinsfile存放流水线pipeline语法，并将Jenkinsflie推送到gitlab仓库</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220519100701675.png" srcset="/img/loading.gif" lazyload alt="image-20220519100701675"></p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220519100309698.png" srcset="/img/loading.gif" lazyload alt="image-20220519100309698"></p>
+<p>修改流水线配置</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220519101520819.png" srcset="/img/loading.gif" lazyload alt="image-20220519101520819"></p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220519101704757.png" srcset="/img/loading.gif" lazyload alt="image-20220519101704757"></p>
+<p>##备注：脚本路径为上传到gitlab的仓库路径，我的为主页，所以路径为：Jenkins，如果是在scripts下,就写:scripts&#x2F;Jenkinsfile</p>
+<p>保存后点构建即可！</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220520143652198.png" srcset="/img/loading.gif" lazyload alt="image-20220520143652198"></p>
+<h3 id="5-5、jenkins共享库"><a href="#5-5、jenkins共享库" class="headerlink" title="5.5、jenkins共享库"></a>5.5、jenkins共享库</h3><p>本人github上共享库地址为：<a target="_blank" rel="noopener" href="https://github.com/pipiguai0123/JenkinsShareLibrary">https://github.com/pipiguai0123/JenkinsShareLibrary</a></p>
+<h3 id="5-5-1、jenkins设置："><a href="#5-5-1、jenkins设置：" class="headerlink" title="5.5.1、jenkins设置："></a>5.5.1、jenkins设置：</h3><p>系统管理&gt;系统配置&gt;Global Pipeline Libraries</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609165726963.png" srcset="/img/loading.gif" lazyload alt="image-20220609165726963"></p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609165811130.png" srcset="/img/loading.gif" lazyload alt="image-20220609165811130"></p>
+<p>备注：因为我这边使用的是github上的，所以仓库使用的是github上的，公司内部使用gitlab的话，以下为举例，采用gitlab地址：</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609165914728.png" srcset="/img/loading.gif" lazyload alt="image-20220609165914728"></p>
+<p>jenkins共享库的文件结构为：</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609160829641.png" srcset="/img/loading.gif" lazyload alt="image-20220609160829641"></p>
+<h3 id="5-5-2、使用github共享库实现《使用Jenkins-Pipline实现部署Tomcat项目，构建的状态发送邮件》："><a href="#5-5-2、使用github共享库实现《使用Jenkins-Pipline实现部署Tomcat项目，构建的状态发送邮件》：" class="headerlink" title="5.5.2、使用github共享库实现《使用Jenkins Pipline实现部署Tomcat项目，构建的状态发送邮件》："></a>5.5.2、使用github共享库实现《使用Jenkins Pipline实现部署Tomcat项目，构建的状态发送邮件》：</h3><p>需要先将jenkins设置邮件发送，具体可参考《jenkins使用–jenkins设置邮件发送》文档。</p>
+<p>我这边已将Pipline代码上传到了github上的test.jenkinsfiles，以下为test.jenkins详解</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#!groovy</span><br><br>@Library(<span class="hljs-string">&#x27;jenkinslibrary@main&#x27;</span>) _ <br>//表示调用上边配置共享库步骤配置的名字，这里还可以通过跟上不同后缀标识选择不同分支。 默认是 master 分支，这里因为我们用的是 main 分支，所以需要显式指定<br><br>def toemail = new org.devops.toemail()<br>//使用/src/org/devops下的toemail类<br>userEmail = <span class="hljs-string">&quot;1962821461@qq.com&quot;</span><br>//定义发送的邮箱地址<br>pipeline&#123;<br>    agent &#123; label <span class="hljs-string">&#x27;master&#x27;</span> &#125;<br>    <br>    stages&#123;<br>            //<span class="hljs-comment">#省略内容</span><br>        &#125;<br><br>    post &#123;<br>        always&#123;<br>            script&#123;<br>                println(<span class="hljs-string">&quot;always&quot;</span>)<br>            &#125;<br>        &#125;<br>        <br>        success&#123;<br>            script&#123;<br>                println(<span class="hljs-string">&quot;success&quot;</span>)<br>                //对应/src/org/devops下类传递的变量，传递“流水线成功”和“邮箱地址”<br>                toemail.Email(<span class="hljs-string">&quot;流水线成功！&quot;</span>,userEmail)<br>            <br>            &#125;<br>        <br>        &#125;<br><span class="hljs-comment">#....省略....</span><br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>新增流水线，设置流水线配置，采用登录获取设置</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609164938179.png" srcset="/img/loading.gif" lazyload alt="image-20220609164938179"></p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609165143255.png" srcset="/img/loading.gif" lazyload alt="image-20220609165143255"></p>
+<p>#保存后构建：</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609170329170.png" srcset="/img/loading.gif" lazyload alt="image-20220609170329170"></p>
+<p>构建后，将会收到相关邮件通知：</p>
+<p><img src="/2023/03/29/devops/jenkins/jenkins%E5%AE%9E%E8%B7%B5/Jenkins%E5%9F%BA%E4%BA%8Eshell%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E9%83%A8%E7%BD%B2%EF%BC%8C%E4%B8%8Egitlab%E7%9A%84%E4%BD%BF%E7%94%A8/image-20220609170426188.png" srcset="/img/loading.gif" lazyload alt="image-20220609170426188"></p>
+<p>具体更加复杂的可参考文档：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs txt"><br>学习可参考文档：https://wiki.eryajf.net/pages/2415.html#_1-%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0%E3%80%82<br><br>文档地址：https://github.com/pipiguai0123/Jenkinsdoc<br><br>学习视频：https://www.bilibili.com/video/BV1YJ411G7Yz?spm_id_from=333.337.search-card.all.click<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Devops/" class="category-chain-item">Devops</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Devops/">#Devops</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Jenkins基于shell实现简单的代码部署，与gitlab的使用</div>
+      <div>https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins实践/Jenkins基于shell实现简单的代码部署，与gitlab的使用/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E8%BF%9C%E7%A8%8B%E8%A7%A6%E5%8F%91jenkins%E4%BB%BB%E5%8A%A1/" title="远程触发jenkins任务">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">远程触发jenkins任务</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/jenkins%E8%AE%BE%E7%BD%AE%E9%82%AE%E4%BB%B6%E5%8F%91%E9%80%81/" title="Jenkins设置发送邮件通知">
+                        <span class="hidden-mobile">Jenkins设置发送邮件通知</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
