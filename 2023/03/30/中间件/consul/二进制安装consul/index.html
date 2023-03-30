@@ -1,0 +1,792 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="二进制安装consul简介Consul 是 HashiCorp 公司推出的开源工具，用于实现分布式系统的服务发现与配置。Consul 使用 Go 语言编写，因此具有天然可移植性（支持Linux、windows和Mac OS X）。 Consul 内置了服务注册与发现框架、分布一致性协议实现、健康检查、Key&#x2F;Value 存储、多数据中心方案，不再需要依赖其他工具（比如 ZooKeeper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二进制安装consul">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/consul/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E8%A3%85consul/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="二进制安装consul简介Consul 是 HashiCorp 公司推出的开源工具，用于实现分布式系统的服务发现与配置。Consul 使用 Go 语言编写，因此具有天然可移植性（支持Linux、windows和Mac OS X）。 Consul 内置了服务注册与发现框架、分布一致性协议实现、健康检查、Key&#x2F;Value 存储、多数据中心方案，不再需要依赖其他工具（比如 ZooKeeper">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-03-30T03:23:53.000Z">
+<meta property="article:modified_time" content="2023-03-30T08:27:32.622Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="consul">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>二进制安装consul - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="二进制安装consul"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-30 11:23" pubdate>
+          2023年3月30日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          36 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">二进制安装consul</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="二进制安装consul"><a href="#二进制安装consul" class="headerlink" title="二进制安装consul"></a>二进制安装consul</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Consul 是 HashiCorp 公司推出的开源工具，用于实现分布式系统的服务发现与配置。Consul 使用 Go 语言编写，因此具有天然可移植性（支持Linux、windows和Mac OS X）。</p>
+<p>Consul 内置了服务注册与发现框架、分布一致性协议实现、健康检查、Key&#x2F;Value 存储、多数据中心方案，不再需要依赖其他工具（比如 ZooKeeper 等），使用起来也较为简单。</p>
+<p>Consul 遵循CAP原理中的CP原则，保证了强一致性和分区容错性，且使用的是Raft算法，比zookeeper使用的Paxos算法更加简单。虽然保证了强一致性，但是可用性就相应下降了，例如服务注册的时间会稍长一些，因为 Consul 的 raft 协议要求必须过半数的节点都写入成功才认为注册成功 ；在leader挂掉了之后，重新选举出leader之前会导致Consul 服务不可用。</p>
+<h2 id="一、consul单机安装"><a href="#一、consul单机安装" class="headerlink" title="一、consul单机安装"></a>一、consul单机安装</h2><h3 id="1-下载并解压consul"><a href="#1-下载并解压consul" class="headerlink" title="1.下载并解压consul"></a>1.下载并解压consul</h3><p>consul下载地址：<a target="_blank" rel="noopener" href="https://releases.hashicorp.com/consul/">https://releases.hashicorp.com/consul/</a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sh">wget https://releases.hashicorp.com/consul/1.12.7/consul_1.12.7_linux_amd64.zip<br><br>unzip consul_1.12.7_linux_amd64.zip<br><br><span class="hljs-built_in">mv</span> consul /usr/local/bin<br><br><span class="hljs-comment">#测试是否成功安装</span><br>consul version<br><br><br><span class="hljs-comment">#使用开发模式启动测试</span><br>consul agent  -ui -node=consul-dev -client=0.0.0.0<br><br>启动后可使用ip+8500访问consul的web页面！<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-设置开机自启动"><a href="#2-设置开机自启动" class="headerlink" title="2.设置开机自启动"></a>2.设置开机自启动</h3><h4 id="2-1、新建一个名为consul-service的service服务"><a href="#2-1、新建一个名为consul-service的service服务" class="headerlink" title="2.1、新建一个名为consul.service的service服务"></a>2.1、新建一个名为<code>consul.service</code>的service服务</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> &gt; /usr/lib/systemd/system/consul.service &lt;&lt;<span class="hljs-string">EOF</span><br><span class="hljs-string"></span><br><span class="hljs-string">[Unit]</span><br><span class="hljs-string">Description=consul</span><br><span class="hljs-string">After=network.target</span><br><span class="hljs-string"></span><br><span class="hljs-string">[Service]</span><br><span class="hljs-string">ExecStart=/usr/local/consul/start.sh</span><br><span class="hljs-string">KillSignal=SIGTERM</span><br><span class="hljs-string">    </span><br><span class="hljs-string">[Install]</span><br><span class="hljs-string">WantedBy=multi-user.target</span><br><span class="hljs-string">EOF</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-2、新建consul启动脚本，以便上诉service服务调用该脚本"><a href="#2-2、新建consul启动脚本，以便上诉service服务调用该脚本" class="headerlink" title="2.2、新建consul启动脚本，以便上诉service服务调用该脚本"></a>2.2、新建consul启动脚本，以便上诉service服务调用该脚本</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /usr/local/consul/start.sh <br><br><span class="hljs-comment">#!/bin/bash</span><br>consul agent -server -ui -bootstrap-expect=1 -data-dir=/app/consul/data -node=agent-1 -client=0.0.0.0 -log-file=/app/consul/log/consul_log-$(<span class="hljs-built_in">date</span> +%Y-%m-%d--%H-%M) -<span class="hljs-built_in">bind</span>=192.168.62.130<br><br><span class="hljs-built_in">mkdir</span> -p /app/consul/&#123;data,<span class="hljs-built_in">log</span>&#125;<br><span class="hljs-comment">#给脚本赋权</span><br><span class="hljs-built_in">chmod</span> 777 /usr/local/consul/start.sh <br></code></pre></td></tr></table></figure>
+
+
+<h3 id="3-启动服务，并设置开机自启"><a href="#3-启动服务，并设置开机自启" class="headerlink" title="3.启动服务，并设置开机自启"></a>3.启动服务，并设置开机自启</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl start consul<br>systemctl <span class="hljs-built_in">enable</span> consul <br>systemctl status consul<br></code></pre></td></tr></table></figure>
+
+<h2 id="二、搭建consul集群"><a href="#二、搭建consul集群" class="headerlink" title="二、搭建consul集群"></a>二、搭建consul集群</h2><p>consul 架构:<br>Server负责组成 cluster 的复杂工作（选举、状态维护、转发请求到 lead），以及 consul 提供的服务（响应 RCP 请求）。考虑到容错和收敛，一般部署 3 ~ 5 个比较合适，而client数量不做限制</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs llvm">可参考文档：https://littlefxc.github.io/<span class="hljs-number">2021</span>/<span class="hljs-number">01</span>/<span class="hljs-number">11</span>/Consul-<span class="hljs-variable">%E5</span><span class="hljs-variable">%8</span>D<span class="hljs-variable">%95</span><span class="hljs-variable">%E6</span><span class="hljs-variable">%9</span>C<span class="hljs-variable">%BA</span><span class="hljs-variable">%E9</span><span class="hljs-variable">%9</span>B<span class="hljs-variable">%86</span><span class="hljs-variable">%E7</span><span class="hljs-variable">%BE</span><span class="hljs-variable">%A4</span><span class="hljs-variable">%E6</span><span class="hljs-variable">%90</span><span class="hljs-variable">%AD</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BB</span><span class="hljs-variable">%BA</span>/<br></code></pre></td></tr></table></figure>
+<h3 id="1、准备环境"><a href="#1、准备环境" class="headerlink" title="1、准备环境"></a>1、准备环境</h3><table>
+<thead>
+<tr>
+<th>IP地址</th>
+<th>节点名</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>192.168.62.128</td>
+<td>consul-1</td>
+</tr>
+<tr>
+<td>192.168.62.129</td>
+<td>consul-2</td>
+</tr>
+<tr>
+<td>192.168.62.130</td>
+<td>consul-3</td>
+</tr>
+</tbody></table>
+<p>备注：机器均已经关闭防火墙，seliunx</p>
+<h3 id="2、下载并解压安装包"><a href="#2、下载并解压安装包" class="headerlink" title="2、下载并解压安装包"></a>2、下载并解压安装包</h3><p>consul下载地址：<a target="_blank" rel="noopener" href="https://releases.hashicorp.com/consul/">https://releases.hashicorp.com/consul/</a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh">wget https://releases.hashicorp.com/consul/1.12.7/consul_1.12.7_linux_amd64.zip<br><br>unzip consul_1.12.7_linux_amd64.zip<br><br><span class="hljs-built_in">mv</span> consul /usr/local/bin<br><br><span class="hljs-comment">#测试是否成功安装</span><br>consul version<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="3、集群启动"><a href="#3、集群启动" class="headerlink" title="3、集群启动"></a>3、集群启动</h3><p>consul集群:当一个consul agent启动后，它不知道任何其他节点,要学习到集群中的其他节点，agent必须加入一个已经存在的集群(cluster)。要加入这样的集群，它只需要知道这个集群中的一个节点即可。它加入后，将会和这个member gossip（交谈）并迅速发现集群中的其他节点。一个consul agent可以加入任何类型的其他agent，而不只是那些运行于server mode的agent。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> -p /app/consul/&#123;data,<span class="hljs-built_in">log</span>&#125;<br><br><br>consul agent -server -ui -bootstrap-expect=3 -data-dir=/app/consul/data -log-file=/app/consul/log/consul_log-$(<span class="hljs-built_in">date</span> +%Y-%m-%d--%H-%M) -node=consul-1 -<span class="hljs-built_in">bind</span>=192.168.62.128 -client=0.0.0.0 -datacenter=dc1  <br><br>consul agent -server -ui -bootstrap-expect=3 -data-dir=/app/consul/data -log-file=/app/consul/log/consul_log-$(<span class="hljs-built_in">date</span> +%Y-%m-%d--%H-%M) -node=consul-2 -<span class="hljs-built_in">bind</span>=192.168.62.129 -client=0.0.0.0 -datacenter=dc1  -<span class="hljs-built_in">join</span> 192.168.62.128<br><br>consul agent -server -ui -bootstrap-expect=3 -data-dir=/app/consul/data -log-file=/app/consul/log/consul_log-$(<span class="hljs-built_in">date</span> +%Y-%m-%d--%H-%M) -node=consul-3 -<span class="hljs-built_in">bind</span>=192.168.62.130 -client=0.0.0.0 -datacenter=dc1  -<span class="hljs-built_in">join</span> 192.168.62.128<br></code></pre></td></tr></table></figure>
+<p>Agent各种各样的配置选项，可以通过命令行或者配置文件指定。<br>配置优先级为 命令行 -&gt; 配置文件<br>加载配置时，将按照词法顺序从目录中读取配置。 配置格式可以为 HCL（.hcl） 或 JSON(.json)格式。</p>
+<h3 id="4、查看启动结果"><a href="#4、查看启动结果" class="headerlink" title="4、查看启动结果"></a>4、查看启动结果</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh">consul members<br><br>Node           Address             Status  Type    Build  Protocol  DC   Segment<br>consul-1  192.168.62.128:8301      alive   server  1.12.7  2        dc1  &lt;all&gt;<br>consul-2  192.168.62.129:8301      alive   server  1.12.7  2        dc1  &lt;all&gt;<br>consul-3  192.168.62.130:8301      alive   server  1.12.7  2        dc1  &lt;all&gt;<br><br><br></code></pre></td></tr></table></figure>
+<h3 id="5、集群重启或kill-consul时-需要删除-data-dir下所有文件"><a href="#5、集群重启或kill-consul时-需要删除-data-dir下所有文件" class="headerlink" title="5、集群重启或kill consul时 需要删除-data-dir下所有文件"></a>5、集群重启或kill consul时 需要删除-data-dir下所有文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">rm</span> -rf /app/consul/data/*<br></code></pre></td></tr></table></figure>
+
+<h2 id="附上相关参数含义"><a href="#附上相关参数含义" class="headerlink" title="附上相关参数含义"></a>附上相关参数含义</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs sh">advertise: 广播给集群中得其他节点得地址，<span class="hljs-built_in">bind</span>参数可能无法绑定时，使用此参数。<br><br><span class="hljs-built_in">bind</span>: 绑定集群通信得地址，这个ip地址应该是就集群内得其他节点可达，可找到得。 默认 0.0.0.0,将绑定机器得所有地址，同时把 ipv4地址告诉集群得其他人。如果指定[::],将广播IPV6地址。 如果存在多个IPV4/IPV6地址，启动则报错。<br><br>domain: 指定交由 Consul 处理的DNS域， 默认consul, 比如执行 xxx.consul时，由 Consul 进行域名解析。<br><br>node: 节点在集群中的名称。 在集群中一定是唯一的，默认为机器的HostName(主机名)。<br><br><span class="hljs-built_in">join</span>: 加入Server节点，组成集群，无法加入,将启动失败， 注意集群部署时，推荐使用 retry-join, 将自动重试Join列表，直到成功。<br><br>retry-join: 自动加入存在Server节点，组建数据中心, 如： -retry-join<br>“consul.domain.internal” -retry-join “10.0.4.67”<br><br>bootstrap: 不推荐使用, 是否开启bootstrap 模式, 如果一个数据中心只有一个节点时， 使用此模式，允许选举自己为<br>Leader.<br><br>bootstrap-expect: Consul将会等到Sever节点数达到指定数值时，才会启动集群（自动选举Leader）。<br>仅Server有此参数, 注意这个值集群中所有节点要一致， 或着仅指定一个节点。<br><br>client: 客户端连接Server的地址，默认127.0.0.1，可绑定多个。<br><br>ui: 启用内置 Web UI 和必要的 HTTP路由。<br><br>config-file：<br>指定要加载的配置文件，可多次指定。后面的配置将与前面的配置进行Merge。单个KV将直接代替，列表类型将进行追加。<br><br>config-dir: 配置目录，将加载目录中的 .hcl 或 .json 格式配置。 注意子路径不会加载。<br><br>data-dir: Agent存储状态的的数据目录。<br><br>dev: Consul开发模式，快速启动一个Consul Agent。 （此模式下， 所以持久化将关闭，适用内存）<br>此模式适用于开发阶段, 在此模式下Connect也是启用的，此模式不要用于生产级场景。<br><br>hcl: 配置片段，可指定多次。<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/consul/" class="category-chain-item">consul</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/consul/">#consul</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>二进制安装consul</div>
+      <div>https://pipiguai0123.github.io/2023/03/30/中间件/consul/二进制安装consul/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月30日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/consul/%E4%BD%BF%E7%94%A8docker%E5%AE%89%E8%A3%85consul/" title="使用docker安装consul服务">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">使用docker安装consul服务</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/03/30/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8%E6%97%B6%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95%E5%92%8C%E5%A4%84%E7%90%86/" title="jenkins使用时遇到的问题记录和处理">
+                        <span class="hidden-mobile">jenkins使用时遇到的问题记录和处理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

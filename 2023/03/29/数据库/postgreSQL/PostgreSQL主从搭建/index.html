@@ -16,20 +16,20 @@
   <meta name="author" content="zhenzhou_zhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="postgresql主从搭建12参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;guapitomjoy&#x2F;p&#x2F;15330079.html参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;ezgod&#x2F;p&#x2F;15843221.html   一、机器规划基于pgpool中间件实现postgresql一主多从集群部署，这里用两台服务器作一主一从示例    主机名 IP 主从划分    pgs">
+    <meta name="description" content="PostgreSQL主从搭建12参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;guapitomjoy&#x2F;p&#x2F;15330079.html参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;ezgod&#x2F;p&#x2F;15843221.html  一、机器规划基于pgpool中间件实现postgresql一主多从集群部署，这里用两台服务器作一主一从示例    主机名 IP 主从划分    pgsq">
 <meta property="og:type" content="article">
 <meta property="og:title" content="postgresql主从搭建">
 <meta property="og:url" content="https://pipiguai0123.github.io/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/PostgreSQL%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA/index.html">
 <meta property="og:site_name" content="皮皮怪-page">
-<meta property="og:description" content="postgresql主从搭建12参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;guapitomjoy&#x2F;p&#x2F;15330079.html参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;ezgod&#x2F;p&#x2F;15843221.html   一、机器规划基于pgpool中间件实现postgresql一主多从集群部署，这里用两台服务器作一主一从示例    主机名 IP 主从划分    pgs">
+<meta property="og:description" content="PostgreSQL主从搭建12参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;guapitomjoy&#x2F;p&#x2F;15330079.html参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;ezgod&#x2F;p&#x2F;15843221.html  一、机器规划基于pgpool中间件实现postgresql一主多从集群部署，这里用两台服务器作一主一从示例    主机名 IP 主从划分    pgsq">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/PostgreSQL%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA/postgresql%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA%5Cimage-20221028174953304.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/PostgreSQL%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA/image-20221028174953304.png">
 <meta property="article:published_time" content="2023-03-29T02:16:23.000Z">
-<meta property="article:modified_time" content="2023-03-29T03:34:55.910Z">
+<meta property="article:modified_time" content="2023-03-30T03:14:25.484Z">
 <meta property="article:author" content="zhenzhou_zhang">
 <meta property="article:tag" content="PostgreSQL">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://pipiguai0123.github.io/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/PostgreSQL%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA/postgresql%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA%5Cimage-20221028174953304.png">
+<meta name="twitter:image" content="https://pipiguai0123.github.io/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/PostgreSQL%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA/image-20221028174953304.png">
   
   
   
@@ -306,8 +306,7 @@
             
               <div class="markdown-body">
                 
-                <h1 id="postgresql主从搭建"><a href="#postgresql主从搭建" class="headerlink" title="postgresql主从搭建"></a>postgresql主从搭建</h1><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">参考文档：https://www.cnblogs.com/guapitomjoy/p/15330079.html<br>参考文档：https://www.cnblogs.com/ezgod/p/15843221.html<br></code></pre></td></tr></table></figure>
-
+                <h1 id="PostgreSQL主从搭建"><a href="#PostgreSQL主从搭建" class="headerlink" title="PostgreSQL主从搭建"></a>PostgreSQL主从搭建</h1><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">参考文档：https://www.cnblogs.com/guapitomjoy/p/15330079.html<br>参考文档：https://www.cnblogs.com/ezgod/p/15843221.html<br></code></pre></td></tr></table></figure>
 
 <h2 id="一、机器规划"><a href="#一、机器规划" class="headerlink" title="一、机器规划"></a>一、机器规划</h2><p>基于pgpool中间件实现postgresql一主多从集群部署，这里用两台服务器作一主一从示例</p>
 <table>
@@ -329,7 +328,7 @@
 <td>从库</td>
 </tr>
 </tbody></table>
-<h2 id="二、整体架构"><a href="#二、整体架构" class="headerlink" title="二、整体架构"></a>二、整体架构</h2><p><img src="/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/PostgreSQL%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA/postgresql%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA%5Cimage-20221028174953304.png" srcset="/img/loading.gif" lazyload alt="image-20221028174953304"></p>
+<h2 id="二、整体架构"><a href="#二、整体架构" class="headerlink" title="二、整体架构"></a>二、整体架构</h2><p><img src="/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/PostgreSQL%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA/image-20221028174953304.png" srcset="/img/loading.gif" lazyload alt="image-20221028174953304"></p>
 <h2 id="三、安装postgresql"><a href="#三、安装postgresql" class="headerlink" title="三、安装postgresql"></a>三、安装postgresql</h2><h3 id="3-1、安装postgresql-14"><a href="#3-1、安装postgresql-14" class="headerlink" title="3.1、安装postgresql-14"></a>3.1、安装postgresql-14</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs sh">sudo yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm<br><br><span class="hljs-comment"># 安装 PostgreSQL：</span><br>sudo yum install -y postgresql14-server<br><br><span class="hljs-comment"># 可选择初始化数据库并启用自动启动：</span><br>sudo /usr/pgsql-14/bin/postgresql-14-setup initdb<br>sudo systemctl <span class="hljs-built_in">enable</span> postgresql-14<br>sudo systemctl start postgresql-14<br><br><span class="hljs-comment"># 安装核心数据库服务器</span><br>yum install postgresql14-server postgresql14-contrib -y<br><br><span class="hljs-comment">#postgresql相关路径</span><br>/var/lib/pgsql/14/data/  <span class="hljs-comment">#conf文件路径</span><br><br><span class="hljs-comment">#测试是否能正常连接</span><br>su - postgres<br>psql<br></code></pre></td></tr></table></figure>
 
 <h3 id="3-2、主节点配置"><a href="#3-2、主节点配置" class="headerlink" title="3.2、主节点配置"></a>3.2、主节点配置</h3><h4 id="3-2-1）创建用于主从访问的用户，-修改postgres用户的密码，用于远程登录。-切换到postgres用户操作"><a href="#3-2-1）创建用于主从访问的用户，-修改postgres用户的密码，用于远程登录。-切换到postgres用户操作" class="headerlink" title="3.2.1）创建用于主从访问的用户， 修改postgres用户的密码，用于远程登录。(切换到postgres用户操作)"></a>3.2.1）创建用于主从访问的用户， 修改postgres用户的密码，用于远程登录。(切换到postgres用户操作)</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#切换到postgres用户操作</span><br>su - postgres<br>psql<br><br><span class="hljs-comment">#创建用于主从访问的用户</span><br><span class="hljs-comment">#创建数据库账号replica并设置密码及登录权限和备份权限</span><br>create role replica login replication encrypted password <span class="hljs-string">&#x27;replica123&#x27;</span>;<br><br><span class="hljs-comment">#修改postgres用户的密码，用于远程登录</span><br>alter USER postgres with password <span class="hljs-string">&#x27;postgres&#x27;</span>;<br></code></pre></td></tr></table></figure>
@@ -365,6 +364,7 @@
 
 <h3 id="6-2、修改配置（两台机器都需要配置）"><a href="#6-2、修改配置（两台机器都需要配置）" class="headerlink" title="6.2、修改配置（两台机器都需要配置）"></a>6.2、修改配置（两台机器都需要配置）</h3><p>pool_hba.conf和之前配置的PostgreSQL中的配置时一样的</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /etc/pgpool-II/pool_hba.conf<br>host    replication replica     192.168.62.129/24    trust<br>host    replication replica     192.168.62.130/24    trust<br>host    all          all        192.168.0.0/24       md5<br>host    all          all        0.0.0.0/0 		     md5<br></code></pre></td></tr></table></figure>
+
 <h3 id="6-3、对postgres的密码进行加密。将postgres的密码设置为和用户名相同"><a href="#6-3、对postgres的密码进行加密。将postgres的密码设置为和用户名相同" class="headerlink" title="6.3、对postgres的密码进行加密。将postgres的密码设置为和用户名相同"></a>6.3、对postgres的密码进行加密。将postgres的密码设置为和用户名相同</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#密码加密</span><br>pg_md5 postgres<br>&gt;&gt;e8a48653851e28c69d0506508fb27fc5<br><br><span class="hljs-comment">#将加密结果复制，并粘贴到pcp.conf中相应的位置，取消掉该行的注释</span><br>vim /etc/pgpool-II/pcp.conf<br>postgres:e8a48653851e28c69d0506508fb27fc5<br></code></pre></td></tr></table></figure>
 
 <h3 id="6-4、执行命令-先切换到postgres用户再执行然后输入密码"><a href="#6-4、执行命令-先切换到postgres用户再执行然后输入密码" class="headerlink" title="6.4、执行命令(先切换到postgres用户再执行然后输入密码):"></a>6.4、执行命令(先切换到postgres用户再执行然后输入密码):</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">pg_md5 -m -p -u postgres pool_passwd<br></code></pre></td></tr></table></figure>

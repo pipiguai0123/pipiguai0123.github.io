@@ -1,0 +1,834 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Kafka安装部署及使用(单节点)1参考文献：https:&#x2F;&#x2F;blog.csdn.net&#x2F;HG_Harvey&#x2F;article&#x2F;details&#x2F;79174104  备注：单节点单Broker部署、单节点多Broker部署、集群部署（多节点多Broker）。实际生产环境中使用的是第三种方式，以集群的方式来部署Kafka。 注意：Kafka强依赖ZooKeeper(以下简称ZK），如果想要使用Kafka">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka安装部署及使用(单节点)">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="Kafka安装部署及使用(单节点)1参考文献：https:&#x2F;&#x2F;blog.csdn.net&#x2F;HG_Harvey&#x2F;article&#x2F;details&#x2F;79174104  备注：单节点单Broker部署、单节点多Broker部署、集群部署（多节点多Broker）。实际生产环境中使用的是第三种方式，以集群的方式来部署Kafka。 注意：Kafka强依赖ZooKeeper(以下简称ZK），如果想要使用Kafka">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020164316467.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020164810461.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020152107702.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020152801513.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020153446152.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020153601755.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020160243454.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020161457496.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020161607599.png">
+<meta property="article:published_time" content="2023-03-30T07:53:53.000Z">
+<meta property="article:modified_time" content="2023-03-30T09:58:49.609Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="Kafka">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pipiguai0123.github.io/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020164316467.png">
+  
+  
+  
+  <title>Kafka安装部署及使用(单节点) - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Kafka安装部署及使用(单节点)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-30 15:53" pubdate>
+          2023年3月30日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          49 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Kafka安装部署及使用(单节点)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Kafka安装部署及使用-单节点"><a href="#Kafka安装部署及使用-单节点" class="headerlink" title="Kafka安装部署及使用(单节点)"></a>Kafka安装部署及使用(单节点)</h1><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs txt">参考文献：https://blog.csdn.net/HG_Harvey/article/details/79174104<br></code></pre></td></tr></table></figure>
+
+<p>备注：单节点单Broker部署、单节点多Broker部署、集群部署（多节点多Broker）。实际生产环境中使用的是第三种方式，以集群的方式来部署Kafka。</p>
+<p>注意：Kafka强依赖ZooKeeper(以下简称ZK），如果想要使用Kafka，就必须安装ZK，Kafka中的消费偏置信息、kafka集群、topic信息会被存储在ZK中。有人可能会说我在使用Kafka的时候就没有安装ZK，那是因为Kafka内置了一个ZK，一般我们不使用它</p>
+<p>Kafka中单节点部署又分为两种，一种为单节点单Broker部署，一种为单节点多Broker部署。因为是单节点的Kafka，所以在安装ZK时也只需要单节点即可。</p>
+<p>ZooKeeper官网：<a target="_blank" rel="noopener" href="http://zookeeper.apache.org/">http://zookeeper.apache.org/</a></p>
+<h2 id="1、安装Zookeeper-下列为单节点，集群模式可参考文档-lt-liunx搭建Zookeeper集群搭建-gt"><a href="#1、安装Zookeeper-下列为单节点，集群模式可参考文档-lt-liunx搭建Zookeeper集群搭建-gt" class="headerlink" title="1、安装Zookeeper(下列为单节点，集群模式可参考文档&lt;liunx搭建Zookeeper集群搭建&gt;)"></a>1、安装Zookeeper(下列为单节点，集群模式可参考文档&lt;liunx搭建Zookeeper集群搭建&gt;)</h2><h3 id="1-1、安装JDK"><a href="#1-1、安装JDK" class="headerlink" title="1.1、安装JDK"></a>1.1、安装JDK</h3><h3 id="1-2、创建zookeeper用户-集群各节点参照执行"><a href="#1-2、创建zookeeper用户-集群各节点参照执行" class="headerlink" title="1.2、创建zookeeper用户 (集群各节点参照执行)"></a>1.2、创建zookeeper用户 (集群各节点参照执行)</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">useradd zk<br>passwd zk<br>&gt;输入密码<br><br>su - zk<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-3、下载Zookeeper最新稳定版"><a href="#1-3、下载Zookeeper最新稳定版" class="headerlink" title="1.3、下载Zookeeper最新稳定版"></a>1.3、下载Zookeeper最新稳定版</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">wget https://mirrors.bfsu.edu.cn/apache/zookeeper/zookeeper-3.5.10/apache-zookeeper-3.5.10-bin.tar.gz --no-check-certificate<br><span class="hljs-comment">#其他版本：https://mirrors.bfsu.edu.cn/apache/zookeeper</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="1-4、解压Zookeeper压缩包"><a href="#1-4、解压Zookeeper压缩包" class="headerlink" title="1.4、解压Zookeeper压缩包"></a>1.4、解压Zookeeper压缩包</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">tar -xnf apache-zookeeper-3.5.10-bin.tar.gz<br><br><span class="hljs-comment">#设置软链接：</span><br><span class="hljs-built_in">ln</span> -s apache-zookeeper-3.5.10-bin zookeeper<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-5、修改配置文件zoo-cfg"><a href="#1-5、修改配置文件zoo-cfg" class="headerlink" title="1.5、修改配置文件zoo.cfg"></a>1.5、修改配置文件zoo.cfg</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> data<br><span class="hljs-built_in">cd</span> zookeeper/conf<br><span class="hljs-built_in">cp</span> zoo_sample.cfg zoo.cfg<br><br><span class="hljs-comment">#编辑cfg文件，配置如下：</span><br>vim  zoo.cfg<br><br>tickTime=2000<br>initLimit=10<br>syncLimit=5<br>dataDir=/home/zk/data<br></code></pre></td></tr></table></figure>
+<h3 id="1-6、启动Zookeeper服务"><a href="#1-6、启动Zookeeper服务" class="headerlink" title="1.6、启动Zookeeper服务"></a>1.6、启动Zookeeper服务</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> ~/zookeeper/bin/<br>./zkServer.sh start<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-7、设置环境变量"><a href="#1-7、设置环境变量" class="headerlink" title="1.7、设置环境变量"></a>1.7、设置环境变量</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#需切换为root用户</span><br>vim /etc/profile<br><br><span class="hljs-built_in">export</span> ZOOKEEPER_HOME=/home/zk/zookeeper<br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:<span class="hljs-variable">$ZOOKEEPER_HOME</span>/bin<br><br><span class="hljs-comment">#使之生效</span><br><span class="hljs-built_in">source</span> /etc/profile<br><br><span class="hljs-comment">#测试是否生效</span><br>zkServer.sh status<br></code></pre></td></tr></table></figure>
+
+<h2 id="2、Kafka-单节点单Broker部署及使用"><a href="#2、Kafka-单节点单Broker部署及使用" class="headerlink" title="2、Kafka 单节点单Broker部署及使用"></a>2、Kafka 单节点单Broker部署及使用</h2><p>架构图：</p>
+<p><img src="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020164316467.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="2-1、下载Kafka"><a href="#2-1、下载Kafka" class="headerlink" title="2.1、下载Kafka"></a>2.1、下载Kafka</h3><p><code>官网下载地址：http://kafka.apache.org/downloads</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#下载kafka安装包</span><br>wget https://dlcdn.apache.org/kafka/3.3.1/kafka_2.13-3.3.1.tgz --no-check-certificate<br><br><span class="hljs-comment">#解压到指定目录</span><br>tar -xnf kafka_2.13-3.3.1.tgz -C /app/<br><br><span class="hljs-comment">#更名或者设置软链接</span><br><span class="hljs-built_in">mv</span> /app/kafka_2.13-3.3.1 /app/kafka<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2、配置kafka"><a href="#2-2、配置kafka" class="headerlink" title="2.2、配置kafka"></a>2.2、配置kafka</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#进入kafka的config目录下，并修改server.properties</span><br><span class="hljs-built_in">cd</span> /app/kafak/config/ &amp;&amp; vim server.properties <br><br><span class="hljs-comment"># broker的全局唯一编号，不能重复</span><br>broker.id=0<br><span class="hljs-comment"># 监听端口</span><br>listeners=PLAINTEXT://:9092<br><span class="hljs-comment"># 日志目录</span><br>log.dirs=/tmp/kafka-logs<br><span class="hljs-comment"># 配置zookeeper的连接（如果不是本机，需要该为ip或主机名）</span><br>zookeeper.connect=localhost:2181<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-3、启动zookeeper和kafka"><a href="#2-3、启动zookeeper和kafka" class="headerlink" title="2.3、启动zookeeper和kafka"></a>2.3、启动zookeeper和kafka</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#启动zookeeper</span><br>zkServer.sh start<br><br><span class="hljs-comment">#启动kafka</span><br>/app/kafka/bin/kafka-server-start.sh /app/kafka/config/server.properties<br><br><span class="hljs-comment"># 后台启动服务 , 运行的日志打印在 logs 目录里的server.log 里，不会打印日志到控制台</span><br><span class="hljs-comment">#方法1：</span><br>bin/kafka-server-start.sh -daemon config/server.properties<br><span class="hljs-comment">#方法2：</span><br>bin/kafka‐server‐start.sh config/server.properties &amp;<br><br><span class="hljs-comment">#停止kafka</span><br>bin/kafka‐server‐stop.sh<br><br><span class="hljs-comment">#输入jps查看进程，如果可以看到Kafka进程，表示启动成功</span><br>jps<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-4、测试"><a href="#2-4、测试" class="headerlink" title="2.4、测试"></a>2.4、测试</h3><p><code>参考官网：https://kafka.apache.org/30/documentation.html#quickstart</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> /app/kafka<br><br><span class="hljs-comment">#创建topic</span><br>bin/kafka-topics.sh --create --topic test-topic --bootstrap-server localhost:9092 --replication-factor 1 --partitions 4<br><br><span class="hljs-comment">#参数详解：</span><br>--bootstrap-server: 指定kafka连接url<br>–-replication-factor：指定副本数量<br>–-partitions：指定分区数量<br>–-topic：主题名称<br><br><span class="hljs-comment">#查看所有的topic信息</span><br>bin/kafka-topics.sh --list  --bootstrap-server localhost:9092<br><span class="hljs-comment">#----------输出内容-------------</span><br>test-topic<br><br><span class="hljs-comment">#启动生产者</span><br>bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test-topic<br>&gt;hello,word<br><br><br><span class="hljs-comment">#启动消费者</span><br>bin/kafka-console-consumer.sh  --topic test-topic --from-beginning --bootstrap-server localhost:9092<br><span class="hljs-comment">#----------输出内容-------------</span><br>hello,word<br><br><span class="hljs-comment">#参数详解：</span><br>--from-beginning：参数如果有表示从最开始消费数据，旧的和新的数据都会被消费，而没有该参数表示只会消费新产生的数据<br></code></pre></td></tr></table></figure>
+
+<h2 id="3、Kafka-单节点多Broker部署及使用"><a href="#3、Kafka-单节点多Broker部署及使用" class="headerlink" title="3、Kafka 单节点多Broker部署及使用"></a>3、Kafka 单节点多Broker部署及使用</h2><p>部署架构<br><img src="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020164810461.png" srcset="/img/loading.gif" lazyload alt="image-20221020164810461"></p>
+<h3 id="3-1、按照2-1步骤下载并解压kafka后，拷贝server-properties三份"><a href="#3-1、按照2-1步骤下载并解压kafka后，拷贝server-properties三份" class="headerlink" title="3.1、按照2.1步骤下载并解压kafka后，拷贝server.properties三份"></a>3.1、按照2.1步骤下载并解压kafka后，拷贝server.properties三份</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> /app/kafka/config/<br><span class="hljs-built_in">cp</span> server.properties server-1.properties<br><span class="hljs-built_in">cp</span> server.properties server-2.properties<br><span class="hljs-built_in">cp</span> server.properties server-3.properties<br></code></pre></td></tr></table></figure>
+<h3 id="3-2、修改配置文件"><a href="#3-2、修改配置文件" class="headerlink" title="3.2、修改配置文件"></a>3.2、修改配置文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim server-1.properties<br><br><span class="hljs-comment"># broker的全局唯一编号，不能重复</span><br>broker.id=1<br><span class="hljs-comment"># 监听</span><br>listeners=PLAINTEXT://:9093<br><span class="hljs-comment"># 日志目录</span><br>log.dirs=/tmp/kafka-logs-1<br><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim server-2.properties<br><br><span class="hljs-comment"># broker的全局唯一编号，不能重复</span><br>broker.id=2<br><span class="hljs-comment"># 监听</span><br>listeners=PLAINTEXT://:9094<br><span class="hljs-comment"># 日志目录</span><br>log.dirs=/tmp/kafka-logs-2<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim server-3.properties<br><br><span class="hljs-comment"># broker的全局唯一编号，不能重复</span><br>broker.id=3<br><span class="hljs-comment"># 监听</span><br>listeners=PLAINTEXT://:9095<br><span class="hljs-comment"># 日志目录</span><br>log.dirs=/tmp/kafka-logs-3<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-3、启动Zookeeper"><a href="#3-3、启动Zookeeper" class="headerlink" title="3.3、启动Zookeeper"></a>3.3、启动Zookeeper</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">zkServer.sh start<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-4、启动Kafka（分别启动server1、2、3）"><a href="#3-4、启动Kafka（分别启动server1、2、3）" class="headerlink" title="3.4、启动Kafka（分别启动server1、2、3）"></a>3.4、启动Kafka（分别启动server1、2、3）</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> /app/kafka<br><br>bin/kafka-server-start.sh -daemon config/server-1.properties<br>bin/kafka-server-start.sh -daemon config/server-2.properties<br>bin/kafka-server-start.sh -daemon config/server-3.properties<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#查看端口是否占用</span><br>netstat -lntup| grep java | grep 909<br><span class="hljs-comment">#出现9003、9004、9005端口</span><br><span class="hljs-comment">#查看进程</span><br>jps -m<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-5、创建topic（指定副本数量为3）"><a href="#3-5、创建topic（指定副本数量为3）" class="headerlink" title="3.5、创建topic（指定副本数量为3）"></a>3.5、创建topic（指定副本数量为3）</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">bin/kafka-topics.sh --create --bootstrap-server localhost:9093 --replication-factor 3 --partitions 1 --topic my-replicated-topic<br><br><span class="hljs-comment">#输出Created topic my-replicated-topic.</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-6、查看所有的topic信息"><a href="#3-6、查看所有的topic信息" class="headerlink" title="3.6、查看所有的topic信息"></a>3.6、查看所有的topic信息</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">bin/kafka-topics.sh --list  --bootstrap-server localhost:9093<br><br><span class="hljs-comment">#查看某个topic的详细信息</span><br><br>bin/kafka-topics.sh --describe --bootstrap-server localhost:9093 --topic my-replicated-topic<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-7、启动生产者"><a href="#3-7、启动生产者" class="headerlink" title="3.7、启动生产者"></a>3.7、启动生产者</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">bin/kafka-console-producer.sh --broker-list localhost:9093,localhost:9094,localhost:9095 --topic my-replicated-topic<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-8、启动消费者"><a href="#3-8、启动消费者" class="headerlink" title="3.8、启动消费者"></a>3.8、启动消费者</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">bin/kafka-console-consumer.sh --bootstrap-server localhost:9093 --topic my-replicated-topic --from-beginning<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs txt">kafka全部数据清空与某一topic数据清空：https://blog.csdn.net/wutongyuWxc/article/details/104546169<br>Kafka图形化工具Eagle:https://juejin.cn/post/6971224791793532941<br>kafka可视化客户端 https://www.studytime.xin/article/kafka-tool.html<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-9、单节点多borker容错性测试"><a href="#3-9、单节点多borker容错性测试" class="headerlink" title="3.9、单节点多borker容错性测试"></a>3.9、单节点多borker容错性测试</h3><p>Kafka是支持容错的，上面我们已经完成了Kafka单节点多Blocker的部署，下面我们来对Kafka的容错性进行测试，测试步骤如下:</p>
+<h4 id="验证一：kill掉状态是follower的borker后，测试生产和消费的信息是否正确"><a href="#验证一：kill掉状态是follower的borker后，测试生产和消费的信息是否正确" class="headerlink" title="验证一：kill掉状态是follower的borker后，测试生产和消费的信息是否正确"></a>验证一：kill掉状态是follower的borker后，测试生产和消费的信息是否正确</h4><h5 id="1-查看topic的详细信息"><a href="#1-查看topic的详细信息" class="headerlink" title="(1)查看topic的详细信息"></a>(1)查看topic的详细信息</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">bin/kafka-topics.sh --describe --topic my-replicated-topic --bootstrap-server localhost:9093<br><br><span class="hljs-comment">#输出信息中可以看到3为leader, 1和2为follower</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020152107702.png" srcset="/img/loading.gif" lazyload alt="image-20221020152107702"></p>
+<h5 id="2-kill掉状态是follower的borker（我这将follower为1的进程kill掉），测试生成和消费信息是否正确"><a href="#2-kill掉状态是follower的borker（我这将follower为1的进程kill掉），测试生成和消费信息是否正确" class="headerlink" title="(2)kill掉状态是follower的borker（我这将follower为1的进程kill掉），测试生成和消费信息是否正确"></a>(2)kill掉状态是follower的borker（我这将follower为1的进程kill掉），测试生成和消费信息是否正确</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#查看进程信息</span><br>jps -m<br><br><span class="hljs-built_in">kill</span> -9 进程<span class="hljs-built_in">id</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020152801513.png" srcset="/img/loading.gif" lazyload alt="image-20221020152801513"></p>
+<h5 id="3-启动生产者和消费者，测试信息是否正确"><a href="#3-启动生产者和消费者，测试信息是否正确" class="headerlink" title="(3)启动生产者和消费者，测试信息是否正确"></a>(3)启动生产者和消费者，测试信息是否正确</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#启动生产者</span><br>bin/kafka-console-producer.sh --broker-list localhost:9093,localhost:9094,localhost:9095 --topic my-replicated-topic<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020153446152.png" srcset="/img/loading.gif" lazyload alt="image-20221020153446152"></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#启动消费者</span><br>bin/kafka-console-consumer.sh --bootstrap-server localhost:9094 --topic my-replicated-topic --from-beginning<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020153601755.png" srcset="/img/loading.gif" lazyload alt="image-20221020153601755"></p>
+<p><strong>结论：kill掉任意一个状态是follower的broker，生成和消费信息正确，不受任何影响</strong></p>
+<h4 id="验证二：kill掉状态是Leader的borker后，测试生产和消费的信息是否正确"><a href="#验证二：kill掉状态是Leader的borker后，测试生产和消费的信息是否正确" class="headerlink" title="验证二：kill掉状态是Leader的borker后，测试生产和消费的信息是否正确"></a>验证二：kill掉状态是Leader的borker后，测试生产和消费的信息是否正确</h4><h5 id="1-查看topic详细信息，并kill掉状态为leader的borker"><a href="#1-查看topic详细信息，并kill掉状态为leader的borker" class="headerlink" title="(1)查看topic详细信息，并kill掉状态为leader的borker"></a>(1)查看topic详细信息，并kill掉状态为leader的borker</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">bin/kafka-topics.sh --describe --topic my-replicated-topic --bootstrap-server localhost:9094<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020160243454.png" srcset="/img/loading.gif" lazyload alt="image-20221020160243454"></p>
+<h5 id="2-启动生产和消费者测试信息是否正确"><a href="#2-启动生产和消费者测试信息是否正确" class="headerlink" title="(2)启动生产和消费者测试信息是否正确"></a>(2)启动生产和消费者测试信息是否正确</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#启动生产者</span><br>bin/kafka-console-producer.sh --broker-list localhost:9093,localhost:9094,localhost:9095 --topic my-replicated-topic<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020161457496.png" srcset="/img/loading.gif" lazyload alt="image-20221020161457496"></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#启动消费者</span><br>bin/kafka-console-consumer.sh --bootstrap-server localhost:9094 --topic my-replicated-topic --from-beginning<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E5%8D%95%E8%8A%82%E7%82%B9)%5Cimage-20221020161607599.png" srcset="/img/loading.gif" lazyload alt="image-20221020161607599"></p>
+<p><strong>结论：kill掉状态是leader的borker，生产和消费的信息正确</strong></p>
+<p><strong>根据验证一和验证二结果得知：不管当前状态的borker是leader还是follower，当我们kill掉后，只要有一个borker能够正常使用，则消息仍然能够正常的生产和发送。即Kafka的容错性是有保证的！</strong></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/Kafka/" class="category-chain-item">Kafka</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Kafka/">#Kafka</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Kafka安装部署及使用(单节点)</div>
+      <div>https://pipiguai0123.github.io/2023/03/30/中间件/kafka/Kafka安装部署及使用(单节点)/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月30日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/Kafka%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8(%E9%9B%86%E7%BE%A4)/" title="Kafka安装部署及使用(集群)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Kafka安装部署及使用(集群)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/elasticsearch/docker%E5%90%AF%E5%8A%A8elasticsearch/" title="docker启动elasticsearch.md">
+                        <span class="hidden-mobile">docker启动elasticsearch.md</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

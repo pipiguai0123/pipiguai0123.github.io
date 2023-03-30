@@ -24,7 +24,7 @@
 <meta property="og:description" content="前言   轮询 默认方式    weight 权重方式   ip_hash 依据ip分配方式   least_conn 最少连接方式   fair（第三方） 响应时间方式   url_hash（第三方） 依据URL分配方式   Nginx使用的配置详解:12345(1). down： 表示当前的server暂时不参与负载。(2). weight：  默认为1.weight越大，负载的权重就越大。(">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-03-27T02:27:22.000Z">
-<meta property="article:modified_time" content="2023-03-29T07:20:26.451Z">
+<meta property="article:modified_time" content="2023-03-30T03:36:02.746Z">
 <meta property="article:author" content="zhenzhou_zhang">
 <meta property="article:tag" content="Nginx">
 <meta name="twitter:card" content="summary_large_image">
@@ -347,7 +347,7 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh">upstream dynamic_name &#123;<br>        least_conn;    <span class="hljs-comment">#把请求转发给连接数较少的后端服务器</span><br>        server localhost:8081;<br>        server localhost:8082 backup;<br>        server localhost:8083   max_fails=3 fail_timeout=20s;<br>&#125; <br>server &#123;<br>	<span class="hljs-comment">#...省略...</span><br>&#125;           <br></code></pre></td></tr></table></figure>
 
 <h2 id="第三方策略："><a href="#第三方策略：" class="headerlink" title="第三方策略："></a>第三方策略：</h2><p>第三方的负载均衡策略的实现需要安装第三方插件。</p>
-<h3 id="fair"><a href="#fair" class="headerlink" title="fair"></a>fair</h3><p>按照服务器端的响应时间来分配请求，响应时间短的优先分配。</p>
+<h3 id="fair："><a href="#fair：" class="headerlink" title="fair："></a>fair：</h3><p>按照服务器端的响应时间来分配请求，响应时间短的优先分配。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh">upstream dynamic_name &#123;<br>        server localhost:8081;<br>        server localhost:8082;<br>        server localhost:8083;<br>        fair;    <span class="hljs-comment">#实现响应时间短的优先分配</span><br>&#125;              <br>server &#123;<br>	<span class="hljs-comment">#...省略...</span><br>&#125;            <br></code></pre></td></tr></table></figure>
 
 

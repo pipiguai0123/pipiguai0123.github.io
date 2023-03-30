@@ -16,15 +16,15 @@
   <meta name="author" content="zhenzhou_zhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="使用docker运行Nexus搭建Maven私服1参考文档：https:&#x2F;&#x2F;www.hangge.com&#x2F;blog&#x2F;cache&#x2F;detail_2844.html docker方式运行Nexus###1）拉取Nexus3 镜像： 1docker pull sonatype&#x2F;nexus3  2）接着执行如下命令，创建宿主机挂载目录：123mkdir –p &#x2F;app&#x2F;nexus-datachown -R">
+    <meta name="description" content="使用docker运行Nexus搭建Maven私服1参考文档：https:&#x2F;&#x2F;www.hangge.com&#x2F;blog&#x2F;cache&#x2F;detail_2844.html docker方式运行Nexus1）拉取Nexus3 镜像：1docker pull sonatype&#x2F;nexus3  2）接着执行如下命令，创建宿主机挂载目录：123mkdir –p &#x2F;app&#x2F;nexus-datachown -R 200">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用docker运行Nexus搭建Maven私服">
 <meta property="og:url" content="https://pipiguai0123.github.io/2023/03/29/devops/nexus/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8CNexus%E6%90%AD%E5%BB%BAMaven%E7%A7%81%E6%9C%8D/index.html">
 <meta property="og:site_name" content="皮皮怪-page">
-<meta property="og:description" content="使用docker运行Nexus搭建Maven私服1参考文档：https:&#x2F;&#x2F;www.hangge.com&#x2F;blog&#x2F;cache&#x2F;detail_2844.html docker方式运行Nexus###1）拉取Nexus3 镜像： 1docker pull sonatype&#x2F;nexus3  2）接着执行如下命令，创建宿主机挂载目录：123mkdir –p &#x2F;app&#x2F;nexus-datachown -R">
+<meta property="og:description" content="使用docker运行Nexus搭建Maven私服1参考文档：https:&#x2F;&#x2F;www.hangge.com&#x2F;blog&#x2F;cache&#x2F;detail_2844.html docker方式运行Nexus1）拉取Nexus3 镜像：1docker pull sonatype&#x2F;nexus3  2）接着执行如下命令，创建宿主机挂载目录：123mkdir –p &#x2F;app&#x2F;nexus-datachown -R 200">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-03-29T09:10:47.000Z">
-<meta property="article:modified_time" content="2023-03-29T08:10:49.927Z">
+<meta property="article:modified_time" content="2023-03-30T02:59:05.457Z">
 <meta property="article:author" content="zhenzhou_zhang">
 <meta property="article:tag" content="Nexus">
 <meta name="twitter:card" content="summary_large_image">
@@ -241,7 +241,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          507 字
+          504 字
         
       </span>
     
@@ -305,8 +305,7 @@
               <div class="markdown-body">
                 
                 <h1 id="使用docker运行Nexus搭建Maven私服"><a href="#使用docker运行Nexus搭建Maven私服" class="headerlink" title="使用docker运行Nexus搭建Maven私服"></a>使用docker运行Nexus搭建Maven私服</h1><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs txt">参考文档：https://www.hangge.com/blog/cache/detail_2844.html<br></code></pre></td></tr></table></figure>
-<h2 id="docker方式运行Nexus"><a href="#docker方式运行Nexus" class="headerlink" title="docker方式运行Nexus"></a>docker方式运行Nexus</h2><p>###1）拉取Nexus3 镜像：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker pull sonatype/nexus3<br></code></pre></td></tr></table></figure>
+<h2 id="docker方式运行Nexus"><a href="#docker方式运行Nexus" class="headerlink" title="docker方式运行Nexus"></a>docker方式运行Nexus</h2><h3 id="1）拉取Nexus3-镜像："><a href="#1）拉取Nexus3-镜像：" class="headerlink" title="1）拉取Nexus3 镜像："></a>1）拉取Nexus3 镜像：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker pull sonatype/nexus3<br></code></pre></td></tr></table></figure>
 
 <h3 id="2）接着执行如下命令，创建宿主机挂载目录："><a href="#2）接着执行如下命令，创建宿主机挂载目录：" class="headerlink" title="2）接着执行如下命令，创建宿主机挂载目录："></a>2）接着执行如下命令，创建宿主机挂载目录：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> –p /app/nexus-data<br><span class="hljs-built_in">chown</span> -R 200 /app/nexus-data<br><span class="hljs-comment">#chmod 777 /app/nexus-data</span><br></code></pre></td></tr></table></figure>
 
