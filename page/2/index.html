@@ -247,6 +247,278 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/consul/%E4%BD%BF%E7%94%A8docker-compose%E5%AE%89%E8%A3%85consul/" target="_self">
+          使用docker-compose安装consul
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/consul/%E4%BD%BF%E7%94%A8docker-compose%E5%AE%89%E8%A3%85consul/" target="_self">
+        <div>
+          使用docker-compose安装consul1.创建工作目录并拉取consul镜像123mkdir -p /app/consul &amp;&amp; cd /app/consuldocker pull consul  2.修改docker的json配置1234567891011121314151617vim /etc/docker/daemon.json&#123;  &quot;exec-
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-03-30 11:43" pubdate>
+              2023-03-30
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/consul/" class="category-chain-item">consul</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/consul/">#consul</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/consul/%E4%BD%BF%E7%94%A8docker%E5%AE%89%E8%A3%85consul/" target="_self">
+          使用docker安装consul服务
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/consul/%E4%BD%BF%E7%94%A8docker%E5%AE%89%E8%A3%85consul/" target="_self">
+        <div>
+          使用docker安装consul服务一、使用docker搭建consul单节点1、创建工作目录1mkdir /consul/node1/config  12345678910docker run -d --restart=always --name consul \-p 8500:8500 \-v /consul/node1:/consul \consul:latest agent -server
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-03-30 11:33" pubdate>
+              2023-03-30
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/consul/" class="category-chain-item">consul</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/consul/">#consul</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/consul/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E8%A3%85consul/" target="_self">
+          二进制安装consul
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/30/%E4%B8%AD%E9%97%B4%E4%BB%B6/consul/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E8%A3%85consul/" target="_self">
+        <div>
+          二进制安装consul简介Consul 是 HashiCorp 公司推出的开源工具，用于实现分布式系统的服务发现与配置。Consul 使用 Go 语言编写，因此具有天然可移植性（支持Linux、windows和Mac OS X）。 Consul 内置了服务注册与发现框架、分布一致性协议实现、健康检查、Key&#x2F;Value 存储、多数据中心方案，不再需要依赖其他工具（比如 ZooKeeper
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-03-30 11:23" pubdate>
+              2023-03-30
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/consul/" class="category-chain-item">consul</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/consul/">#consul</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/03/30/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8%E6%97%B6%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95%E5%92%8C%E5%A4%84%E7%90%86/" target="_self">
+          jenkins使用时遇到的问题记录和处理
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/30/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8%E6%97%B6%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95%E5%92%8C%E5%A4%84%E7%90%86/" target="_self">
+        <div>
+          jenkins使用时遇到的问题记录和处理一、离线导入相关插件：在有插件的机器上，先停掉jk服务，systemctl stop jenkins 然后进入到&#x2F;var&#x2F;lib&#x2F;jenkins&#x2F;plugins&#x2F;下 将里面的内容复制到离线的机器&#x2F;var&#x2F;lib&#x2F;jenkins&#x2F;plugins&#x2F;下 二、jenk
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-03-30 10:06" pubdate>
+              2023-03-30
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Devops/" class="category-chain-item">Devops</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Devops/Jenkins/" class="category-chain-item">Jenkins</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Jenkins/">#Jenkins</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/jenkins%E9%80%89%E6%8B%A9%E5%88%86%E6%94%AF%E6%9E%84%E5%BB%BA/" target="_self">
           jenkins选择分支和tag构建
         </a>
@@ -677,290 +949,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/Jenkins-%E6%9E%84%E5%BB%BA%E8%A7%A6%E5%8F%91%E5%99%A8-webhook/" target="_self">
-          Jenkins-构建触发器-webhook
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/Jenkins-%E6%9E%84%E5%BB%BA%E8%A7%A6%E5%8F%91%E5%99%A8-webhook/" target="_self">
-        <div>
-          Jenkins-构建触发器-webhook1参考文档：https://www.cnblogs.com/byhh/p/15624146.html  一、写在前面我们已经了解到了，Jenkins 本身内置了4种构建触发器，分别是：  触发远程构建 其他项目工程构建后触发 Build after other projects are built 定时构建 Build periodically 轮循构建
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-29 17:43" pubdate>
-              2023-03-29
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Devops/" class="category-chain-item">Devops</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/Devops/Jenkins/" class="category-chain-item">Jenkins</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/Devops/Jenkins/Jenkins%E4%BD%BF%E7%94%A8/" class="category-chain-item">Jenkins使用</a>
-  
-  
-
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Jenkins/">#Jenkins</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/03/29/devops/sonarQube/sonarQube%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" target="_self">
-          SonarQube安装部署
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/29/devops/sonarQube/sonarQube%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" target="_self">
-        <div>
-          SonarQube安装部署1234567官方文档：https://docs.sonarqube.org/latest/setup/install-server/参考文档：https://cloud.tencent.com/developer/article/1600167SonarQube+SonarScanner 最全安装步骤：https://www.cnblogs.com/xiaozi/p/1
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-29 17:20" pubdate>
-              2023-03-29
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Devops/" class="category-chain-item">Devops</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/Devops/SonarQube/" class="category-chain-item">SonarQube</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/SonarQube/">#SonarQube</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/03/29/devops/nexus/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8CNexus%E6%90%AD%E5%BB%BAMaven%E7%A7%81%E6%9C%8D/" target="_self">
-          使用docker运行Nexus搭建Maven私服
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/29/devops/nexus/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8CNexus%E6%90%AD%E5%BB%BAMaven%E7%A7%81%E6%9C%8D/" target="_self">
-        <div>
-          使用docker运行Nexus搭建Maven私服1参考文档：https://www.hangge.com/blog/cache/detail_2844.html docker方式运行Nexus1）拉取Nexus3 镜像：1docker pull sonatype/nexus3  2）接着执行如下命令，创建宿主机挂载目录：123mkdir –p /app/nexus-datachown -R 200
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-29 17:10" pubdate>
-              2023-03-29
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Devops/" class="category-chain-item">Devops</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/Devops/Nexus/" class="category-chain-item">Nexus</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Nexus/">#Nexus</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/03/29/devops/maven/maven%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
-          maven安装部署
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/29/devops/maven/maven%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
-        <div>
-          Maven的使用详细文档：https://blog.csdn.net/lovequanquqn/article/details/81627807 Maven规定的目录结构若要使用Maven，那么项目的目录结构必须符合Maven的规范，其目录结构如下：  Maven基本命令1234567891011121314151617-v:查询Maven版本本命令用于检查maven是否安装成功。Maven安装完
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-29 16:50" pubdate>
-              2023-03-29
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Devops/" class="category-chain-item">Devops</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/Devops/maven/" class="category-chain-item">maven</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/maven/">#maven</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><a class="page-number" href="/page/5/#board">5</a><a class="extend next" rel="next" href="/page/3/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/#board">6</a><a class="extend next" rel="next" href="/page/3/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

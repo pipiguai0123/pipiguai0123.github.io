@@ -16,25 +16,22 @@
   <meta name="author" content="zhenzhou_zhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="搭建分布式存储服务minio详细过程1234参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;yhj_911&#x2F;article&#x2F;details&#x2F;122607159参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hahaha111122222&#x2F;p&#x2F;15990604.html参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_43437874&#x2F;article&#x2F;details&#x2F;109">
+    <meta name="description" content="docker安装redis1.新建目录123mkdir &#x2F;app&#x2F;docker&#x2F;redis&#x2F;&amp;#123;conf,data&amp;#125; -pcd &#x2F;app&#x2F;docker&#x2F;redis  2.获取redis模板配置可通过wget 或者上传conf文件 获取 redis 的默认配置模版这里主要是想设置下 redis 的 log &#x2F; password &#x2F; appendonlyredis">
 <meta property="og:type" content="article">
-<meta property="og:title" content="搭建分布式存储服务minio">
-<meta property="og:url" content="https://pipiguai0123.github.io/2023/03/28/minio/%E6%90%AD%E5%BB%BA%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E6%9C%8D%E5%8A%A1minio%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B/index.html">
+<meta property="og:title" content="docker安装redis">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/docker%E5%AE%89%E8%A3%85redis/index.html">
 <meta property="og:site_name" content="皮皮怪-page">
-<meta property="og:description" content="搭建分布式存储服务minio详细过程1234参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;yhj_911&#x2F;article&#x2F;details&#x2F;122607159参考文档：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hahaha111122222&#x2F;p&#x2F;15990604.html参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_43437874&#x2F;article&#x2F;details&#x2F;109">
+<meta property="og:description" content="docker安装redis1.新建目录123mkdir &#x2F;app&#x2F;docker&#x2F;redis&#x2F;&amp;#123;conf,data&amp;#125; -pcd &#x2F;app&#x2F;docker&#x2F;redis  2.获取redis模板配置可通过wget 或者上传conf文件 获取 redis 的默认配置模版这里主要是想设置下 redis 的 log &#x2F; password &#x2F; appendonlyredis">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/28/minio/%E6%90%AD%E5%BB%BA%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E6%9C%8D%E5%8A%A1minio%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B/image-20220921161607211.png">
-<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/28/minio/%E6%90%AD%E5%BB%BA%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E6%9C%8D%E5%8A%A1minio%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B/image-20220921160920315.png">
-<meta property="article:published_time" content="2023-03-28T05:52:44.000Z">
-<meta property="article:modified_time" content="2023-03-28T10:00:35.615Z">
+<meta property="article:published_time" content="2023-04-03T02:23:53.000Z">
+<meta property="article:modified_time" content="2023-04-03T07:14:59.537Z">
 <meta property="article:author" content="zhenzhou_zhang">
-<meta property="article:tag" content="minio">
+<meta property="article:tag" content="redis">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://pipiguai0123.github.io/2023/03/28/minio/%E6%90%AD%E5%BB%BA%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E6%9C%8D%E5%8A%A1minio%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B/image-20220921161607211.png">
   
   
   
-  <title>搭建分布式存储服务minio - 皮皮怪-page</title>
+  <title>docker安装redis - 皮皮怪-page</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -221,7 +218,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="搭建分布式存储服务minio"></span>
+            <span id="subtitle" data-typed-text="docker安装redis"></span>
           
         </div>
 
@@ -232,8 +229,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-28 13:52" pubdate>
-          2023年3月28日 下午
+        <time datetime="2023-04-03 10:23" pubdate>
+          2023年4月3日 上午
         </time>
       </span>
     
@@ -244,7 +241,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.5k 字
+          2.1k 字
         
       </span>
     
@@ -256,7 +253,7 @@
         
         
           <!-- compatible with older versions-->
-          21 分钟
+          18 分钟
         
       </span>
     
@@ -302,54 +299,28 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">搭建分布式存储服务minio</h1>
+            <h1 style="display: none">docker安装redis</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="搭建分布式存储服务minio详细过程"><a href="#搭建分布式存储服务minio详细过程" class="headerlink" title="搭建分布式存储服务minio详细过程"></a>搭建分布式存储服务minio详细过程</h1><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs txt">参考文档：https://blog.csdn.net/yhj_911/article/details/122607159<br>参考文档：https://www.cnblogs.com/hahaha111122222/p/15990604.html<br>参考文档：https://blog.csdn.net/qq_43437874/article/details/109608069<br>minio分布式解决方案：https://blog.csdn.net/yujia_666/article/details/121637775<br></code></pre></td></tr></table></figure>
+                <h1 id="docker安装redis"><a href="#docker安装redis" class="headerlink" title="docker安装redis"></a>docker安装redis</h1><h2 id="1-新建目录"><a href="#1-新建目录" class="headerlink" title="1.新建目录"></a>1.新建目录</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> /app/docker/redis/&#123;conf,data&#125; -p<br><br><span class="hljs-built_in">cd</span> /app/docker/redis<br></code></pre></td></tr></table></figure>
 
-<p><strong>搭建环境：</strong></p>
-<table>
-<thead>
-<tr>
-<th>服务器ip</th>
-<th>服务器配置</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>192.168.62.128</td>
-<td>4G+4CPU+40G</td>
-</tr>
-<tr>
-<td>192.168.62.129</td>
-<td>4G+4CPU+40G</td>
-</tr>
-</tbody></table>
-<h2 id="1、创建目录"><a href="#1、创建目录" class="headerlink" title="1、创建目录"></a>1、创建目录</h2><p>本集群由2台服务器构成（官方推荐集群最小4台服务器），每个服务器上挂载四个磁盘目录，四个目录的原因：模拟由一台服务器扩容到两台服务器。</p>
-<p>注意：在一台主机上创建4个不同的路径模拟4个不同的磁盘来进行。这种方式行不通!</p>
-<p><img src="/2023/03/28/minio/%E6%90%AD%E5%BB%BA%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E6%9C%8D%E5%8A%A1minio%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B/image-20220921161607211.png" srcset="/img/loading.gif" lazyload alt="192.168.62.128机器"></p>
-<p><img src="/2023/03/28/minio/%E6%90%AD%E5%BB%BA%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E6%9C%8D%E5%8A%A1minio%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B/image-20220921160920315.png" srcset="/img/loading.gif" lazyload alt="192.168.62.129机器"></p>
-<p>数据存储目录（两台服务器）</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs arduino">mkdir -p /home/minio/data1<br>mkdir -p /home/minio/data2<br>mkdir -p /home/minio/data3<br>mkdir -p /home/minio/data4<br></code></pre></td></tr></table></figure>
+<h2 id="2-获取redis模板配置"><a href="#2-获取redis模板配置" class="headerlink" title="2.获取redis模板配置"></a>2.获取redis模板配置</h2><p><strong>可通过wget 或者上传conf文件</strong></p>
+<p>获取 redis 的默认配置模版<br>这里主要是想设置下 redis 的 log &#x2F; password &#x2F; appendonly<br>redis 的 docker 运行参数提供了 –appendonly yes 但没 password</p>
+<h3 id="在线下载conf文件"><a href="#在线下载conf文件" class="headerlink" title="在线下载conf文件"></a>在线下载conf文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">wget https://raw.githubusercontent.com/antirez/redis/4.0/redis.conf -O ./conf/redis.conf  <span class="hljs-comment">#可本地上传</span><br><br><span class="hljs-comment"># 直接替换编辑，修改conf文件</span><br>sed -i <span class="hljs-string">&#x27;s/logfile &quot;&quot;/logfile &quot;access.log&quot;/g&#x27;</span> /app/docker/redis/conf/redis.conf<br>sed -i <span class="hljs-string">&#x27;s/# 、、 foobared/requirepass 123456/g&#x27;</span> /app/docker/redis/conf/redis.conf<br>sed -i <span class="hljs-string">&#x27;s/appendonly no/appendonly yes/g&#x27;</span> /app/docker/redis/conf/redis.conf<br><br></code></pre></td></tr></table></figure>
+<h3 id="上传conf文件"><a href="#上传conf文件" class="headerlink" title="上传conf文件"></a>上传conf文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /app/docker/conf/redis.conf<br><br>requirepass 123456   <span class="hljs-comment">#//找到，修改密码</span><br><br><br></code></pre></td></tr></table></figure>
+<p>这里可能还需配置<code>bind</code>,<code> protected-mode</code><br>protected-mode 是在没有显示定义 bind 地址（即监听全网断），又没有设置密码 requirepass时，protected-mode 只允许本地回环 127.0.0.1 访问。<br>也就是说当开启了 protected-mode 时，如果你既没有显示的定义了 bind 监听的地址，同时又没有设置 auth 密码。那你只能通过 127.0.0.1 来访问 redis 服务。<br>关闭绑定[允许所有外网访问]： # bind 127.0.0.1  或者 解除只有本地能链接客户端  0.0.0.0 -::1<br>开启密码验证： requirepass redispassword<br>开启数据持久化[aof]：appendonly yes<br>配置日志存放目录和文件：logfile &#x2F;logs&#x2F;redis.log</p>
+<h2 id="3-创建并运行一个名为-myredis-的容器"><a href="#3-创建并运行一个名为-myredis-的容器" class="headerlink" title="3.创建并运行一个名为 myredis 的容器"></a>3.创建并运行一个名为 myredis 的容器</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment"># 创建并运行一个名为 myredis 的容器</span><br>docker run \<br>--restart=always \<br>-p 6379:6379 \<br>-v <span class="hljs-variable">$PWD</span>/data:/data \<br>-v <span class="hljs-variable">$PWD</span>/conf/redis.conf:/etc/redis/redis.conf \<br>--privileged=<span class="hljs-literal">true</span> \<br>--name myredis \<br>-d redis redis-server /etc/redis/redis.conf<br><br><span class="hljs-comment">#$PWD等于目录变量 ，以上代码等于</span><br>docker run -p 6379:6379 -v /app/docker/redis/data:/data -v /app/docker/redis/conf/redis.conf:/etc/redis/redis.conf --privileged=<span class="hljs-literal">true</span> --name myredis -d redis redis-server /etc/redis/redis.conf<br></code></pre></td></tr></table></figure>
 
-<p>启动脚本目录</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">mkdir -p <span class="hljs-regexp">/opt/mi</span>nio<br></code></pre></td></tr></table></figure>
+<p>以上命令解析：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker run \<br>--restart=always \ <span class="hljs-comment">#当 Docker 重启时，容器自动启动。</span><br>-p 6379:6379 \ <span class="hljs-comment"># 端口映射 宿主机:容器</span><br>-v <span class="hljs-variable">$PWD</span>/data:/data:rw \ <span class="hljs-comment"># 映射数据目录 rw 为读写</span><br>-v <span class="hljs-variable">$PWD</span>/conf/redis.conf:/etc/redis/redis.conf:ro \ <span class="hljs-comment"># 挂载配置文件 ro 为readonly</span><br>--privileged=<span class="hljs-literal">true</span> \ <span class="hljs-comment"># 给与一些权限</span><br>--name myredis \ <span class="hljs-comment"># 给容器起个名字</span><br>-d redis redis-server /etc/redis/redis.conf <span class="hljs-comment"># deamon 运行容器 并使用配置文件启动容器内的 redis-server </span><br><br></code></pre></td></tr></table></figure>
 
-<p>配置域名，在&#x2F;etc&#x2F;hosts中，追加如下内容（两台服务器）</p>
-<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs accesslog">cat &gt;&gt; /etc/hosts &lt;&lt; EOF<br><span class="hljs-number">192.168.62.128</span>  minio-<span class="hljs-number">1</span><br><span class="hljs-number">192.168.62.129</span>  minio-<span class="hljs-number">2</span><br>EOF<br></code></pre></td></tr></table></figure>
+<h2 id="4-其他操作"><a href="#4-其他操作" class="headerlink" title="4.其他操作"></a>4.其他操作</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment"># 查看活跃的容器</span><br>docker ps<br><br><span class="hljs-comment"># 如果没有 myredis 说明启动失败 查看错误日志</span><br>docker logs myredis<br><br><span class="hljs-comment"># 查看 myredis 的 ip 挂载 端口映射等信息</span><br>docker inspect myredis<br><br><span class="hljs-comment"># 查看 myredis 的端口映射</span><br>docker port myredis<br></code></pre></td></tr></table></figure>
 
-<h2 id="2、编写集群启动脚本（两台服务器）"><a href="#2、编写集群启动脚本（两台服务器）" class="headerlink" title="2、编写集群启动脚本（两台服务器）"></a>2、编写集群启动脚本（两台服务器）</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs shell">cat /opt/minio/run.sh<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br>export MINIO_ACCESS_KEY=Minio<br>export MINIO_SECRET_KEY=Test123456<br> <br>/opt/minio/minio server --config-dir /etc/minio \<br>http://minio-&#123;1...2&#125;/home/minio/data&#123;1...4&#125;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"> </span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">http://minio-&#123;1...1&#125;/home/minio/data&#123;1...4&#125; http://minio-&#123;2...2&#125;/home/minio/data&#123;1...4&#125;</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">如果以后想扩容，必须用这种方式&#123;&#125;</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">如果只有一台服务器只执行http://minio-&#123;1...1&#125;/home/minio/data&#123;1...4&#125;</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">如果两台服务器http://minio-&#123;1...2&#125;/home/minio/data&#123;1...4&#125;</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">扩容时追加http://minio-&#123;2...2&#125;/home/minio/data&#123;1...4&#125;</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">经过验证，一个文件要么存储到源存储中，要么存储到扩容后的存储中</span><br></code></pre></td></tr></table></figure>
+<h2 id="5-redis登录"><a href="#5-redis登录" class="headerlink" title="5.redis登录"></a>5.redis登录</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker <span class="hljs-built_in">exec</span> -it redis bash<br><br>&gt; redis-cli <br>&gt; auth  密码 <br><br></code></pre></td></tr></table></figure>
 
-<h2 id="3、编写服务脚本（两台服务器）"><a href="#3、编写服务脚本（两台服务器）" class="headerlink" title="3、编写服务脚本（两台服务器）"></a>3、编写服务脚本（两台服务器）</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs routeros">vim /usr/lib/systemd/system/minio.service<br> <br>[Unit]<br><span class="hljs-attribute">Description</span>=Minio<span class="hljs-built_in"> service</span><br><span class="hljs-built_in"></span><span class="hljs-attribute">Documentation</span>=https://docs.minio.io/<br> <br>[Service]<br><span class="hljs-attribute">WorkingDirectory</span>=/opt/minio/<br><span class="hljs-attribute">ExecStart</span>=/opt/minio/run.sh<br> <br><span class="hljs-attribute">Restart</span>=on-failure<br><span class="hljs-attribute">RestartSec</span>=5<br> <br>[Install]<br><span class="hljs-attribute">WantedBy</span>=multi-user.target<br></code></pre></td></tr></table></figure>
-
-<h2 id="4、追加权限（两台服务器）"><a href="#4、追加权限（两台服务器）" class="headerlink" title="4、追加权限（两台服务器）"></a>4、追加权限（两台服务器）</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs awk">chmod +x <span class="hljs-regexp">/usr/</span>lib<span class="hljs-regexp">/systemd/</span>system/minio.service<br><span class="hljs-comment">#刷新服务</span><br>systemctl daemon-reload<br><br>wget https:<span class="hljs-regexp">//</span>dl.minio.io<span class="hljs-regexp">/server/mi</span>nio<span class="hljs-regexp">/release/</span>linux-amd64<span class="hljs-regexp">/minio -P /</span>opt/minio<br><span class="hljs-comment">#-p 下载minio到/opt/minio中</span><br>chmod +x minio<br>chmod +x <span class="hljs-regexp">/opt/mi</span>nio/run.sh<br></code></pre></td></tr></table></figure>
-
-<h2 id="5、启动（两台服务器）"><a href="#5、启动（两台服务器）" class="headerlink" title="5、启动（两台服务器）"></a>5、启动（两台服务器）</h2><figure class="highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs nsis"><span class="hljs-params">system</span>ctl start minio<br><span class="hljs-params">system</span>ctl enable minio<br><span class="hljs-params">system</span>ctl stop minio<br></code></pre></td></tr></table></figure>
-
-<h2 id="6、登录、测试（两个地址都可以看，部分主次）"><a href="#6、登录、测试（两个地址都可以看，部分主次）" class="headerlink" title="6、登录、测试（两个地址都可以看，部分主次）"></a>6、登录、测试（两个地址都可以看，部分主次）</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">62.128</span>:<span class="hljs-number">9000</span>  (输入账号密码即可，run.sh脚本内的MINIO_ACCESS_KEY、MINIO_SECRET_KEY就是账号和密码)<br>http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">62.129</span>:<span class="hljs-number">9000</span><br></code></pre></td></tr></table></figure>
-
-<h2 id="7、使用nginx实现负载均衡"><a href="#7、使用nginx实现负载均衡" class="headerlink" title="7、使用nginx实现负载均衡"></a>7、使用nginx实现负载均衡</h2><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-section">upstream</span> minio&#123;<br>        <span class="hljs-attribute">server</span> <span class="hljs-number">192.168.62.128:9000</span>;<br>        <span class="hljs-attribute">server</span> <span class="hljs-number">192.168.62.129:9000</span>;<br>&#125;<br><span class="hljs-section">server</span> &#123;<br>        <span class="hljs-attribute">listen</span> <span class="hljs-number">19000</span>;<br>        <span class="hljs-comment">#server_name minio;</span><br>        <span class="hljs-section">location</span> / &#123;<br>            <span class="hljs-attribute">proxy_set_header</span> Host <span class="hljs-variable">$http_host</span>;<br>            <span class="hljs-attribute">proxy_set_header</span> X-Forwarded-For <span class="hljs-variable">$remote_addr</span>;<br>            <span class="hljs-attribute">client_body_buffer_size</span> <span class="hljs-number">10M</span>;<br>            <span class="hljs-attribute">client_max_body_size</span> <span class="hljs-number">10G</span>;<br>            <span class="hljs-attribute">proxy_buffers</span> <span class="hljs-number">1024</span> <span class="hljs-number">4k</span>;<br>            <span class="hljs-attribute">proxy_read_timeout</span> <span class="hljs-number">300</span>;<br>            <span class="hljs-attribute">proxy_next_upstream</span> <span class="hljs-literal">error</span> timeout http_404;<br>            <span class="hljs-attribute">proxy_pass</span> http://minio;<br>        &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<h2 id="6-redis-key操作"><a href="#6-redis-key操作" class="headerlink" title="6.redis-key操作"></a>6.redis-key操作</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#查询key</span><br>keys +查询的key<br><br><span class="hljs-comment">#删除key</span><br>del key +删除的key名称<br><br><span class="hljs-comment">#查看key的类型</span><br><span class="hljs-built_in">type</span> <span class="hljs-string">&quot;查询的key&quot;</span><br><br><span class="hljs-comment">#查看key的值</span><br>hkey <span class="hljs-string">&quot;key的名称&quot;</span>  查询出key的类型是bash  可以用hkey查看<br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -357,11 +328,39 @@
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/" class="category-chain-item">redis</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/minio/">#minio</a>
+        <a href="/tags/redis/">#redis</a>
       
     </div>
   
@@ -373,8 +372,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>搭建分布式存储服务minio</div>
-      <div>https://pipiguai0123.github.io/2023/03/28/minio/搭建分布式存储服务minio详细过程/</div>
+      <div>docker安装redis</div>
+      <div>https://pipiguai0123.github.io/2023/04/03/中间件/redis/docker安装redis/</div>
     </div>
     <div class="license-meta">
       
@@ -386,7 +385,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月28日</div>
+          <div>2023年4月3日</div>
         </div>
       
       
@@ -418,9 +417,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/03/28/minio/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAminio/" title="使用docker搭建minio">
+                      <a href="/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2%20/" title="Redis高可用集群部署">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">使用docker搭建minio</span>
+                        <span class="hidden-mobile">Redis高可用集群部署</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -428,8 +427,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/03/28/mysql/MySQL%E4%BD%BF%E7%94%A8binlog%E6%81%A2%E5%A4%8D%E6%95%B0%E6%8D%AE/" title="MySQL使用binlog恢复数据">
-                        <span class="hidden-mobile">MySQL使用binlog恢复数据</span>
+                      <a href="/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/rabbitmq/%E4%BD%BF%E7%94%A8docker-compose%E5%90%AF%E5%8A%A8rabbitmq/" title="使用docker-compose启动rabbitmq">
+                        <span class="hidden-mobile">使用docker-compose启动rabbitmq</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
