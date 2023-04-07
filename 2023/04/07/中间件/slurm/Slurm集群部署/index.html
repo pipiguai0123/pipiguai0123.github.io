@@ -1,0 +1,893 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Slurm集群部署:123456789#参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_34149581&#x2F;article&#x2F;details&#x2F;101902935	#详细参考全文档：http:&#x2F;&#x2F;hmli.ustc.edu.cn&#x2F;doc&#x2F;linux&#x2F;slurm-install&#x2F;slurm-install.html#id14#参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;u010797">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Slurm集群部署">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/04/07/%E4%B8%AD%E9%97%B4%E4%BB%B6/slurm/Slurm%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="Slurm集群部署:123456789#参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_34149581&#x2F;article&#x2F;details&#x2F;101902935	#详细参考全文档：http:&#x2F;&#x2F;hmli.ustc.edu.cn&#x2F;doc&#x2F;linux&#x2F;slurm-install&#x2F;slurm-install.html#id14#参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;u010797">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-07T02:12:23.000Z">
+<meta property="article:modified_time" content="2023-04-07T10:03:45.588Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="Slurm">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Slurm集群部署 - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Slurm集群部署"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-04-07 10:12" pubdate>
+          2023年4月7日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          95 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Slurm集群部署</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Slurm集群部署"><a href="#Slurm集群部署" class="headerlink" title="Slurm集群部署:"></a>Slurm集群部署:</h1><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs txt">#参考文档：https://blog.csdn.net/qq_34149581/article/details/101902935	<br>#详细参考全文档：http://hmli.ustc.edu.cn/doc/linux/slurm-install/slurm-install.html#id14<br>#参考文档：https://blog.csdn.net/u010797364/article/details/119929836<br>#参考文档：https://www.cnblogs.com/liu-shaobo/p/13285839.html<br>#参考文档：https://www.slothparadise.com/how-to-install-slurm-on-centos-7-cluster/<br>#相对全面的SLURM集群的配置详解、安装及一些小问题的解决：https://blog.csdn.net/datuqiqi/article/details/50827040<br>#大集群框架搭建参考文档：https://blog.csdn.net/weixin_28686463/article/details/111927953<br>#单机安装：https://cndaqiang.github.io/2020/02/24/slurm/<br>#浅谈slurm作业调度系统：https://blog.csdn.net/lovebaby1689/article/details/123208698<br></code></pre></td></tr></table></figure>
+<h2 id="一、基础环境："><a href="#一、基础环境：" class="headerlink" title="一、基础环境："></a>一、基础环境：</h2><table>
+<thead>
+<tr>
+<th>ip地址</th>
+<th>主机名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>192.168.94.154</td>
+<td>mt1</td>
+<td>控制节点，数据存储控制器</td>
+</tr>
+<tr>
+<td>192.168.94.155</td>
+<td>ct1</td>
+<td>计算节点</td>
+</tr>
+<tr>
+<td>192.168.94.156</td>
+<td>ct2</td>
+<td>计算节点、数据存储节点（安装mysql）</td>
+</tr>
+</tbody></table>
+<h3 id="1-设置主机名（各节点执行）："><a href="#1-设置主机名（各节点执行）：" class="headerlink" title="1.设置主机名（各节点执行）："></a>1.设置主机名（各节点执行）：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh">hostnamectl set-hostname mt1<br>hostnamectl set-hostname ct1<br>hostnamectl set-hostname ct2<br><br><span class="hljs-built_in">cat</span> &gt;&gt; /etc/hosts &lt;&lt;<span class="hljs-string">EOF</span><br><span class="hljs-string">192.168.94.154  mt1</span><br><span class="hljs-string">192.168.94.155  ct1</span><br><span class="hljs-string">192.168.94.156  ct2</span><br><span class="hljs-string">EOF</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-关闭防火墙（各节点执行）："><a href="#2-关闭防火墙（各节点执行）：" class="headerlink" title="2.关闭防火墙（各节点执行）："></a>2.关闭防火墙（各节点执行）：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl stop firewalld<br>systemctl <span class="hljs-built_in">disable</span> firewalld<br>systemctl stop iptables<br>systemctl <span class="hljs-built_in">disable</span> iptables<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-修改资源限制（各节点执行）"><a href="#3-修改资源限制（各节点执行）" class="headerlink" title="3.修改资源限制（各节点执行）"></a>3.修改资源限制（各节点执行）</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> &gt;&gt; /etc/security/limits.conf&lt;&lt;-<span class="hljs-string">EOF</span><br><span class="hljs-string">* hard nofile 1000000</span><br><span class="hljs-string">* soft nofile 1000000</span><br><span class="hljs-string">* soft core unlimited</span><br><span class="hljs-string">* soft stack 10240</span><br><span class="hljs-string">* soft memlock unlimited</span><br><span class="hljs-string">* hard memlock unlimited</span><br><span class="hljs-string">EOF</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-调整系统时区为中国-x2F-上海（各节点执行）"><a href="#4-调整系统时区为中国-x2F-上海（各节点执行）" class="headerlink" title="4.调整系统时区为中国&#x2F;上海（各节点执行）"></a>4.调整系统时区为中国&#x2F;上海（各节点执行）</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">ln</span> -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime<br><span class="hljs-comment">#设置时间同步</span><br><span class="hljs-comment">#安装ntpdate工具</span><br>yum -y install ntp ntpdate<br><span class="hljs-comment">#设置系统时间与网络时间同步</span><br>ntpdate cn.pool.ntp.org<br><span class="hljs-comment"># 将系统时间写入硬件时间</span><br>hwclock --systohc<br><span class="hljs-comment">#强制系统时间写入CMOS中防止重启失效</span><br>hwclock -w <span class="hljs-comment">#或 clock -w</span><br>systemctl start ntpd<br>systemctl <span class="hljs-built_in">enable</span> ntpd<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-安装EPEL源（各节点执行）"><a href="#5-安装EPEL源（各节点执行）" class="headerlink" title="5.安装EPEL源（各节点执行）"></a>5.安装EPEL源（各节点执行）</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">yum install epel-release -y<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-安装NFS（控制节点执行）"><a href="#6-安装NFS（控制节点执行）" class="headerlink" title="6.安装NFS（控制节点执行）"></a>6.安装NFS（控制节点执行）</h3><p><strong>如果需要共享目录时执行步骤6！！</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sh">yum -y install nfs-utils rpcbind<br><span class="hljs-comment">#编辑/etc/exports文件</span><br><span class="hljs-built_in">cat</span> &gt;&gt; /etc/exports &lt;&lt; <span class="hljs-string">EOF</span><br><span class="hljs-string">/software/ *(rw,async,insecure,no_root_squash)</span><br><span class="hljs-string">EOF</span><br><span class="hljs-comment">#启动NFS</span><br>systemctl start nfs<br>systemctl start rpcbind<br>systemctl <span class="hljs-built_in">enable</span> nfs<br>systemctl <span class="hljs-built_in">enable</span> rpcbind<br><span class="hljs-comment">#客户端挂载NFS（在需要共享到的客户端上执行）</span><br>yum -y install nfs-utils<br><span class="hljs-built_in">mkdir</span> /software<br>mount 192.168.94.154:/software /software<br></code></pre></td></tr></table></figure>
+
+<h3 id="7、配置SSH免登陆（控制节点执行）"><a href="#7、配置SSH免登陆（控制节点执行）" class="headerlink" title="7、配置SSH免登陆（控制节点执行）"></a>7、配置SSH免登陆（控制节点执行）</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">ssh-keygen  <span class="hljs-comment">#一路回车</span><br>ssh-copy-id -i .ssh/id_rsa.pub ct1<br>ssh-copy-id -i .ssh/id_rsa.pub ct2<br></code></pre></td></tr></table></figure>
+
+<h2 id="二、配置Munge"><a href="#二、配置Munge" class="headerlink" title="二、配置Munge:"></a>二、配置Munge:</h2><h3 id="1-创建Munge用户（各节点执行）"><a href="#1-创建Munge用户（各节点执行）" class="headerlink" title="1.创建Munge用户（各节点执行）"></a>1.创建Munge用户（各节点执行）</h3><p>Munge用户要确保Master Node和Compute Nodes的UID和GID相同，所有节点都需要创建Munge；</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">groupadd -g 1108 munge<br>useradd -m -c <span class="hljs-string">&quot;Munge Uid &#x27;N&#x27; Gid Emporium&quot;</span> -d /var/lib/munge -u 1108 -g munge -s /sbin/nologin munge<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-部署Munge（各节点执行）"><a href="#2-部署Munge（各节点执行）" class="headerlink" title="2.部署Munge（各节点执行）"></a>2.部署Munge（各节点执行）</h3><p>Munge是认证服务，实现本地或者远程主机进程的UID、GID验证</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">yum install munge munge-libs munge-devel -y<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-生成熵池-安装rng-tools-控制节点执行后，从控制节点同步Munge的key到所有的计算节点"><a href="#3-生成熵池-安装rng-tools-控制节点执行后，从控制节点同步Munge的key到所有的计算节点" class="headerlink" title="3.生成熵池,安装rng-tools(控制节点执行后，从控制节点同步Munge的key到所有的计算节点)"></a>3.生成熵池,安装rng-tools(控制节点执行后，从控制节点同步Munge的key到所有的计算节点)</h3><h4 id="3-1、安装rng-tools"><a href="#3-1、安装rng-tools" class="headerlink" title="3.1、安装rng-tools"></a>3.1、安装rng-tools</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">yum install -y rng-tools<br><br>rngd -r /dev/urandom<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /usr/lib/systemd/system/rngd.service<br><span class="hljs-comment">#修改如下参数</span><br>[service]<br>ExecStart=/sbin/rngd -f -r /dev/urandom<br><span class="hljs-comment">#或者使用替换命令修改参数：</span><br><span class="hljs-comment">#sed -i &#x27;s\ExecStart=/sbin/rngd -f\ExecStart=/sbin/rngd -f -r /dev/urandom\g&#x27; /usr/lib/systemd/system/rngd.service</span><br><br>systemctl daemon-reload<br>systemctl start rngd<br>systemctl <span class="hljs-built_in">enable</span> rngd<br></code></pre></td></tr></table></figure>
+<h4 id="3-2、创建全局密钥"><a href="#3-2、创建全局密钥" class="headerlink" title="3.2、创建全局密钥"></a>3.2、创建全局密钥</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#在Master Node创建全局使用的密钥（192.168.94.154）</span><br>/usr/sbin/create-munge-key -r<br><br><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=/dev/urandom bs=1 count=1024 &gt; /etc/munge/munge.key<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-3、将控制节点密钥同步到所有计算节点"><a href="#3-3、将控制节点密钥同步到所有计算节点" class="headerlink" title="3.3、将控制节点密钥同步到所有计算节点"></a>3.3、将控制节点密钥同步到所有计算节点</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">scp -p /etc/munge/munge.key root@ct1:/etc/munge<br>scp -p /etc/munge/munge.key root@ct2:/etc/munge<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-4、所有的节点上都已经有了key，启动Munge并且配置munge权限"><a href="#3-4、所有的节点上都已经有了key，启动Munge并且配置munge权限" class="headerlink" title="3.4、所有的节点上都已经有了key，启动Munge并且配置munge权限"></a>3.4、所有的节点上都已经有了key，启动Munge并且配置munge权限</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">chown</span> -R munge: /etc/munge/ /var/log/munge/<br><span class="hljs-built_in">chmod</span> 0700 /etc/munge/ /var/log/munge/<br><br><span class="hljs-comment">#赋予权限（各节点执行）</span><br><span class="hljs-built_in">chown</span> munge: /etc/munge/munge.key<br><span class="hljs-built_in">chmod</span> 400 /etc/munge/munge.key<br><br><span class="hljs-comment">#启动所有节点（各节点执行）</span><br>systemctl start munge<br>systemctl <span class="hljs-built_in">enable</span> munge<br>systemctl status munge<br></code></pre></td></tr></table></figure>
+<h3 id="4-以下为测试Munge服务"><a href="#4-以下为测试Munge服务" class="headerlink" title="4.以下为测试Munge服务"></a>4.以下为测试Munge服务</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#本地查看凭据</span><br>munge -n<br><span class="hljs-comment">#本地解码</span><br>munge -n | unmunge<br><span class="hljs-comment">#验证:远程解码,每个计算节点与控制节点进行连接。</span><br>munge -n | ssh ct1 unmunge<br><span class="hljs-comment">#Munge凭证基准测试</span><br>remunge<br></code></pre></td></tr></table></figure>
+
+<h2 id="三、配置Slurm"><a href="#三、配置Slurm" class="headerlink" title="三、配置Slurm"></a>三、配置Slurm</h2><h3 id="1、创建Slurm用户-各节点执行"><a href="#1、创建Slurm用户-各节点执行" class="headerlink" title="1、创建Slurm用户(各节点执行)"></a>1、创建Slurm用户(各节点执行)</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">groupadd -g 1109 slurm<br>useradd -m -c <span class="hljs-string">&quot;Slurm manager&quot;</span> -d /var/lib/slurm -u 1109 -g slurm -s /bin/bash slurm<br></code></pre></td></tr></table></figure>
+
+<h3 id="2、安装Slurm及依赖（各节点安装依赖）"><a href="#2、安装Slurm及依赖（各节点安装依赖）" class="headerlink" title="2、安装Slurm及依赖（各节点安装依赖）"></a>2、安装Slurm及依赖（各节点安装依赖）</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">yum install gcc gcc-c++ readline-devel perl-ExtUtils-MakeMaker pam-devel rpm-build mysql-devel python3 -y<br><span class="hljs-comment">#yum install openssl openssl-devel pam-devel numactl numactl-devel hwloc hwloc-devel lua lua-devel readline-devel rrdtool-devel ncurses-devel man2html libibmad libibumad -y</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-1、下载并编译Slurm（在控制节点上创建安装包，其他节点可以通过scp-r-命令将安装包所在目录传输过去）"><a href="#2-1、下载并编译Slurm（在控制节点上创建安装包，其他节点可以通过scp-r-命令将安装包所在目录传输过去）" class="headerlink" title="2.1、下载并编译Slurm（在控制节点上创建安装包，其他节点可以通过scp -r 命令将安装包所在目录传输过去）"></a>2.1、下载并编译Slurm（在控制节点上创建安装包，其他节点可以通过scp -r 命令将安装包所在目录传输过去）</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">wget https://download.schedmd.com/slurm/slurm-20.11.9.tar.bz2<br><span class="hljs-comment">#传输到其他节点</span><br>scp -r slurm-20.11.9.tar.bz2 ct1:/root<br>scp -r slurm-20.11.9.tar.bz2 ct2:/root<br></code></pre></td></tr></table></figure>
+<h4 id="2-2、安装（各节点执行）"><a href="#2-2、安装（各节点执行）" class="headerlink" title="2.2、安装（各节点执行）"></a>2.2、安装（各节点执行）</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">rpmbuild -ta slurm-20.11.9.tar.bz2 <br><span class="hljs-built_in">cd</span> /root/rpmbuild/RPMS/x86_64/<br></code></pre></td></tr></table></figure>
+<h4 id="2-3、安装Slurm（各节点执行）"><a href="#2-3、安装Slurm（各节点执行）" class="headerlink" title="2.3、安装Slurm（各节点执行）"></a>2.3、安装Slurm（各节点执行）</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">yum localinstall slurm-* -y<br></code></pre></td></tr></table></figure>
+
+<h3 id="3、配置控制节点Slurm-控制节点上操作"><a href="#3、配置控制节点Slurm-控制节点上操作" class="headerlink" title="3、配置控制节点Slurm(控制节点上操作)"></a>3、配置控制节点Slurm(控制节点上操作)</h3><h4 id="3-1、安装完成后，需要配置slurm的配置文件"><a href="#3-1、安装完成后，需要配置slurm的配置文件" class="headerlink" title="3.1、安装完成后，需要配置slurm的配置文件"></a>3.1、安装完成后，需要配置slurm的配置文件</h4><p>方法一：可以访问官网，填写相关信息后生成配置文件：<a target="_blank" rel="noopener" href="http://slurm.schedmd.com/configurator.easy.html%EF%BC%8C%E5%B0%86%E7%94%9F%E6%88%90%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6%E5%88%B0/etc/slurm%E4%B8%8B">http://slurm.schedmd.com/configurator.easy.html，将生成的配置文件复制到/etc/slurm下</a></p>
+<p>方法二：在&#x2F;etc&#x2F;slurm&#x2F;文件夹下有slurm的配置文件模板xxx.conf.example，以下为方法二：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">参考slurm.conf文件：https://blog.csdn.net/xhk12345678/article/details/124710528<br>参考slurm.conf文件：https://blog.csdn.net/qq_34149581/article/details/104868057<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> /etc/slurm/slurm.conf.example /etc/slurm/slurm.conf<br><br><br>vim /etc/slurm/slurm.conf<br><span class="hljs-comment">#修改如下部分</span><br>ClusterName=cluster  <span class="hljs-comment">#集群名，可自己填写</span><br>ControlMachine=mt1  <span class="hljs-comment">#控制节点名</span><br><span class="hljs-comment">#......</span><br>StateSaveLocation=/var/spool/slurmctld <span class="hljs-comment">#主节点log日志</span><br>SlurmdSpoolDir=/var/spool/slurmd <span class="hljs-comment">#子节点log日志</span><br><span class="hljs-comment">#......</span><br>NodeName=ct[1-2] Procs=1 State=UNKNOWN <span class="hljs-comment">#ct[1-2] 指的计算节点ct1和ct2,也可以写成ct1,ct2</span><br><br><span class="hljs-comment">#Slurm中默认是没有配置accounting的功能的，开启在该文件内添加：</span><br>JobAcctGatherType=jobacct_gather/linux<br>JobAcctGatherFrequency=30<br><span class="hljs-comment">#</span><br>AccountingStorageEnforce=associations,limits,qos  <span class="hljs-comment">#account存储数据的配置选项</span><br>AccountingStorageHost=192.168.94.188    <span class="hljs-comment">#数据库存储节点</span><br>AccountingStoragePass=/var/run/munge/munge.socket.2 <span class="hljs-comment">#munge认证文件，与slurmdbd.conf文件中的AuthInfo文件同名。</span><br>AccountingStoragePort=7031     <span class="hljs-comment">#slurmd服务监听端口，默认为6819，下文用到的为7031</span><br>AccountingStorageType=accounting_storage/slurmdbd   <span class="hljs-comment">#数据库记账服务</span><br>AccountingStorageTRES=cpu,mem,energy,node,billing,fs/disk,vmem,pages,gres/gpu:tesla  <span class="hljs-comment">#记账信息</span><br>AcctGatherEnergyType=acct_gather_energy/none   <span class="hljs-comment">#作业消耗能源信息，none代表不采集</span><br>AcctGatherFilesystemType=acct_gather_filesystem/none<br>AcctGatherInterconnectType=acct_gather_interconnect/none<br>AcctGatherNodeFreq=0<br>AcctGatherProfileType=acct_gather_profile/none<br>ExtSensorsType=ext_sensors/none<br>ExtSensorsFreq=0<br><br><br><span class="hljs-comment">#可以设置默认的，也可以设置整个集群</span><br><span class="hljs-comment">#NodeName=mt1,ct[1-2] Procs=1 State=UNKNOWN</span><br><span class="hljs-comment">#PartitionName=control Nodes=mt1 Default=NO MaxTime=INFINITE State=UP</span><br><span class="hljs-comment">#PartitionName=compute Nodes=ct[1-2] Default=YES MaxTime=INFINITE State=UP</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-2、复制控制节点配置文件到计算节点（控制节点上操作）"><a href="#3-2、复制控制节点配置文件到计算节点（控制节点上操作）" class="headerlink" title="3.2、复制控制节点配置文件到计算节点（控制节点上操作）"></a>3.2、复制控制节点配置文件到计算节点（控制节点上操作）</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> /etc/slurm/cgroup.conf.example /etc/slurm/cgroup.conf<br>scp /etc/slurm/*.conf ct1:/etc/slurm/<br>scp /etc/slurm/*.conf ct2:/etc/slurm/<br></code></pre></td></tr></table></figure>
+<p><strong>对于控制节点必要的是slurm.conf，对于计算节点必要的是slurm.conf, cgroup.conf</strong></p>
+<h3 id="4、设置文件权限（以下文件在slurm-conf文件内写明的路径，请注意核对）"><a href="#4、设置文件权限（以下文件在slurm-conf文件内写明的路径，请注意核对）" class="headerlink" title="4、设置文件权限（以下文件在slurm.conf文件内写明的路径，请注意核对）"></a>4、设置文件权限（以下文件在slurm.conf文件内写明的路径，请注意核对）</h3><h4 id="4-1、在控制节点上："><a href="#4-1、在控制节点上：" class="headerlink" title="4.1、在控制节点上："></a>4.1、在控制节点上：</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> /var/spool/slurmctld<br><span class="hljs-built_in">chown</span> slurm: /var/spool/slurmctld<br><span class="hljs-built_in">chmod</span> 755 /var/spool/slurmctld<br><br><span class="hljs-built_in">touch</span> /var/log/slurmctld.log<br><span class="hljs-built_in">chown</span> slurm: /var/log/slurmctld.log<br><br><span class="hljs-comment">#touch /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log</span><br><span class="hljs-comment">#chown slurm: /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log</span><br></code></pre></td></tr></table></figure>
+<h4 id="4-2、在所有计算节点上，配置日志文件"><a href="#4-2、在所有计算节点上，配置日志文件" class="headerlink" title="4.2、在所有计算节点上，配置日志文件"></a>4.2、在所有计算节点上，配置日志文件</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> /var/spool/slurmd<br><span class="hljs-built_in">chown</span> slurm: /var/spool/slurmd<br><span class="hljs-built_in">chmod</span> 755 /var/spool/slurmd<br><span class="hljs-built_in">touch</span> /var/log/slurmd.log<br><span class="hljs-built_in">chown</span> slurm: /var/log/slurmd.log<br></code></pre></td></tr></table></figure>
+
+<h3 id="5、配置节点Slurm-Accounting-（我这里使用的是mt1机器作为slurmdb的数据存储控制节点）"><a href="#5、配置节点Slurm-Accounting-（我这里使用的是mt1机器作为slurmdb的数据存储控制节点）" class="headerlink" title="5、配置节点Slurm Accounting （我这里使用的是mt1机器作为slurmdb的数据存储控制节点）"></a>5、配置节点Slurm Accounting （我这里使用的是mt1机器作为slurmdb的数据存储控制节点）</h3><p>Accounting records为slurm收集作业步骤的信息，可以写入一个文本文件或数据库，但这个文件会变得越来越大，最简单的方法是使用MySQL来存储信息。</p>
+<h4 id="5-1、在slurmdbd（控制节点），配置slurmdbd的日志文件"><a href="#5-1、在slurmdbd（控制节点），配置slurmdbd的日志文件" class="headerlink" title="5.1、在slurmdbd（控制节点），配置slurmdbd的日志文件"></a>5.1、在slurmdbd（控制节点），配置slurmdbd的日志文件</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">touch</span> /var/log/slurmdbd.log<br><span class="hljs-built_in">chown</span> slurm: /var/log/slurmdbd.log<br></code></pre></td></tr></table></figure>
+
+<h4 id="5-2、创建数据库的Slurm用户（MySQL自行安装-以下使用docker安装，我安装在了ct2机器上）"><a href="#5-2、创建数据库的Slurm用户（MySQL自行安装-以下使用docker安装，我安装在了ct2机器上）" class="headerlink" title="5.2、创建数据库的Slurm用户（MySQL自行安装,以下使用docker安装，我安装在了ct2机器上）"></a>5.2、创建数据库的Slurm用户（MySQL自行安装,以下使用docker安装，我安装在了ct2机器上）</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker pull mysql:5.7<br><br><span class="hljs-built_in">mkdir</span> -p /app/mysql/&#123;data,conf&#125;<br><br><span class="hljs-comment">#为了满足配置要求</span><br><span class="hljs-built_in">cat</span> &gt;&gt; /app/mysql/conf/my.cnf &lt;&lt; <span class="hljs-string">EOF</span><br><span class="hljs-string">[mysqld]</span><br><span class="hljs-string">innodb_buffer_pool_size=1024M</span><br><span class="hljs-string">innodb_log_file_size=64M</span><br><span class="hljs-string">innodb_lock_wait_timeout=900</span><br><span class="hljs-string">EOF</span><br><br>docker run -p 3306:3306 \<br>--name mysql -e TZ=Asia/Shanghai \<br>--restart=always \<br>-v /app/mysql/data:/var/lib/mysql \<br>-v /app/mysql/conf:/etc/mysql/conf.d \<br>-e MYSQL_ROOT_PASSWORD=123456 \<br>-d mysql:5.7<br><br></code></pre></td></tr></table></figure>
+
+<p>设置slurm用户去访问（我直接使用的root用户进行的连接，需账号权限划分的可执行以下命令）</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker <span class="hljs-built_in">exec</span> -it mysql bash<br>&gt;mysql -uroot -p123456<br>mysql&gt; grant all on slurm_acct_db.* to <span class="hljs-string">&#x27;slurm&#x27;</span>@<span class="hljs-string">&#x27;%&#x27;</span> identified by <span class="hljs-string">&#x27;slurm*123&#x27;</span> with grant option;<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="5-3、配置slurmdbd-conf文件（控制节点上）"><a href="#5-3、配置slurmdbd-conf文件（控制节点上）" class="headerlink" title="5.3、配置slurmdbd.conf文件（控制节点上）"></a>5.3、配置slurmdbd.conf文件（控制节点上）</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> /etc/slurm/slurmdbd.conf.example /etc/slurm/slurmdbd.conf<br><br><span class="hljs-comment">#参考的slurmdbd.conf文件，https://blog.csdn.net/qq_34149581/article/details/104868194</span><br><span class="hljs-built_in">cat</span> /etc/slurm/slurmdbd.conf <br><span class="hljs-comment">#ArchiveScript=</span><br><span class="hljs-comment">##JobPurge=12</span><br><span class="hljs-comment">##StepPurge=1</span><br><span class="hljs-comment">##</span><br><span class="hljs-comment">## Authentication info</span><br>AuthType=auth/munge<br>AuthInfo=/var/run/munge/munge.socket.2<br><span class="hljs-comment">##</span><br><span class="hljs-comment">## slurmDBD info</span><br>DbdAddr=192.168.94.154  <span class="hljs-comment">#数据存储控制节点</span><br>DbdHost=mt1 <span class="hljs-comment">#数据存储控制节点名</span><br>DbdPort=7031<br>SlurmUser=root  <span class="hljs-comment">#如果设置了slurm，则改为slurm</span><br><span class="hljs-comment">#iMessageTimeout=60</span><br>DebugLevel=4<br><span class="hljs-comment">#DefaultQOS=normal</span><br>LogFile=/var/log/Slurmdbd.<span class="hljs-built_in">log</span><br>PidFile=/var/run/slurmdbd.pid<br><br><span class="hljs-comment">## Database info</span><br>StorageType=accounting_storage/mysql<br>StorageHost=192.168.94.156  <span class="hljs-comment">#数据库连接地址</span><br>StoragePort=3306   <span class="hljs-comment">#数据库端口</span><br>StoragePass=123456  <span class="hljs-comment">#数据库密码</span><br>StorageUser=root <span class="hljs-comment">#数据库用户，设置了slurm的改为slurm</span><br>StorageLoc=slurm_acct_db<br><br></code></pre></td></tr></table></figure>
+<h4 id="5-4、在数据库控制节点-192-168-94-154-启动slurmdbd"><a href="#5-4、在数据库控制节点-192-168-94-154-启动slurmdbd" class="headerlink" title="5.4、在数据库控制节点(192.168.94.154)启动slurmdbd:"></a>5.4、在数据库控制节点(192.168.94.154)启动slurmdbd:</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">slurmdbd -vvvvDDDD<br><span class="hljs-comment">#进行调试启动，查看是否启动过程中有无错误。无错误后启动slurmdbd</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="6-开启节点服务"><a href="#6-开启节点服务" class="headerlink" title="6.开启节点服务"></a>6.开启节点服务</h3><h4 id="6-1、启动控制节点Slurmdbd服务"><a href="#6-1、启动控制节点Slurmdbd服务" class="headerlink" title="6.1、启动控制节点Slurmdbd服务"></a>6.1、启动控制节点Slurmdbd服务</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl start slurmdbd<br>systemctl status slurmdbd<br>systemctl <span class="hljs-built_in">enable</span> slurmdbd<br></code></pre></td></tr></table></figure>
+
+<h4 id="6-2、启动控制节点slurmctld服务"><a href="#6-2、启动控制节点slurmctld服务" class="headerlink" title="6.2、启动控制节点slurmctld服务"></a>6.2、启动控制节点slurmctld服务</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl start slurmctld<br>systemctl status slurmctld<br>systemctl <span class="hljs-built_in">enable</span> slurmctld<br></code></pre></td></tr></table></figure>
+
+<h4 id="6-3、启动计算节点的服务"><a href="#6-3、启动计算节点的服务" class="headerlink" title="6.3、启动计算节点的服务"></a>6.3、启动计算节点的服务</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl start slurmd<br>systemctl status slurmd<br>systemctl <span class="hljs-built_in">enable</span> slurmd<br></code></pre></td></tr></table></figure>
+
+<h2 id="四、检查Slurm集群"><a href="#四、检查Slurm集群" class="headerlink" title="四、检查Slurm集群"></a>四、检查Slurm集群</h2><h3 id="1-启动集群："><a href="#1-启动集群：" class="headerlink" title="1.启动集群："></a>1.启动集群：</h3><p>Master节点需要执行 <code>slurmctld -c</code>和<code>slurmd -c</code>，都以root账户执行，所有Slaver节点都执行 <code>slurmd -c</code></p>
+<h3 id="2-查看集群"><a href="#2-查看集群" class="headerlink" title="2.查看集群"></a>2.查看集群</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">sinfo<br><span class="hljs-comment">#集群启动正常。State有idle（空闲），salloc（占用）,unknown（刚启动时可能出现），down（连不上）等状态。</span><br><br>scontrol show partition<br>scontrol show node<br></code></pre></td></tr></table></figure>
+<h3 id="3-提交作业"><a href="#3-提交作业" class="headerlink" title="3.提交作业"></a>3.提交作业</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">srun -N2 hostname<br><span class="hljs-comment">#-N 允许您选择要使用的计算节点数量。</span><br></code></pre></td></tr></table></figure>
+<h3 id="4-以下为实际操作举例："><a href="#4-以下为实际操作举例：" class="headerlink" title="4.以下为实际操作举例："></a>4.以下为实际操作举例：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> &gt;&gt; /home/ceshi.sh &lt;&lt; <span class="hljs-string">EOF</span><br><span class="hljs-string">#!/bin/sh</span><br><span class="hljs-string">sudo docker pull nginx:latest</span><br><span class="hljs-string">sudo docker run --name nginx-test -p 8088:80 -d nginx </span><br><span class="hljs-string">echo &quot;Is OK!&quot; &gt;&gt; /home/nginx.log  </span><br><span class="hljs-string">EOF</span><br><br><span class="hljs-comment">#提交作业</span><br>sbatch /home/job.sh<br><span class="hljs-comment">#sbatch -N 1 -w ct2 /home/job.sh </span><br><span class="hljs-comment">#-w 在ct2上执行该脚本</span><br><span class="hljs-comment">#-N 允许您选择要使用的计算节点数量。</span><br><br><span class="hljs-comment">#查看作业</span><br>squeue -a<br><br><span class="hljs-comment">#查看标准输出流，正在运行的作业或作业步骤</span><br>scontrol show job 22 <br><br><span class="hljs-comment">#杀死工作进程</span><br>scancel 135  <span class="hljs-comment">#135：查询出来的JOBID</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="五、使用"><a href="#五、使用" class="headerlink" title="五、使用"></a>五、使用</h2><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs txt">官网手册：https://docs.slurm.cn/users/shou-ce-ye<br>基本使用：https://www.codeleading.com/article/58322478361/<br>Slurm基本用法：https://blog.csdn.net/qq_31910613/article/details/102993478<br>基础命令详解：https://www.cnblogs.com/dahu-daqing/p/12693334.html<br>使用参考：https://bicmr.pku.edu.cn/~wenzw/pages/slurm.html<br><br>操作参考文档：https://blog.csdn.net/ZuoShifan/article/details/80472741?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~aggregatepage~first_rank_ecpm_v1~rank_v31_ecpm-1-80472741.pc_agg_new_rank&amp;utm_term=slurm%E5%A6%82%E4%BD%95%E6%89%80%E6%9C%89%E8%B5%84%E6%BA%90%E7%94%A8%E4%BA%8E%E4%B8%80%E4%B8%AA%E4%BB%BB%E5%8A%A1&amp;spm=1000.2123.3001.4430<br></code></pre></td></tr></table></figure>
+
+<p>SLURM 环境变量：</p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SLURM_NPROCS</td>
+<td>要加载的进程数</td>
+</tr>
+<tr>
+<td>SLURM_TASKS_PER_NODE</td>
+<td>每节点要加载的任务数</td>
+</tr>
+<tr>
+<td>SLURM_JOB_ID</td>
+<td>作业的 JobID</td>
+</tr>
+<tr>
+<td>SLURM_SUBMIT_DIR</td>
+<td>提交作业时的工作目录</td>
+</tr>
+<tr>
+<td>SLURM_JOB_NODELIST</td>
+<td>作业分配的节点列表</td>
+</tr>
+<tr>
+<td>SLURM_JOB_CPUS_PER_NODE</td>
+<td>每个节点上分配给作业的 CPU 数</td>
+</tr>
+<tr>
+<td>SLURM_JOB_NUM_NODES</td>
+<td>作业分配的节点数</td>
+</tr>
+<tr>
+<td>HOSTNAME</td>
+<td>对于批处理作业，此变量被设置为批处理脚本所执行节点的节点名</td>
+</tr>
+</tbody></table>
+<h2 id="六、拓展：将运行过程的输出流，复制到本机-x2F-home下（机器与机器之间未免密）："><a href="#六、拓展：将运行过程的输出流，复制到本机-x2F-home下（机器与机器之间未免密）：" class="headerlink" title="六、拓展：将运行过程的输出流，复制到本机&#x2F;home下（机器与机器之间未免密）："></a>六、拓展：将运行过程的输出流，复制到本机&#x2F;home下（机器与机器之间未免密）：</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/sh</span><br><span class="hljs-comment">#author：zhangzhenzhou</span><br><span class="hljs-comment">#version：1.0</span><br><span class="hljs-comment">#readme:执行命令后加入以下命令，将输出流复制到本机的/home目录下</span><br><span class="hljs-comment">#$SLURM_JOB_ID 作业的 JobID</span><br><span class="hljs-comment">#$SLURM_JOB_NODELIST  #作业分配的节点名</span><br>out_path=`scontrol show job <span class="hljs-variable">$SLURM_JOB_ID</span> | grep StdOut | awk -F <span class="hljs-string">&#x27;=&#x27;</span> <span class="hljs-string">&#x27;&#123;print $2&#125;&#x27;</span>`<br><br><span class="hljs-comment">#scp到本机上</span><br>/app/scp.exp <span class="hljs-variable">$out_path</span> root@mt1:/home/<br><br><span class="hljs-comment">#输出流信息进行记录</span><br>scontrol show job <span class="hljs-variable">$SLURM_JOB_ID</span>  &gt;&gt; /home/job_<span class="hljs-variable">$SLURM_JOB_ID</span>.version<br>/app/scp.exp /home/job_<span class="hljs-variable">$SLURM_JOB_ID</span>.version root@mt1:/home/<br><br></code></pre></td></tr></table></figure>
+
+<p>scp自动输入密码脚本，需要scp的机器执行完一次后不再执行:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">##!/bin/sh</span><br><span class="hljs-comment">#author：jiangzhenzhou</span><br><span class="hljs-comment">#version：1.0</span><br><br>yum install expect <br><br><span class="hljs-comment">#第一行这里是你机器上expect程序的路径</span><br><span class="hljs-comment">#password后面接你的密码</span><br><span class="hljs-built_in">cat</span> &gt; /app/scp.exp &lt;&lt;<span class="hljs-string">EOF</span><br><span class="hljs-string">#!/usr/bin/expect  </span><br><span class="hljs-string">set timeout 20  </span><br><span class="hljs-string">if &#123; [llength \$argv] &lt; 2&#125; &#123;  </span><br><span class="hljs-string">    puts &quot;Usage:&quot;  </span><br><span class="hljs-string">    puts &quot;\$argv0 local_file remote_path&quot;  </span><br><span class="hljs-string">    exit 1  </span><br><span class="hljs-string">&#125;  </span><br><span class="hljs-string">set local_file [lindex \$argv 0]  </span><br><span class="hljs-string">set remote_path [lindex \$argv 1]  </span><br><span class="hljs-string">set passwd 123456  </span><br><span class="hljs-string">set passwderror 0  </span><br><span class="hljs-string">spawn scp \$local_file \$remote_path  </span><br><span class="hljs-string"></span><br><span class="hljs-string">expect &#123;  </span><br><span class="hljs-string">    &quot;*assword:*&quot; &#123;  </span><br><span class="hljs-string">        if &#123; \$passwderror == 1 &#125; &#123;  </span><br><span class="hljs-string">        puts &quot;passwd is error&quot;  </span><br><span class="hljs-string">        exit 2  </span><br><span class="hljs-string">        &#125;  </span><br><span class="hljs-string">        set timeout 1000  </span><br><span class="hljs-string">        set passwderror 1  </span><br><span class="hljs-string">        send &quot;\$passwd\r&quot;  </span><br><span class="hljs-string">        exp_continue  </span><br><span class="hljs-string">    &#125;  </span><br><span class="hljs-string">    &quot;*es/no)?*&quot; &#123;  </span><br><span class="hljs-string">        send &quot;yes\r&quot;  </span><br><span class="hljs-string">        exp_continue  </span><br><span class="hljs-string">    &#125;  </span><br><span class="hljs-string">    timeout &#123;  </span><br><span class="hljs-string">        puts &quot;connect is timeout&quot;  </span><br><span class="hljs-string">        exit 3  </span><br><span class="hljs-string">    &#125;  </span><br><span class="hljs-string">&#125;  </span><br><span class="hljs-string">EOF</span><br></code></pre></td></tr></table></figure>
+<p>添加可执行权限</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">chmod</span> +x /app/scp.exp<br></code></pre></td></tr></table></figure>
+
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/Slurm/" class="category-chain-item">Slurm</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Slurm/">#Slurm</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Slurm集群部署</div>
+      <div>https://pipiguai0123.github.io/2023/04/07/中间件/slurm/Slurm集群部署/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年4月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/04/07/%E4%B8%AD%E9%97%B4%E4%BB%B6/slurm/Ubuntu%E5%AE%89%E8%A3%85slurm/" title="Ubuntu安装slurm">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Ubuntu安装slurm</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/04/06/%E4%B8%AD%E9%97%B4%E4%BB%B6/SkyWalking/%E4%BD%BF%E7%94%A8docker-compose%E8%BF%90%E8%A1%8Csky+es8/" title="使用docker-compose运行sky+es">
+                        <span class="hidden-mobile">使用docker-compose运行sky+es</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

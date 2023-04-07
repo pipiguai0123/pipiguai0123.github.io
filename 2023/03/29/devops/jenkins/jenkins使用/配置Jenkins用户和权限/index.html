@@ -16,12 +16,12 @@
   <meta name="author" content="zhenzhou_zhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="配置Jenkins用户和权限授权方法一：（适用于用户量少，对用户权限不需要过多的分配）1、系统管理&gt;&gt;管理用户 2、新建用户，填写用户信息 3、系统管理&gt;&gt; 全局安全配置 4、安全域选择《专有用户数据库》，授权策略选择《安全矩阵》 5、创建用户矩阵，添加用户 6、根据需求设置安全矩阵，任何用户在：全部一栏都需要选择Read，只读 授权方法二：（适用于项目多，划分角色和权限多">
+    <meta name="description" content="配置Jenkins用户和权限一、新建jenkins用户1、系统管理&gt;&gt;管理用户 2、新建用户，填写用户信息 二、用户授权授权方法一：（适用于用户量少，对用户权限不需要过多的分配）1、系统管理&gt;&gt; 全局安全配置 2、安全域选择《专有用户数据库》，授权策略选择《安全矩阵》 3、创建用户矩阵，添加用户 4、根据需求设置安全矩阵，任何用户在：全部一栏都需要选择Read，只读 授权方">
 <meta property="og:type" content="article">
 <meta property="og:title" content="配置Jenkins用户和权限">
 <meta property="og:url" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/index.html">
 <meta property="og:site_name" content="皮皮怪-page">
-<meta property="og:description" content="配置Jenkins用户和权限授权方法一：（适用于用户量少，对用户权限不需要过多的分配）1、系统管理&gt;&gt;管理用户 2、新建用户，填写用户信息 3、系统管理&gt;&gt; 全局安全配置 4、安全域选择《专有用户数据库》，授权策略选择《安全矩阵》 5、创建用户矩阵，添加用户 6、根据需求设置安全矩阵，任何用户在：全部一栏都需要选择Read，只读 授权方法二：（适用于项目多，划分角色和权限多">
+<meta property="og:description" content="配置Jenkins用户和权限一、新建jenkins用户1、系统管理&gt;&gt;管理用户 2、新建用户，填写用户信息 二、用户授权授权方法一：（适用于用户量少，对用户权限不需要过多的分配）1、系统管理&gt;&gt; 全局安全配置 2、安全域选择《专有用户数据库》，授权策略选择《安全矩阵》 3、创建用户矩阵，添加用户 4、根据需求设置安全矩阵，任何用户在：全部一栏都需要选择Read，只读 授权方">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220506164349547.png">
 <meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220506164322659.png">
@@ -31,8 +31,12 @@
 <meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220510114231574.png">
 <meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220510113937813.png">
 <meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/1171635-20211116103911633-2008125869.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20230406112155920.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20230406114627026.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20230406113929081.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20230406114502470.png">
 <meta property="article:published_time" content="2023-03-29T09:45:18.000Z">
-<meta property="article:modified_time" content="2023-03-30T02:53:24.857Z">
+<meta property="article:modified_time" content="2023-04-07T08:24:13.189Z">
 <meta property="article:author" content="zhenzhou_zhang">
 <meta property="article:tag" content="Jenkins">
 <meta name="twitter:card" content="summary_large_image">
@@ -250,7 +254,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          534 字
+          736 字
         
       </span>
     
@@ -262,7 +266,7 @@
         
         
           <!-- compatible with older versions-->
-          5 分钟
+          7 分钟
         
       </span>
     
@@ -313,18 +317,23 @@
             
               <div class="markdown-body">
                 
-                <h1 id="配置Jenkins用户和权限"><a href="#配置Jenkins用户和权限" class="headerlink" title="配置Jenkins用户和权限"></a>配置Jenkins用户和权限</h1><h2 id="授权方法一：（适用于用户量少，对用户权限不需要过多的分配）"><a href="#授权方法一：（适用于用户量少，对用户权限不需要过多的分配）" class="headerlink" title="授权方法一：（适用于用户量少，对用户权限不需要过多的分配）"></a>授权方法一：（适用于用户量少，对用户权限不需要过多的分配）</h2><h3 id="1、系统管理-gt-gt-管理用户"><a href="#1、系统管理-gt-gt-管理用户" class="headerlink" title="1、系统管理&gt;&gt;管理用户"></a>1、系统管理&gt;&gt;管理用户</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220506164349547.png" srcset="/img/loading.gif" lazyload alt="image-20220506164349547"></p>
+                <h1 id="配置Jenkins用户和权限"><a href="#配置Jenkins用户和权限" class="headerlink" title="配置Jenkins用户和权限"></a>配置Jenkins用户和权限</h1><h2 id="一、新建jenkins用户"><a href="#一、新建jenkins用户" class="headerlink" title="一、新建jenkins用户"></a>一、新建jenkins用户</h2><h3 id="1、系统管理-gt-gt-管理用户"><a href="#1、系统管理-gt-gt-管理用户" class="headerlink" title="1、系统管理&gt;&gt;管理用户"></a>1、系统管理&gt;&gt;管理用户</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220506164349547.png" srcset="/img/loading.gif" lazyload alt="image-20220506164349547"></p>
 <h3 id="2、新建用户，填写用户信息"><a href="#2、新建用户，填写用户信息" class="headerlink" title="2、新建用户，填写用户信息"></a>2、新建用户，填写用户信息</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220506164322659.png" srcset="/img/loading.gif" lazyload alt="image-20220506164322659"></p>
-<h3 id="3、系统管理-gt-gt-全局安全配置"><a href="#3、系统管理-gt-gt-全局安全配置" class="headerlink" title="3、系统管理&gt;&gt; 全局安全配置"></a>3、系统管理&gt;&gt; 全局安全配置</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220510113937813.png" srcset="/img/loading.gif" lazyload alt="image-20220510113937813"></p>
-<h3 id="4、安全域选择《专有用户数据库》，授权策略选择《安全矩阵》"><a href="#4、安全域选择《专有用户数据库》，授权策略选择《安全矩阵》" class="headerlink" title="4、安全域选择《专有用户数据库》，授权策略选择《安全矩阵》"></a>4、安全域选择《专有用户数据库》，授权策略选择《安全矩阵》</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220510114017088.png" srcset="/img/loading.gif" lazyload alt="image-20220510114017088"></p>
-<h3 id="5、创建用户矩阵，添加用户"><a href="#5、创建用户矩阵，添加用户" class="headerlink" title="5、创建用户矩阵，添加用户"></a>5、创建用户矩阵，添加用户</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220510114119758.png" srcset="/img/loading.gif" lazyload alt="image-20220510114119758"></p>
-<h3 id="6、根据需求设置安全矩阵，任何用户在：全部一栏都需要选择Read，只读"><a href="#6、根据需求设置安全矩阵，任何用户在：全部一栏都需要选择Read，只读" class="headerlink" title="6、根据需求设置安全矩阵，任何用户在：全部一栏都需要选择Read，只读"></a>6、根据需求设置安全矩阵，任何用户在：全部一栏都需要选择Read，只读</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220510114231574.png" srcset="/img/loading.gif" lazyload alt="image-20220510114231574"></p>
+<h2 id="二、用户授权"><a href="#二、用户授权" class="headerlink" title="二、用户授权"></a>二、用户授权</h2><h3 id="授权方法一：（适用于用户量少，对用户权限不需要过多的分配）"><a href="#授权方法一：（适用于用户量少，对用户权限不需要过多的分配）" class="headerlink" title="授权方法一：（适用于用户量少，对用户权限不需要过多的分配）"></a>授权方法一：（适用于用户量少，对用户权限不需要过多的分配）</h3><h3 id="1、系统管理-gt-gt-全局安全配置"><a href="#1、系统管理-gt-gt-全局安全配置" class="headerlink" title="1、系统管理&gt;&gt; 全局安全配置"></a>1、系统管理&gt;&gt; 全局安全配置</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220510113937813.png" srcset="/img/loading.gif" lazyload alt="image-20220510113937813"></p>
+<h3 id="2、安全域选择《专有用户数据库》，授权策略选择《安全矩阵》"><a href="#2、安全域选择《专有用户数据库》，授权策略选择《安全矩阵》" class="headerlink" title="2、安全域选择《专有用户数据库》，授权策略选择《安全矩阵》"></a>2、安全域选择《专有用户数据库》，授权策略选择《安全矩阵》</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220510114017088.png" srcset="/img/loading.gif" lazyload alt="image-20220510114017088"></p>
+<h3 id="3、创建用户矩阵，添加用户"><a href="#3、创建用户矩阵，添加用户" class="headerlink" title="3、创建用户矩阵，添加用户"></a>3、创建用户矩阵，添加用户</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220510114119758.png" srcset="/img/loading.gif" lazyload alt="image-20220510114119758"></p>
+<h3 id="4、根据需求设置安全矩阵，任何用户在：全部一栏都需要选择Read，只读"><a href="#4、根据需求设置安全矩阵，任何用户在：全部一栏都需要选择Read，只读" class="headerlink" title="4、根据需求设置安全矩阵，任何用户在：全部一栏都需要选择Read，只读"></a>4、根据需求设置安全矩阵，任何用户在：全部一栏都需要选择Read，只读</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220510114231574.png" srcset="/img/loading.gif" lazyload alt="image-20220510114231574"></p>
 <h2 id="授权方法二：（适用于项目多，划分角色和权限多）"><a href="#授权方法二：（适用于项目多，划分角色和权限多）" class="headerlink" title="授权方法二：（适用于项目多，划分角色和权限多）"></a>授权方法二：（适用于项目多，划分角色和权限多）</h2><p>参考文档：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/qican/p/15533972.html">https://www.cnblogs.com/qican/p/15533972.html</a></p>
 <h3 id="1、安装插件："><a href="#1、安装插件：" class="headerlink" title="1、安装插件："></a>1、安装插件：</h3><figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">Role</span>-based <span class="hljs-keyword">Authorization</span> Strategy<br></code></pre></td></tr></table></figure>
 
 <h3 id="2、系统管理-gt-gt-全局安全配置"><a href="#2、系统管理-gt-gt-全局安全配置" class="headerlink" title="2、系统管理&gt;&gt; 全局安全配置"></a>2、系统管理&gt;&gt; 全局安全配置</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20220510113937813.png" srcset="/img/loading.gif" lazyload alt="image-20220510113937813"></p>
 <h3 id="3、选择Role-based、并保存应用"><a href="#3、选择Role-based、并保存应用" class="headerlink" title="3、选择Role-based、并保存应用"></a>3、选择Role-based、并保存应用</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/1171635-20211116103911633-2008125869.png" srcset="/img/loading.gif" lazyload alt="img"></p>
-<h3 id="4、在系统管理页面找到Manage-and-Assign-Roles点击进入页面中、点击管理角色-》创建一个新的全局角色，分配权限后保存，再分配角色"><a href="#4、在系统管理页面找到Manage-and-Assign-Roles点击进入页面中、点击管理角色-》创建一个新的全局角色，分配权限后保存，再分配角色" class="headerlink" title="4、在系统管理页面找到Manage and Assign Roles点击进入页面中、点击管理角色-》创建一个新的全局角色，分配权限后保存，再分配角色"></a>4、在系统管理页面找到Manage and Assign Roles点击进入页面中、点击管理角色-》创建一个新的全局角色，分配权限后保存，再分配角色</h3><h2 id="问题处理："><a href="#问题处理：" class="headerlink" title="问题处理："></a>问题处理：</h2><h3 id="Jenkins权限配置错误，导致无法登录："><a href="#Jenkins权限配置错误，导致无法登录：" class="headerlink" title="Jenkins权限配置错误，导致无法登录："></a>Jenkins权限配置错误，导致无法登录：</h3><p>1.停止jenkins</p>
+<h3 id="4、在系统管理页面找到Manage-and-Assign-Roles点击进入页面中"><a href="#4、在系统管理页面找到Manage-and-Assign-Roles点击进入页面中" class="headerlink" title="4、在系统管理页面找到Manage and Assign Roles点击进入页面中"></a>4、在系统管理页面找到Manage and Assign Roles点击进入页面中</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20230406112155920.png" srcset="/img/loading.gif" lazyload alt="image-20230406112155920"></p>
+<h3 id="5、管理角色内》设置全局角色"><a href="#5、管理角色内》设置全局角色" class="headerlink" title="5、管理角色内》设置全局角色"></a>5、管理角色内》设置全局角色</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20230406114627026.png" srcset="/img/loading.gif" lazyload alt="image-20230406114627026"></p>
+<h3 id="6、管理角色内》设置匹配角色"><a href="#6、管理角色内》设置匹配角色" class="headerlink" title="6、管理角色内》设置匹配角色"></a>6、管理角色内》设置匹配角色</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20230406113929081.png" srcset="/img/loading.gif" lazyload alt="image-20230406113929081"></p>
+<p> 备注：**pattern为正则表达式，例如要匹配以test开头和go开头的任务名：<code>test.|go.</code>**举例：如上develop组以test结尾，后面的用户关联了该组的，能开到以test结尾的任务</p>
+<h3 id="7、分配角色内"><a href="#7、分配角色内" class="headerlink" title="7、分配角色内"></a>7、分配角色内</h3><p><img src="/2023/03/29/devops/jenkins/jenkins%E4%BD%BF%E7%94%A8/%E9%85%8D%E7%BD%AEJenkins%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/image-20230406114502470.png" srcset="/img/loading.gif" lazyload alt="image-20230406114502470"></p>
+<h3 id="8、当我们登录develop账户时只能看到以test结尾的项目，formal账户时只能看到以formal结尾的项目（这块在设置流水线任务时就得规范构建任务的命名规则）"><a href="#8、当我们登录develop账户时只能看到以test结尾的项目，formal账户时只能看到以formal结尾的项目（这块在设置流水线任务时就得规范构建任务的命名规则）" class="headerlink" title="8、当我们登录develop账户时只能看到以test结尾的项目，formal账户时只能看到以formal结尾的项目（这块在设置流水线任务时就得规范构建任务的命名规则）"></a>8、当我们登录develop账户时只能看到以test结尾的项目，formal账户时只能看到以formal结尾的项目（这块在设置流水线任务时就得规范构建任务的命名规则）</h3><h2 id="问题处理："><a href="#问题处理：" class="headerlink" title="问题处理："></a>问题处理：</h2><h3 id="Jenkins权限配置错误，导致无法登录："><a href="#Jenkins权限配置错误，导致无法登录：" class="headerlink" title="Jenkins权限配置错误，导致无法登录："></a>Jenkins权限配置错误，导致无法登录：</h3><p>1.停止jenkins</p>
 <p>2、配置config.xml</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /var/lib/jenkins/config.xml<br>&lt;useSecurity&gt;<span class="hljs-literal">true</span>&lt;/useSecurity&gt; <span class="hljs-comment">#true 修改为:false</span><br></code></pre></td></tr></table></figure>
                 
