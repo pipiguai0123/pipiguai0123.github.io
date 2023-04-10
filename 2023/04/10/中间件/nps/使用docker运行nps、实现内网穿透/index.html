@@ -1,0 +1,847 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="使用docker运行nps、实现内网穿透12nps官方文档地址：https:&#x2F;&#x2F;ehang-io.github.io&#x2F;nps&#x2F;#&#x2F;use参考文档：https:&#x2F;&#x2F;langeheris.top&#x2F;2020&#x2F;03&#x2F;28&#x2F;Intranet-penetration&#x2F;#%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%EF%BC%9">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用docker运行nps、实现内网穿透">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="使用docker运行nps、实现内网穿透12nps官方文档地址：https:&#x2F;&#x2F;ehang-io.github.io&#x2F;nps&#x2F;#&#x2F;use参考文档：https:&#x2F;&#x2F;langeheris.top&#x2F;2020&#x2F;03&#x2F;28&#x2F;Intranet-penetration&#x2F;#%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%EF%BC%9">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127103435729.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127103504265.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127105150833.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127103547752.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127103608428.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127103632274.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127103720043.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127103734930.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110121856.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110151297.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110216963.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110236198.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110254912.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110317058.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110334282.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110406976.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110441124.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110458832.png">
+<meta property="article:published_time" content="2023-04-10T07:55:22.000Z">
+<meta property="article:modified_time" content="2023-04-10T10:17:01.143Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="nps">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pipiguai0123.github.io/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127103435729.png">
+  
+  
+  
+  <title>使用docker运行nps、实现内网穿透 - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="使用docker运行nps、实现内网穿透"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-04-10 15:55" pubdate>
+          2023年4月10日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          29 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">使用docker运行nps、实现内网穿透</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="使用docker运行nps、实现内网穿透"><a href="#使用docker运行nps、实现内网穿透" class="headerlink" title="使用docker运行nps、实现内网穿透"></a>使用docker运行nps、实现内网穿透</h1><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">nps官方文档地址：https://ehang-io.github.io/nps/#/use<br>参考文档：https://langeheris.top/2020/03/28/Intranet-penetration/#%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%EF%BC%9F<br></code></pre></td></tr></table></figure>
+
+<p>用Centos7环境进行的相关搭建：</p>
+<table>
+<thead>
+<tr>
+<th>机器名称</th>
+<th>机器ip</th>
+<th>安装服务</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>公网机器</td>
+<td>192.168.94.156</td>
+<td>安装服务端（nps.server）</td>
+</tr>
+<tr>
+<td>内网机器</td>
+<td>192.168.94.154</td>
+<td>安装客户端（npc.client）</td>
+</tr>
+</tbody></table>
+<h2 id="一、在公网机器上操作-gt-gt-安装nps服务端："><a href="#一、在公网机器上操作-gt-gt-安装nps服务端：" class="headerlink" title="一、在公网机器上操作 &gt;&gt; 安装nps服务端："></a>一、在公网机器上操作 &gt;&gt; 安装nps服务端：</h2><h3 id="1、拉取nps镜像"><a href="#1、拉取nps镜像" class="headerlink" title="1、拉取nps镜像"></a>1、拉取nps镜像</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker pull ffdfgdfg/nps<br></code></pre></td></tr></table></figure>
+
+<h3 id="2、创建挂载目录、并进入到挂载目录"><a href="#2、创建挂载目录、并进入到挂载目录" class="headerlink" title="2、创建挂载目录、并进入到挂载目录"></a>2、创建挂载目录、并进入到挂载目录</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> -p /app  &amp;&amp;  <span class="hljs-built_in">cd</span> /app<br></code></pre></td></tr></table></figure>
+
+<h3 id="3、从github上拉取conf文件信息"><a href="#3、从github上拉取conf文件信息" class="headerlink" title="3、从github上拉取conf文件信息"></a>3、从github上拉取conf文件信息</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">yum install -y git  <span class="hljs-comment">#安装git</span><br>git <span class="hljs-built_in">clone</span> https://gitee.com/mirrors/nps.git<br></code></pre></td></tr></table></figure>
+
+<p>注：clone成功后会clone一个nps目录到当前目录下</p>
+<h3 id="4、进入clone下来的nps的conf目录，可根据自己的需求修改nps-conf文件："><a href="#4、进入clone下来的nps的conf目录，可根据自己的需求修改nps-conf文件：" class="headerlink" title="4、进入clone下来的nps的conf目录，可根据自己的需求修改nps.conf文件："></a>4、进入clone下来的nps的conf目录，可根据自己的需求修改nps.conf文件：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> /app/nps/conf/nps.conf | grep web_port<br><span class="hljs-comment">#web_port = 3000      #nps的web页面端口</span><br><br><span class="hljs-built_in">cat</span> /app/nps/conf/nps.conf | grep username<br><span class="hljs-comment">#web_username=admin   #登录nps的账号</span><br><br><span class="hljs-built_in">cat</span> /app/nps/conf/nps.conf | grep password<br><span class="hljs-comment">#web_password=123456  #登录nps的密码</span><br><br><span class="hljs-built_in">cat</span> /app/nps/conf/nps.conf |grep bridge_port<br><span class="hljs-comment">#bridge_port=3002     #客户端连接服务端的端口</span><br></code></pre></td></tr></table></figure>
+
+<p>注：以上的port需要在docker运行时设定的端口范围内！</p>
+<h3 id="5、运行nps服务，设置端口"><a href="#5、运行nps服务，设置端口" class="headerlink" title="5、运行nps服务，设置端口"></a>5、运行nps服务，设置端口</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker run -d -p 3000-3010:3000-3010 -v /app/nps/conf:/conf --name=nps ffdfgdfg/nps<br></code></pre></td></tr></table></figure>
+
+<p>注：可-p:设定的端口，需确保范围内的端口没有被占用！</p>
+<h3 id="6、运行后可以通过本机ip-端口访问，并输入账号和密码登录"><a href="#6、运行后可以通过本机ip-端口访问，并输入账号和密码登录" class="headerlink" title="6、运行后可以通过本机ip+端口访问，并输入账号和密码登录"></a>6、运行后可以通过本机ip+端口访问，并输入账号和密码登录</h3><p><strong>我这边访问web页面地址：192.168.94.156:3000  登录账号：admin 密码：123456</strong></p>
+<p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127103435729.png" srcset="/img/loading.gif" lazyload alt="image-20220127103435729"></p>
+<h2 id="二、在内网机器上操作-gt-gt-安装npc客户端："><a href="#二、在内网机器上操作-gt-gt-安装npc客户端：" class="headerlink" title="二、在内网机器上操作  &gt;&gt;  安装npc客户端："></a>二、在内网机器上操作  &gt;&gt;  安装npc客户端：</h2><h3 id="1、下载源码包："><a href="#1、下载源码包：" class="headerlink" title="1、下载源码包："></a>1、下载源码包：</h3><p>源码包地址：<a target="_blank" rel="noopener" href="https://github.com/ehang-io/nps/releases/tags%EF%BC%8C%E7%82%B9%E5%87%BB%E7%9B%B8%E5%BA%94%E7%9A%84%E7%89%88%E6%9C%AC%E5%90%8E%E8%BF%9B%E5%85%A5%E8%AF%A6%E6%83%85%EF%BC%8C%E5%9C%A8Assets%E4%B8%AD%E6%89%BE%E5%88%B0client.tar.gz">https://github.com/ehang-io/nps/releases/tags，点击相应的版本后进入详情，在Assets中找到client.tar.gz</a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">wget https://github.com/ehang-io/nps/releases/download/v0.26.9/linux_amd64_client.tar.gz<br></code></pre></td></tr></table></figure>
+
+<h3 id="2、新建工作目录并解压源码包到工作目录下："><a href="#2、新建工作目录并解压源码包到工作目录下：" class="headerlink" title="2、新建工作目录并解压源码包到工作目录下："></a>2、新建工作目录并解压源码包到工作目录下：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> -p /app/docker-npc &amp;&amp; tar -xnf linux_amd64_client.tar.gz -C /app/docker-npc<br></code></pre></td></tr></table></figure>
+
+<p>注：解压后在&#x2F;app&#x2F;docker-npc目录下找到可执行的npc文件！</p>
+<p>##需要使用docker镜像的方式运行npc客户端时请执行步骤 “3”，如果不需要用dokcer运行，请跳过步骤“3”！</p>
+<hr>
+<h2 id="3、使用docker编译npc镜像："><a href="#3、使用docker编译npc镜像：" class="headerlink" title="3、使用docker编译npc镜像："></a>3、使用docker编译npc镜像：</h2><h3 id="3-1、编写dockerfile文件"><a href="#3-1、编写dockerfile文件" class="headerlink" title="3.1、编写dockerfile文件"></a>3.1、编写dockerfile文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> &gt; /app/docker-npc/Dockerfile &lt;&lt; <span class="hljs-string">EOF</span><br><span class="hljs-string">FROM alpine:latest</span><br><span class="hljs-string">ENV LANG en_US.UTF-8</span><br><span class="hljs-string">ENV npserver=nps.thingsroot.com:7088 npckey=accesskey</span><br><span class="hljs-string">COPY ./npc /usr/bin/npc</span><br><span class="hljs-string">CMD /usr/bin/npc -server=\$npserver -vkey=\$npckey</span><br><span class="hljs-string">EOF</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2、构建镜像"><a href="#3-2、构建镜像" class="headerlink" title="3.2、构建镜像"></a>3.2、构建镜像</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker build -t docker-npc /app/docker-npc/<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-3、运行镜像"><a href="#3-3、运行镜像" class="headerlink" title="3.3、运行镜像"></a>3.3、运行镜像</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker run -td --restart always --name npc --network host docker-npc<br></code></pre></td></tr></table></figure>
+
+<p>注：–network host ：运行的镜像与宿主机共享网络</p>
+<hr>
+<h2 id="三、客户端与服务端连接（内网与外网机器连接）"><a href="#三、客户端与服务端连接（内网与外网机器连接）" class="headerlink" title="三、客户端与服务端连接（内网与外网机器连接）"></a>三、客户端与服务端连接（内网与外网机器连接）</h2><h3 id="1、连接服务端web页面后，点击客户端-gt-gt-新增"><a href="#1、连接服务端web页面后，点击客户端-gt-gt-新增" class="headerlink" title="1、连接服务端web页面后，点击客户端 &gt;&gt; 新增"></a>1、连接服务端web页面后，点击客户端 &gt;&gt; 新增</h3><p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127103504265.png" srcset="/img/loading.gif" lazyload alt="image-20220127103504265"></p>
+<h3 id="2、填写新增的客户端信息后-gt-gt-根据实际需要填写信息-gt-gt-新增"><a href="#2、填写新增的客户端信息后-gt-gt-根据实际需要填写信息-gt-gt-新增" class="headerlink" title="2、填写新增的客户端信息后 &gt;&gt; 根据实际需要填写信息 &gt;&gt; 新增"></a>2、填写新增的客户端信息后 &gt;&gt; 根据实际需要填写信息 &gt;&gt; 新增</h3><p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127105150833.png" srcset="/img/loading.gif" lazyload alt="image-20220127105150833"></p>
+<h3 id="3、在客户端可看到新增的ID旁有个“-”的符号-gt-gt-点击“-”-可以看到客户端命令"><a href="#3、在客户端可看到新增的ID旁有个“-”的符号-gt-gt-点击“-”-可以看到客户端命令" class="headerlink" title="3、在客户端可看到新增的ID旁有个“+”的符号 &gt;&gt; 点击“+” 可以看到客户端命令"></a>3、在客户端可看到新增的ID旁有个“+”的符号 &gt;&gt; 点击“+” 可以看到客户端命令</h3><p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127103547752.png" srcset="/img/loading.gif" lazyload alt="image-20220127103547752"></p>
+<h3 id="4、将内网机器与外网机器连接："><a href="#4、将内网机器与外网机器连接：" class="headerlink" title="4、将内网机器与外网机器连接："></a>4、将内网机器与外网机器连接：</h3><p>查询到客户端命令为：<code>./npc -server=192.168.94.156:3002 -vkey=f0a1ssnpxkuxd3hs -type=tcp</code></p>
+<h4 id="4-1、不使用镜像运行，直接源码运行时："><a href="#4-1、不使用镜像运行，直接源码运行时：" class="headerlink" title="4.1、不使用镜像运行，直接源码运行时："></a>4.1、不使用镜像运行，直接源码运行时：</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">/app/docker-npc/npc -server=192.168.94.156:3002 -vkey=f0a1ssnpxkuxd3hs -<span class="hljs-built_in">type</span>=tcp &amp;<br></code></pre></td></tr></table></figure>
+
+<p>注：加 “&amp;”代表后台运行，如果不需要后台运行，可将“&amp;”符号删除</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#后台运行可通过 ：ps -ef | grep npc 查看进程是否运行！</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="4-2、使用docker镜像运行时："><a href="#4-2、使用docker镜像运行时：" class="headerlink" title="4.2、使用docker镜像运行时："></a>4.2、使用docker镜像运行时：</h4><h5 id="4-2-1、进入到运行的容器内"><a href="#4-2-1、进入到运行的容器内" class="headerlink" title="4.2.1、进入到运行的容器内"></a>4.2.1、进入到运行的容器内</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker <span class="hljs-built_in">exec</span> -it npc sh<br></code></pre></td></tr></table></figure>
+
+<h5 id="4-2-2、在容器内输入复制的客户端命令"><a href="#4-2-2、在容器内输入复制的客户端命令" class="headerlink" title="4.2.2、在容器内输入复制的客户端命令"></a>4.2.2、在容器内输入复制的客户端命令</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">npc -server=192.168.94.156:3002 -vkey=f0a1ssnpxkuxd3hs -<span class="hljs-built_in">type</span>=tcp &amp;<br></code></pre></td></tr></table></figure>
+
+<h3 id="5、验证是否连接成功！"><a href="#5、验证是否连接成功！" class="headerlink" title="5、验证是否连接成功！"></a>5、验证是否连接成功！</h3><p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127103608428.png" srcset="/img/loading.gif" lazyload alt="image-20220127105104033"></p>
+<p>注：显示为在线即表示已经连接成功！</p>
+<h2 id="四、实现某些操作"><a href="#四、实现某些操作" class="headerlink" title="四、实现某些操作"></a>四、实现某些操作</h2><h3 id="1、实现：通过连接公网服务器（192-168-94-156）的3008端口远程连接内网机器（192-168-94-154）"><a href="#1、实现：通过连接公网服务器（192-168-94-156）的3008端口远程连接内网机器（192-168-94-154）" class="headerlink" title="1、实现：通过连接公网服务器（192.168.94.156）的3008端口远程连接内网机器（192.168.94.154）"></a>1、实现：通过连接公网服务器（192.168.94.156）的3008端口远程连接内网机器（192.168.94.154）</h3><h4 id="1-1、完成-步骤一、二、三后，点击隧道-gt-gt-点击新增"><a href="#1-1、完成-步骤一、二、三后，点击隧道-gt-gt-点击新增" class="headerlink" title="1.1、完成 步骤一、二、三后，点击隧道 &gt;&gt; 点击新增"></a>1.1、完成 步骤一、二、三后，点击隧道 &gt;&gt; 点击新增</h4><p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127103632274.png" srcset="/img/loading.gif" lazyload alt="image-20220127103632274"></p>
+<p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127103720043.png" srcset="/img/loading.gif" lazyload alt="image-20220127103720043"></p>
+<h4 id="1-2、输入我们设置的服务端端口和目标ip端口-gt-gt-新增"><a href="#1-2、输入我们设置的服务端端口和目标ip端口-gt-gt-新增" class="headerlink" title="1.2、输入我们设置的服务端端口和目标ip端口 &gt;&gt; 新增"></a>1.2、输入我们设置的服务端端口和目标ip端口 &gt;&gt; 新增</h4><p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127103734930.png" srcset="/img/loading.gif" lazyload alt="image-20220127103734930"></p>
+<h4 id="1-3、在我们的公网机器上使用xshell连接3008端口"><a href="#1-3、在我们的公网机器上使用xshell连接3008端口" class="headerlink" title="1.3、在我们的公网机器上使用xshell连接3008端口"></a>1.3、在我们的公网机器上使用xshell连接3008端口</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">ssh -p3008 root@192.168.94.156<br></code></pre></td></tr></table></figure>
+
+<p>注：出现如下内容即实现了连接公网3008端口，远程连接内网机器！即：可以在其他机器上通过连接公网机器+设置的服务端口进行连接内网机器</p>
+<p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110121856.png" srcset="/img/loading.gif" lazyload alt="image-20220127110121856"></p>
+<h3 id="2、实现：使用sock模式进行内网访问，设置认证账号：admin-认证密码：admin123-认证端口为3007！"><a href="#2、实现：使用sock模式进行内网访问，设置认证账号：admin-认证密码：admin123-认证端口为3007！" class="headerlink" title="2、实现：使用sock模式进行内网访问，设置认证账号：admin 认证密码：admin123  认证端口为3007！"></a>2、实现：使用sock模式进行内网访问，设置认证账号：admin 认证密码：admin123  认证端口为3007！</h3><h4 id="2-1、完成-步骤一、二、三，在步骤三新增客户端时-gt-gt-填写basic认证用户名和密码-gt-gt-新增"><a href="#2-1、完成-步骤一、二、三，在步骤三新增客户端时-gt-gt-填写basic认证用户名和密码-gt-gt-新增" class="headerlink" title="2.1、完成 步骤一、二、三，在步骤三新增客户端时&gt;&gt; 填写basic认证用户名和密码 &gt;&gt; 新增"></a>2.1、完成 步骤一、二、三，在步骤三新增客户端时&gt;&gt; 填写basic认证用户名和密码 &gt;&gt; 新增</h4><p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110151297.png" srcset="/img/loading.gif" lazyload alt="image-20220127110151297"></p>
+<h4 id="2-2、点击隧道-gt-gt-新增-gt-gt-选择模式为SOCKS代理-gt-gt-填写服务端端口"><a href="#2-2、点击隧道-gt-gt-新增-gt-gt-选择模式为SOCKS代理-gt-gt-填写服务端端口" class="headerlink" title="2.2、点击隧道 &gt;&gt;  新增  &gt;&gt;  选择模式为SOCKS代理  &gt;&gt; 填写服务端端口"></a>2.2、点击隧道 &gt;&gt;  新增  &gt;&gt;  选择模式为SOCKS代理  &gt;&gt; 填写服务端端口</h4><p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110216963.png" srcset="/img/loading.gif" lazyload alt="image-20220127110216963"></p>
+<p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110236198.png" srcset="/img/loading.gif" lazyload alt="image-20220127110236198"></p>
+<h4 id="2-3、下载并安装Proxifier。"><a href="#2-3、下载并安装Proxifier。" class="headerlink" title="2.3、下载并安装Proxifier。"></a>2.3、下载并安装Proxifier。</h4><p><code>下载地址：http://soft.onlinedown.net/soft/971579.htm</code></p>
+<p>#中文汉化版，直接安装。</p>
+<h4 id="2-4、打开Proxifier-gt-gt-点击配置文件-gt-gt-代理服务器"><a href="#2-4、打开Proxifier-gt-gt-点击配置文件-gt-gt-代理服务器" class="headerlink" title="2.4、打开Proxifier  &gt;&gt; 点击配置文件  &gt;&gt;  代理服务器"></a>2.4、打开Proxifier  &gt;&gt; 点击配置文件  &gt;&gt;  代理服务器</h4><p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110254912.png" srcset="/img/loading.gif" lazyload alt="image-20220127110254912"></p>
+<h4 id="2-5、添加代理服务器-gt-gt-输入公网ip（192-168-94-156）端口：3007-gt-gt-协议选择socks版本5-gt-gt-验证选择启用：（输入设置的basic用户名：admin-密码：-admin123）-gt-gt-点击检查"><a href="#2-5、添加代理服务器-gt-gt-输入公网ip（192-168-94-156）端口：3007-gt-gt-协议选择socks版本5-gt-gt-验证选择启用：（输入设置的basic用户名：admin-密码：-admin123）-gt-gt-点击检查" class="headerlink" title="2.5、添加代理服务器  &gt;&gt;  输入公网ip（192.168.94.156）端口：3007  &gt;&gt;  协议选择socks版本5  &gt;&gt;  验证选择启用：（输入设置的basic用户名：admin 密码： admin123） &gt;&gt;  点击检查"></a>2.5、添加代理服务器  &gt;&gt;  输入公网ip（192.168.94.156）端口：3007  &gt;&gt;  协议选择socks版本5  &gt;&gt;  验证选择启用：（输入设置的basic用户名：admin 密码： admin123） &gt;&gt;  点击检查</h4><p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110317058.png" srcset="/img/loading.gif" lazyload alt="image-20220127110317058"></p>
+<h4 id="2-6、显示通过以后-gt-gt-连接"><a href="#2-6、显示通过以后-gt-gt-连接" class="headerlink" title="2.6、显示通过以后  &gt;&gt;  连接"></a>2.6、显示通过以后  &gt;&gt;  连接</h4><p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110334282.png" srcset="/img/loading.gif" lazyload alt="image-20220127110334282"></p>
+<h4 id="2-7、连接后-gt-gt-点击代理规则，规则名称默认选择的为Localhost，或者自己新增规则名称（自己新增的话，可以根据自己的需求选择由哪个应用程序访问网络，我这边选择用qq浏览器访问该网络）-gt-gt-动作选择为刚刚我们socks的ip-gt-gt-点击确定"><a href="#2-7、连接后-gt-gt-点击代理规则，规则名称默认选择的为Localhost，或者自己新增规则名称（自己新增的话，可以根据自己的需求选择由哪个应用程序访问网络，我这边选择用qq浏览器访问该网络）-gt-gt-动作选择为刚刚我们socks的ip-gt-gt-点击确定" class="headerlink" title="2.7、连接后  &gt;&gt;  点击代理规则，规则名称默认选择的为Localhost，或者自己新增规则名称（自己新增的话，可以根据自己的需求选择由哪个应用程序访问网络，我这边选择用qq浏览器访问该网络） &gt;&gt;  动作选择为刚刚我们socks的ip  &gt;&gt;   点击确定"></a>2.7、连接后  &gt;&gt;  点击代理规则，规则名称默认选择的为Localhost，或者自己新增规则名称（自己新增的话，可以根据自己的需求选择由哪个应用程序访问网络，我这边选择用qq浏览器访问该网络） &gt;&gt;  动作选择为刚刚我们socks的ip  &gt;&gt;   点击确定</h4><p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110406976.png" srcset="/img/loading.gif" lazyload alt="image-20220127110406976"></p>
+<p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110441124.png" srcset="/img/loading.gif" lazyload alt="image-20220127110441124"></p>
+<h4 id="2-8、确定以后，就可以让在另一个地方的机器（不同网络下的机器）ping该内网机器ip（192-168-94-154）是否通，或者ssh连接该内网ip（192-168-94-154），或者直接访问该内网机器某些运行的服务。"><a href="#2-8、确定以后，就可以让在另一个地方的机器（不同网络下的机器）ping该内网机器ip（192-168-94-154）是否通，或者ssh连接该内网ip（192-168-94-154），或者直接访问该内网机器某些运行的服务。" class="headerlink" title="2.8、确定以后，就可以让在另一个地方的机器（不同网络下的机器）ping该内网机器ip（192.168.94.154）是否通，或者ssh连接该内网ip（192.168.94.154），或者直接访问该内网机器某些运行的服务。"></a>2.8、确定以后，就可以让在另一个地方的机器（不同网络下的机器）ping该内网机器ip（192.168.94.154）是否通，或者ssh连接该内网ip（192.168.94.154），或者直接访问该内网机器某些运行的服务。</h4><p><img src="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8Cnps%E3%80%81%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/image-20220127110458832.png" srcset="/img/loading.gif" lazyload alt="image-20220127110458832"></p>
+<p>注：内网内其他的机器能返回数据，即已成功实现使用sock模式进行内网访问！</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/nps/" class="category-chain-item">nps</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/nps/">#nps</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>使用docker运行nps、实现内网穿透</div>
+      <div>https://pipiguai0123.github.io/2023/04/10/中间件/nps/使用docker运行nps、实现内网穿透/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年4月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/04/10/%E4%B8%AD%E9%97%B4%E4%BB%B6/prometheus/docker-compose%E5%AE%89%E8%A3%85prometheus/" title="使用docker-compose安装prometheus">
+                        <span class="hidden-mobile">使用docker-compose安装prometheus</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
