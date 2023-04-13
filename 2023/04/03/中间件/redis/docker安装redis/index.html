@@ -24,7 +24,7 @@
 <meta property="og:description" content="docker安装redis1.新建目录123mkdir &#x2F;app&#x2F;docker&#x2F;redis&#x2F;&amp;#123;conf,data&amp;#125; -pcd &#x2F;app&#x2F;docker&#x2F;redis  2.获取redis模板配置可通过wget 或者上传conf文件 获取 redis 的默认配置模版这里主要是想设置下 redis 的 log &#x2F; password &#x2F; appendonlyredis">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-04-03T02:23:53.000Z">
-<meta property="article:modified_time" content="2023-04-03T07:14:59.537Z">
+<meta property="article:modified_time" content="2023-04-12T09:03:07.791Z">
 <meta property="article:author" content="zhenzhou_zhang">
 <meta property="article:tag" content="redis">
 <meta name="twitter:card" content="summary_large_image">
@@ -310,7 +310,19 @@
 <p>获取 redis 的默认配置模版<br>这里主要是想设置下 redis 的 log &#x2F; password &#x2F; appendonly<br>redis 的 docker 运行参数提供了 –appendonly yes 但没 password</p>
 <h3 id="在线下载conf文件"><a href="#在线下载conf文件" class="headerlink" title="在线下载conf文件"></a>在线下载conf文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">wget https://raw.githubusercontent.com/antirez/redis/4.0/redis.conf -O ./conf/redis.conf  <span class="hljs-comment">#可本地上传</span><br><br><span class="hljs-comment"># 直接替换编辑，修改conf文件</span><br>sed -i <span class="hljs-string">&#x27;s/logfile &quot;&quot;/logfile &quot;access.log&quot;/g&#x27;</span> /app/docker/redis/conf/redis.conf<br>sed -i <span class="hljs-string">&#x27;s/# 、、 foobared/requirepass 123456/g&#x27;</span> /app/docker/redis/conf/redis.conf<br>sed -i <span class="hljs-string">&#x27;s/appendonly no/appendonly yes/g&#x27;</span> /app/docker/redis/conf/redis.conf<br><br></code></pre></td></tr></table></figure>
 <h3 id="上传conf文件"><a href="#上传conf文件" class="headerlink" title="上传conf文件"></a>上传conf文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /app/docker/conf/redis.conf<br><br>requirepass 123456   <span class="hljs-comment">#//找到，修改密码</span><br><br><br></code></pre></td></tr></table></figure>
-<p>这里可能还需配置<code>bind</code>,<code> protected-mode</code><br>protected-mode 是在没有显示定义 bind 地址（即监听全网断），又没有设置密码 requirepass时，protected-mode 只允许本地回环 127.0.0.1 访问。<br>也就是说当开启了 protected-mode 时，如果你既没有显示的定义了 bind 监听的地址，同时又没有设置 auth 密码。那你只能通过 127.0.0.1 来访问 redis 服务。<br>关闭绑定[允许所有外网访问]： # bind 127.0.0.1  或者 解除只有本地能链接客户端  0.0.0.0 -::1<br>开启密码验证： requirepass redispassword<br>开启数据持久化[aof]：appendonly yes<br>配置日志存放目录和文件：logfile &#x2F;logs&#x2F;redis.log</p>
+<p>这里可能还需配置<code>bind</code>,<code> protected-mode</code></p>
+<ul>
+<li><p>protected-mode 是在没有显示定义 bind 地址（即监听全网断），又没有设置密码 requirepass时，protected-mode 只允许本地回环 127.0.0.1 访问。也就是说当开启了 protected-mode 时，如果你既没有显示的定义了 bind 监听的地址，同时又没有设置 auth 密码。那你只能通过 127.0.0.1 来访问 redis 服务。</p>
+</li>
+<li><p>关闭绑定[允许所有外网访问]： # bind 127.0.0.1  或者 解除只有本地能链接客户端  0.0.0.0 -::1</p>
+</li>
+<li><p>开启密码验证： requirepass redispassword</p>
+</li>
+<li><p>开启数据持久化[aof]：appendonly yes</p>
+</li>
+<li><p>配置日志存放目录和文件：logfile &#x2F;logs&#x2F;redis.log</p>
+</li>
+</ul>
 <h2 id="3-创建并运行一个名为-myredis-的容器"><a href="#3-创建并运行一个名为-myredis-的容器" class="headerlink" title="3.创建并运行一个名为 myredis 的容器"></a>3.创建并运行一个名为 myredis 的容器</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment"># 创建并运行一个名为 myredis 的容器</span><br>docker run \<br>--restart=always \<br>-p 6379:6379 \<br>-v <span class="hljs-variable">$PWD</span>/data:/data \<br>-v <span class="hljs-variable">$PWD</span>/conf/redis.conf:/etc/redis/redis.conf \<br>--privileged=<span class="hljs-literal">true</span> \<br>--name myredis \<br>-d redis redis-server /etc/redis/redis.conf<br><br><span class="hljs-comment">#$PWD等于目录变量 ，以上代码等于</span><br>docker run -p 6379:6379 -v /app/docker/redis/data:/data -v /app/docker/redis/conf/redis.conf:/etc/redis/redis.conf --privileged=<span class="hljs-literal">true</span> --name myredis -d redis redis-server /etc/redis/redis.conf<br></code></pre></td></tr></table></figure>
 
 <p>以上命令解析：</p>
@@ -417,7 +429,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2%20/" title="Redis高可用集群部署">
+                      <a href="/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/" title="Redis高可用集群部署">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">Redis高可用集群部署</span>
                         <span class="visible-mobile">上一篇</span>

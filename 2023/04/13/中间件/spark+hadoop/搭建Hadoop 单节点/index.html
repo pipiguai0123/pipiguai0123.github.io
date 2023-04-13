@@ -1,0 +1,787 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="CentOS设置Hadoop单节点集群（Hadoop单节点环境搭建）12官方参考文档：https:&#x2F;&#x2F;hadoop.apache.org&#x2F;docs&#x2F;stable&#x2F;hadoop-project-dist&#x2F;hadoop-common&#x2F;SingleCluster.html参考博主文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;lt5227&#x2F;article&#x2F;details&#x2F;119417295 注意：首先">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设置Hadoop单节点集群（Hadoop单节点环境搭建）">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/04/13/%E4%B8%AD%E9%97%B4%E4%BB%B6/spark+hadoop/%E6%90%AD%E5%BB%BAHadoop%20%E5%8D%95%E8%8A%82%E7%82%B9/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="CentOS设置Hadoop单节点集群（Hadoop单节点环境搭建）12官方参考文档：https:&#x2F;&#x2F;hadoop.apache.org&#x2F;docs&#x2F;stable&#x2F;hadoop-project-dist&#x2F;hadoop-common&#x2F;SingleCluster.html参考博主文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;lt5227&#x2F;article&#x2F;details&#x2F;119417295 注意：首先">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-13T02:13:23.000Z">
+<meta property="article:modified_time" content="2023-04-13T06:27:49.776Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="Hadoop">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>设置Hadoop单节点集群（Hadoop单节点环境搭建） - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="设置Hadoop单节点集群（Hadoop单节点环境搭建）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-04-13 10:13" pubdate>
+          2023年4月13日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          35 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">设置Hadoop单节点集群（Hadoop单节点环境搭建）</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="CentOS设置Hadoop单节点集群（Hadoop单节点环境搭建）"><a href="#CentOS设置Hadoop单节点集群（Hadoop单节点环境搭建）" class="headerlink" title="CentOS设置Hadoop单节点集群（Hadoop单节点环境搭建）"></a>CentOS设置Hadoop单节点集群（Hadoop单节点环境搭建）</h1><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">官方参考文档：https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html<br>参考博主文档：https://blog.csdn.net/lt5227/article/details/119417295<br></code></pre></td></tr></table></figure>
+<p><strong>注意：首先要确定自己的机器上已安装 Java 运行环境!!</strong></p>
+<h2 id="准备工作：新建一个hadoop的账号-不推荐使用root账号进行配置"><a href="#准备工作：新建一个hadoop的账号-不推荐使用root账号进行配置" class="headerlink" title="准备工作：新建一个hadoop的账号!(不推荐使用root账号进行配置)"></a>准备工作：新建一个hadoop的账号!(不推荐使用root账号进行配置)</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#服务器创建 hadoop 账号</span><br>useradd hadoop<br><br><span class="hljs-comment">#给 hadoop 用户赋予sudo 权限：</span><br>vim /etc/sudoers<br><br><span class="hljs-comment">#在一下行下添加hadoop ALL=(ALL) ALL</span><br><br>root    ALL=(ALL)       ALL<br>hadoop ALL=(ALL) ALL<br><br><span class="hljs-comment">#设置 hadoop 账号密码</span><br>passwd hadoop<br><br><span class="hljs-comment">#切换账号</span><br>su - hadoop<br></code></pre></td></tr></table></figure>
+
+<h2 id="1、下载hadoop"><a href="#1、下载hadoop" class="headerlink" title="1、下载hadoop"></a>1、下载hadoop</h2><p>下载地址：<a target="_blank" rel="noopener" href="https://mirror-hk.koddos.net/apache/hadoop/common/stable/">https://mirror-hk.koddos.net/apache/hadoop/common/stable/</a></p>
+<p>选择 3.3.4 稳定版</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> -p /app/hadoop &amp;&amp; <span class="hljs-built_in">cd</span> /app/hadoop<br><br>wget https://mirror-hk.koddos.net/apache/hadoop/common/stable/hadoop-3.3.4.tar.gz<br></code></pre></td></tr></table></figure>
+
+<h2 id="2、解压hadopp"><a href="#2、解压hadopp" class="headerlink" title="2、解压hadopp"></a>2、解压hadopp</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">tar -zxvf hadoop-3.3.4.tar.gz<br><br><span class="hljs-built_in">cd</span> hadoop-3.3.4<br></code></pre></td></tr></table></figure>
+
+<h2 id="3、编辑hadoop目录下的etc-x2F-hadoop-x2F-hadoop-env-sh文件，定义如下参数"><a href="#3、编辑hadoop目录下的etc-x2F-hadoop-x2F-hadoop-env-sh文件，定义如下参数" class="headerlink" title="3、编辑hadoop目录下的etc&#x2F;hadoop&#x2F;hadoop-env.sh文件，定义如下参数:"></a>3、编辑hadoop目录下的etc&#x2F;hadoop&#x2F;hadoop-env.sh文件，定义如下参数:</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim etc/hadoop/hadoop-env.sh<br><br><span class="hljs-comment"># 找到JAVA_HOME，设置为Java安装的根目录</span><br><span class="hljs-built_in">export</span> JAVA_HOME=/usr/local/jdk1.8.0<br><br><span class="hljs-comment">#不知道安装路径的使用whereis java命令查看</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="4、配置-HADOOP-HOME-环境变量"><a href="#4、配置-HADOOP-HOME-环境变量" class="headerlink" title="4、配置 HADOOP_HOME 环境变量"></a>4、配置 HADOOP_HOME 环境变量</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sh">sudo vim /etc/profile<br><br>HADOOP_HOME=/app/hadoop/hadoop-3.3.4<br>PATH=<span class="hljs-variable">$HADOOP_HOME</span>/bin:<span class="hljs-variable">$PATH</span><br><span class="hljs-built_in">export</span> PATH<br><br><br><span class="hljs-comment">#更新环境变量</span><br><span class="hljs-built_in">source</span> /etc/profile<br><br><span class="hljs-comment">#进行验证</span><br>hadoop version<br></code></pre></td></tr></table></figure>
+
+<h2 id="5、Hadoop-伪分布式模式配置"><a href="#5、Hadoop-伪分布式模式配置" class="headerlink" title="5、Hadoop 伪分布式模式配置"></a>5、Hadoop 伪分布式模式配置</h2><p>Hadoop 可以以伪分布式模式运行在单个节点上，其中每个Hadoop守护进程运行在单独的 Java 进程中。</p>
+<h3 id="1-配置"><a href="#1-配置" class="headerlink" title="1.配置:"></a>1.配置:</h3><p>在 Hadoop 目录下的 etc&#x2F;hadoop&#x2F;core-site.xml 中增加下面的配置：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim etc/hadoop/core-site.xml<br><br>&lt;configuration&gt;<br>    &lt;property&gt;<br>        &lt;name&gt;fs.defaultFS&lt;/name&gt;<br>        &lt;value&gt;hdfs://127.0.0.1:9000&lt;/value&gt;<br>    &lt;/property&gt;<br>&lt;/configuration&gt;<br></code></pre></td></tr></table></figure>
+<p>关于 core-site.xml 相关配置的属性的说明可以参考官方文档：<a target="_blank" rel="noopener" href="https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/core-default.xml">https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/core-default.xml</a></p>
+<h3 id="2-建议配置一下-hadoop-的文件目录，该目录默认指向-x2F-tmp-x2F-hadoop-user-name"><a href="#2-建议配置一下-hadoop-的文件目录，该目录默认指向-x2F-tmp-x2F-hadoop-user-name" class="headerlink" title="2.建议配置一下 hadoop 的文件目录，该目录默认指向 &#x2F;tmp&#x2F;hadoop-${user.name}"></a>2.建议配置一下 hadoop 的文件目录，该目录默认指向 &#x2F;tmp&#x2F;hadoop-${user.name}</h3><p>由于在 &#x2F;tmp 目录下，所以一旦机器重启，数据会丢失。在服务器中创建数据目录存放地址，这里我创建了 &#x2F;opt&#x2F;hadoop_tmp_dir 目录，在 etc&#x2F;hadoop&#x2F;core-site.xml 中继续增加下面的配置：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> -p /opt/hadoop_tmp_dir<br><span class="hljs-comment">#如果是使用hadoop用户启动时，需要修改该文件的权限以及所属</span><br><span class="hljs-comment">#执行以下命令:</span><br><span class="hljs-comment">#chown hadoop /opt/hadoop_tmp_dir</span><br><span class="hljs-comment">#chmod -R 777 /opt/hadoop_tmp_dir/</span><br><br>vim etc/hadoop/core-site.xml<br><span class="hljs-comment">#...</span><br><span class="hljs-comment">#在&lt;/property&gt;后添加</span><br>    &lt;property&gt;<br>        &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;<br>        &lt;value&gt;/opt/hadoop_tmp_dir&lt;/value&gt;<br>    &lt;/property&gt;<br>&lt;/configuration&gt;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-之后在-Hadoop-目录下的-etc-x2F-hadoop-x2F-hdfs-site-xml-中增加下面的配置："><a href="#3-之后在-Hadoop-目录下的-etc-x2F-hadoop-x2F-hdfs-site-xml-中增加下面的配置：" class="headerlink" title="3.之后在 Hadoop 目录下的 etc&#x2F;hadoop&#x2F;hdfs-site.xml 中增加下面的配置："></a>3.之后在 Hadoop 目录下的 etc&#x2F;hadoop&#x2F;hdfs-site.xml 中增加下面的配置：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim etc/hadoop/hdfs-site.xml<br><br>&lt;configuration&gt;<br>    &lt;property&gt;<br>        &lt;name&gt;dfs.replication&lt;/name&gt;<br>        &lt;value&gt;1&lt;/value&gt;<br>    &lt;/property&gt;<br>&lt;/configuration&gt;<br><br><span class="hljs-comment">#这里指的是文件系统的副本系数。有关 hdfs-site.xml 相关配置属性的说明可以参考官方文档：https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-设置SSH免密登陆"><a href="#4-设置SSH免密登陆" class="headerlink" title="4.设置SSH免密登陆"></a>4.设置SSH免密登陆</h3><p>现在检查是否可以在不使用密码的情况下 ssh 到本地主机:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">ssh localhost<br></code></pre></td></tr></table></figure>
+
+<p>运行上面的命令，如果需要输入密码才能登陆到 localhost 的话，请执行以下命令:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">ssh-keygen -t rsa -P <span class="hljs-string">&#x27;&#x27;</span> -f ~/.ssh/id_rsa<br><span class="hljs-built_in">cat</span> ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys<br><span class="hljs-built_in">chmod</span> 0600 ~/.ssh/authorized_keys<br><br><span class="hljs-comment">#上面的命令依次执行就可以了， 执行完后输入ssh localhost就可以不用输入密码而直接登陆了。</span><br></code></pre></td></tr></table></figure>
+
+
+<h3 id="5-格式化文件系统"><a href="#5-格式化文件系统" class="headerlink" title="5.格式化文件系统"></a>5.格式化文件系统</h3><p>启动 HDFS，在第一次执行的时候一定要格式化文件系统， 后面启动就不需要了。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">hdfs namenode -format<br><br><span class="hljs-comment">#这个时候就会在之前我们配置的 /opt/hadoop_tmp_dir 目录下生成 dfs 目录文件信息。</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="6-启动-NameNode-守护进程和-DataNode-守护进程"><a href="#6-启动-NameNode-守护进程和-DataNode-守护进程" class="headerlink" title="6.启动 NameNode 守护进程和 DataNode 守护进程"></a>6.启动 NameNode 守护进程和 DataNode 守护进程</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">sbin/start-dfs.sh<br></code></pre></td></tr></table></figure>
+
+<p>注意：在 sbin 目录下运行上面的脚本，启动 HDFS 。如果出现下面的错误：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@stackstone-001 sbin]<span class="hljs-comment"># ./start-dfs.sh </span><br>Starting namenodes on [localhost]<br>ERROR: Attempting to operate on hdfs namenode as root<br>ERROR: but there is no HDFS_NAMENODE_USER defined. Aborting operation.<br>Starting datanodes<br>ERROR: Attempting to operate on hdfs datanode as root<br>ERROR: but there is no HDFS_DATANODE_USER defined. Aborting operation.<br>Starting secondary namenodes [stackstone-001]<br>ERROR: Attempting to operate on hdfs secondarynamenode as root<br>ERROR: but there is no HDFS_SECONDARYNAMENODE_USER defined. Aborting operation.<br><br>则需要设置脚本  ，增加3个变量设置：<br><br>vim sbin/start-dfs.sh<br><span class="hljs-comment">#找到HDFS_DATANODE_USER，添加如下</span><br><br>HDFS_NAMENODE_USER=root<br>HDFS_DATANODE_USER=root<br>HDFS_SECONDARYNAMENODE_USER=root<br><br><span class="hljs-comment">#注：最好不要用root账号来启动我们的Hadoop服务，建议改成hadoop</span><br><br></code></pre></td></tr></table></figure>
+
+<h3 id="7-启动成功后验证"><a href="#7-启动成功后验证" class="headerlink" title="7.启动成功后验证"></a>7.启动成功后验证</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@stackstone-001 sbin]<span class="hljs-comment"># jps</span><br>6017 DataNode<br>6262 SecondaryNameNode<br>9639 Jps<br>5869 NameNode<br><br>[root@stackstone-001 sbin]<span class="hljs-comment"># hadoop dfs -mkdir /test</span><br>WARNING: Use of this script to execute dfs is deprecated.<br>WARNING: Attempting to execute replacement <span class="hljs-string">&quot;hdfs dfs&quot;</span> instead.<br><br>[root@stackstone-001 sbin]<span class="hljs-comment"># hdfs dfs -ls /</span><br>Found 1 items<br>drwxr-xr-x   - root supergroup          0 2021-08-05 18:16 /test<br><br></code></pre></td></tr></table></figure>
+<p>在hdfs下创建&#x2F;test目录并查看，从上面的命令行可以看出，新版的命令改为：hdfs dfs 进行操作。<br>备注：如果需要停止服务，则运行 stop-dfs.sh 脚本，如果出现和启动脚本一样的错误，同样在该脚本中加入 HDFS_NAMENODE_USER、HDFS_DATANODE_USER、HDFS_SECONDARYNAMENODE_USER 的设置。</p>
+<h3 id="8-访问web页面"><a href="#8-访问web页面" class="headerlink" title="8.访问web页面**"></a>8.访问web页面**</h3><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs txt">http://localhost:9868<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/Hadoop/" class="category-chain-item">Hadoop</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Hadoop/">#Hadoop</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>设置Hadoop单节点集群（Hadoop单节点环境搭建）</div>
+      <div>https://pipiguai0123.github.io/2023/04/13/中间件/spark+hadoop/搭建Hadoop 单节点/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年4月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/04/13/%E7%8E%AF%E5%A2%83/golang/%E5%AE%89%E8%A3%85go%E7%8E%AF%E5%A2%83/" title="搭建NFS文件共享存储服务安装go环境">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">搭建NFS文件共享存储服务安装go环境</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/04/13/%E4%B8%AD%E9%97%B4%E4%BB%B6/spark+hadoop/spark%E6%90%AD%E5%BB%BA%E5%8D%95%E8%8A%82%E7%82%B9/" title="spark搭建单节点">
+                        <span class="hidden-mobile">spark搭建单节点</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

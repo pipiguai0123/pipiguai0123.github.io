@@ -1,0 +1,822 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Redis高可用集群部署123参考文档：https:&#x2F;&#x2F;blog.51cto.com&#x2F;u_12393361&#x2F;5021565参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;Liu_jianshan&#x2F;article&#x2F;details&#x2F;117512511参考文档：https:&#x2F;&#x2F;cloud.tencent.com&#x2F;developer&#x2F;article&#x2F;1412673  Redis的集群方案大致有三种：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis高可用集群部署">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="Redis高可用集群部署123参考文档：https:&#x2F;&#x2F;blog.51cto.com&#x2F;u_12393361&#x2F;5021565参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;Liu_jianshan&#x2F;article&#x2F;details&#x2F;117512511参考文档：https:&#x2F;&#x2F;cloud.tencent.com&#x2F;developer&#x2F;article&#x2F;1412673  Redis的集群方案大致有三种：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/image-20221024104836469.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/image-20221024105016717.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/image-20221024162249070.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/image-20221024175533147.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/image-20221024180800833.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/image-20221024181541011.png">
+<meta property="article:published_time" content="2023-04-03T02:32:22.000Z">
+<meta property="article:modified_time" content="2023-04-12T08:57:12.426Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="redis">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pipiguai0123.github.io/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/image-20221024104836469.png">
+  
+  
+  
+  <title>Redis高可用集群部署 - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Redis高可用集群部署"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-04-03 10:32" pubdate>
+          2023年4月3日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          45 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Redis高可用集群部署</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Redis高可用集群部署"><a href="#Redis高可用集群部署" class="headerlink" title="Redis高可用集群部署"></a>Redis高可用集群部署</h1><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs txt">参考文档：https://blog.51cto.com/u_12393361/5021565<br>参考文档：https://blog.csdn.net/Liu_jianshan/article/details/117512511<br>参考文档：https://cloud.tencent.com/developer/article/1412673<br></code></pre></td></tr></table></figure>
+
+<p>Redis的集群方案大致有三种：1）redis cluster集群方案；2）master&#x2F;slave主从方案；3）哨兵模式来进行主从替换以及故障恢复。</p>
+<h2 id="一、Redis-集群方案比较"><a href="#一、Redis-集群方案比较" class="headerlink" title="一、Redis 集群方案比较"></a>一、Redis 集群方案比较</h2><h3 id="1-哨兵模式"><a href="#1-哨兵模式" class="headerlink" title="1. 哨兵模式"></a>1. 哨兵模式</h3><p>   <img src="/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/image-20221024104836469.png" srcset="/img/loading.gif" lazyload alt="image-20221024104836469"></p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs txt">在redis3.0以前的版本要实现集群一般是借助哨兵sentinel工具来监控master节点的状态，如果master节点异常，则会做主从切换，将某一台slave作为master，哨兵的配置略微复杂，并且性能和高可用性等各方面表现一般，特别是在主从切换的瞬间存在访问瞬断的情况，而且哨兵模式只有一个主节点对外提供服务，没法支持很高的并发，且单个主节点内存也不宜设置得过大，否则会导致持久化文件过大，影响数据恢复或主从同步的效率。<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-高可用集群模式"><a href="#2-高可用集群模式" class="headerlink" title="2. 高可用集群模式"></a>2. 高可用集群模式</h3><p> <img src="/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/image-20221024105016717.png" srcset="/img/loading.gif" lazyload alt="image-20221024105016717"></p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs txt">Redis集群是一个由多个主从节点群组成的分布式服务器群，它具有复制、高可用和分片特性。Redis集群不需要sentinel哨兵也能完成节点移除和故障转移的功能。需要将每个节点设置成集群模式，这种集群模式没有中心节点，可水平扩展，据官方文档称可以线性扩展到上万个节点(官方推荐不超过1000个节点)。redis集群的性能和高可用性均优于之前版本的哨兵模式，且集群配置非常简单 。<br></code></pre></td></tr></table></figure>
+
+<h2 id="二、搭建步骤（三主三从，模拟一台一主一从）"><a href="#二、搭建步骤（三主三从，模拟一台一主一从）" class="headerlink" title="二、搭建步骤（三主三从，模拟一台一主一从）"></a>二、搭建步骤（三主三从，模拟一台一主一从）</h2><p>搭建环境：</p>
+<table>
+<thead>
+<tr>
+<th>主机名</th>
+<th>ip地址</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>redis-1</td>
+<td>192.168.62.128</td>
+<td></td>
+</tr>
+<tr>
+<td>redis-2</td>
+<td>192.168.62.129</td>
+<td></td>
+</tr>
+<tr>
+<td>redis-3</td>
+<td>192.168.62.130</td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">Redis的基础介绍与安装使用步骤：https://www.jianshu.com/p/2a23257af57b<br>redis安装包下载地址：http://redis.io/download <br></code></pre></td></tr></table></figure>
+
+<h3 id="1、redis安装："><a href="#1、redis安装：" class="headerlink" title="1、redis安装："></a>1、redis安装：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#安装gcc</span><br>yum install gcc -y<br><br><br><span class="hljs-comment">#下载安装包(使用5.0以上版本，为了后面的redis cluster)</span><br><span class="hljs-built_in">mkdir</span> -p /app/redis &amp;&amp; <span class="hljs-built_in">cd</span> /app/redis<br>wget http://download.redis.io/releases/redis-7.0.5.tar.gz<br>tar -xnf redis-7.0.5.tar.gz<br><br><span class="hljs-comment">#进入到解压的目录下，进行编译与安装</span><br><br><span class="hljs-built_in">cd</span> redis-7.0.5 <br><br>make<br><br><br><span class="hljs-comment">#启动并指定配置文件</span><br><br>src/redis-server redis.conf<br>注意：要使用后台启动，所以修改redis.conf里的daemonize改为<span class="hljs-built_in">yes</span><br><br><br><span class="hljs-comment"># 验证启动是否成功</span><br>ps -ef | grep redis<br><br><span class="hljs-comment"># 进入redis客户端 </span><br>src/redis-cli -p 6379  (默认6379端口)<br><br><span class="hljs-comment"># 退出客户端</span><br>quit<br><br><span class="hljs-comment">#退出redis服务</span><br>pkill redis-server<br><span class="hljs-comment">#或者</span><br><span class="hljs-built_in">kill</span> 进程号<br><span class="hljs-comment">#或者</span><br>src/redis-cli shutdown<br></code></pre></td></tr></table></figure>
+
+<h3 id="2、集群搭建"><a href="#2、集群搭建" class="headerlink" title="2、集群搭建"></a>2、集群搭建</h3><h4 id="2-1、创建工作目录"><a href="#2-1、创建工作目录" class="headerlink" title="2.1、创建工作目录"></a>2.1、创建工作目录</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#在三台机器的/app下创建文件夹redis‐cluster，然后在其下面分别创建2个文件夾如下 </span><br><span class="hljs-built_in">mkdir</span> /app/redis-cluster &amp;&amp; <span class="hljs-built_in">cd</span> /app/redis-cluster<br><span class="hljs-built_in">mkdir</span> 6379 6380<br><br>并将redis.conf配置文件按照如下步骤修改，除端口不一致！<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-2、修改配置文件"><a href="#2-2、修改配置文件" class="headerlink" title="2.2、修改配置文件"></a>2.2、修改配置文件</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#将redis的配置文件copy到6379下，修改如下内容： </span><br><span class="hljs-comment">#如果需要更好的区分，可将redis.conf重命名：redis-6379.conf</span><br><span class="hljs-built_in">cp</span> /app/redis/redis‐7.0.5/redis.conf /app/redis-cluster/6379/<br><br>vim /app/redis-cluster/6379/redis.conf<br><span class="hljs-comment">#修改如下内容</span><br>1）daemonize <span class="hljs-built_in">yes</span> <br>2）port 6379（分别对每个机器的端口号进行设置） <br>3）pidfile /var/run/redis_6379.pid<br>4）logfile <span class="hljs-string">&quot;6379.log&quot;</span><br>5）<span class="hljs-built_in">dir</span> /app/redis‐cluster/6379/（指定数据文件存放位置，必须要指定不同的目录位置，不然会丢失数据） <br>6）cluster‐enabled <span class="hljs-built_in">yes</span>（启动集群模式） <br>7）cluster‐config‐file nodes‐6379.conf（集群节点信息文件，这里与port对应上） <br>8）cluster‐node‐<span class="hljs-built_in">timeout</span> 5000 <br>9）<span class="hljs-comment"># bind 127.0.0.1（去掉bind绑定访问ip信息） </span><br>10）protected‐mode no （关闭保护模式） <br>11）appendonly <span class="hljs-built_in">yes</span> <br><br><span class="hljs-comment">#如果要设置密码需要增加如下配置： </span><br>12） requirepass 123456 (设置redis访问密码) <br>13） masterauth 123456 (设置集群节点间访问密码，跟上面一致)<br><br><br><span class="hljs-comment">#复制修改后的配置文件到6380目录</span><br><span class="hljs-built_in">cp</span> /app/redis-cluster/6379/redis.conf /app/redis-cluster/6380/<br><br><span class="hljs-comment">#修改配置文件，可用sed命令替换</span><br>sed -i <span class="hljs-string">&#x27;s/6379/6380/g&#x27;</span> /app/redis-cluster/6380/redis.conf<br><br><span class="hljs-comment">#分发到其他两台机器上</span><br>scp /app/redis-cluster/6379/redis.conf redis-2:/app/redis-cluster/6379/<br>scp /app/redis-cluster/6380/redis.conf redis-2:/app/redis-cluster/6380/<br>scp /app/redis-cluster/6379/redis.conf redis-3:/app/redis-cluster/6379/<br>scp /app/redis-cluster/6380/redis.conf redis-3:/app/redis-cluster/6380/<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-3、分别启动6个redis实例"><a href="#2-3、分别启动6个redis实例" class="headerlink" title="2.3、分别启动6个redis实例"></a>2.3、分别启动6个redis实例</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#启动redis实例</span><br>/app/redis/redis-7.0.5/src/redis-server /app/redis-cluster/6379/redis.conf<br>/app/redis/redis-7.0.5/src/redis-server /app/redis-cluster/6380/redis.conf<br><br><span class="hljs-comment">#查看是否启动成功</span><br>ps -ef | grep redis<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-4、用redis‐cli创建redis集群-redis5以前的版本集群是依靠ruby脚本redis‐trib-rb实现"><a href="#2-4、用redis‐cli创建redis集群-redis5以前的版本集群是依靠ruby脚本redis‐trib-rb实现" class="headerlink" title="2.4、用redis‐cli创建redis集群(redis5以前的版本集群是依靠ruby脚本redis‐trib.rb实现)"></a>2.4、用redis‐cli创建redis集群(redis5以前的版本集群是依靠ruby脚本redis‐trib.rb实现)</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#执行前需要确认三台机器之间的redis实例要能相互访问，可以先简单把所有机器防火墙关掉，如果不关闭防火墙 则需要打开redis服务端口和集群节点gossip通信端口 </span><br><br>/app/redis/redis-7.0.5/src/redis-cli -a 123456 --cluster create --cluster-replicas 1 192.168.62.128:6379 192.168.62.129:6379 192.168.62.130:6379 192.168.62.128:6380 192.168.62.129:6380 192.168.62.130:6380<br><br><span class="hljs-comment"># --cluster-replicas 1：命令里的1代表为每个创建的主服务器节点创建一个从服务器节点 </span><br>举例：为集群创建两个从节点：<br>redis-cli -a 123456 --cluster create --cluster-replicas 2 192.168.100.200:6379 192.168.100.200:6380 192.168.100.200:6381 192.168.100.201:6379 192.168.100.201:6380 192.168.100.201:6381 192.168.100.202:6379 192.168.100.202:6380 192.168.100.202:6381<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-5、验证集群"><a href="#2-5、验证集群" class="headerlink" title="2.5、验证集群"></a>2.5、验证集群</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#连接任意一个客户端</span><br>/app/redis/redis-7.0.5/src/redis-cli -a 123456 -h 192.168.62.128 -p 6379 -c<br>‐a:访问服务端密码<br>-h:指定IP地址<br>-p:指定端口号<br>‐c:表示集群模式,可省略<br><br><span class="hljs-comment">#查看集群信息</span><br>&gt; cluster info<br>输出信息中：cluster_known_nodes:6<br><br><span class="hljs-comment">#查看节点列表</span><br>&gt;cluster nodes<br>输出信息中有各个节点的ip地址以及master和slave状态<br><br><br><span class="hljs-comment">#查看集群状态</span><br>/app/redis/redis-7.0.5/src/redis-cli -a 123456 --cluster check 192.168.62.128:6379<br><br><br>关闭集群则需要逐个进行关闭，使用命令： <br>/app/redis/redis-7.0.5/src/redis-cli -a 123456 -c -h 192.168.62.128 -p 6379 shutdown<br>/app/redis/redis-7.0.5/src/redis-cli -a 123456 -c -h 192.168.62.128 -p 6380 shutdown<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-6、Redis集群增加节点和删除节点"><a href="#2-6、Redis集群增加节点和删除节点" class="headerlink" title="2.6、Redis集群增加节点和删除节点"></a>2.6、Redis集群增加节点和删除节点</h4><p>参考文档：<code>https://www.cnblogs.com/hopeofthevillage/p/11535683.html</code></p>
+<p><strong>添加一个从节点到集群：</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs sh">在192.168.62.128机器上运行一个新的redis实例（端口：6381，步骤略过）：<br><br><span class="hljs-comment">#添加新节点：</span><br>redis-cli -a 123456 --cluster add-node 192.168.62.128:6381 192.168.62.128:6379<br><span class="hljs-comment">#第一个ip为新增的节点  第二个ip为集群中的节点</span><br><br><span class="hljs-comment">#加入集群成功，登录到redis查看一下集群状态：</span><br>/app/redis/redis-7.0.5/src/redis-cli -a 123456 -h 192.168.62.128 -p 6381 -c<br>&gt;cluster nodes<br><span class="hljs-comment">#可以看到6381是一个Master节点，而且没有拥有自己的slot槽</span><br><br>使用cluster replicate命令改变状态<br>&gt;cluster replicate 53f276d1d7eb9df832a339ea1031e8f84ab63d90 <span class="hljs-comment">#需要加入的master的节点ID</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/image-20221024162249070.png" srcset="/img/loading.gif" lazyload alt="image-20221024162249070"></p>
+<p><strong>添加一个新master节点到集群</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">在192.168.62.129机器上运行率一个redis实例（端口：6381，步骤略过）<br><br>redis-cli -a 123456 --cluster add-node 192.168.62.129:6381 192.168.62.128:6379<br><span class="hljs-comment">#第一个ip为新增的节点  第二个ip为集群中的节点</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/image-20221024175533147.png" srcset="/img/loading.gif" lazyload alt="image-20221024175533147"></p>
+<p>  新节点现在已经连接上了集群， 成为集群的一份子， 并且可以对客户端的命令请求进行转向了， 但是和其他主节点相比， 新节点还有两点区别：<br>1.新节点没有包含任何数据， 因为它没有包含任何哈希槽.<br>2.尽管新节点没有包含任何哈希槽， 但它仍然是一个主节点， 所以在集群需要将某个从节点升级为新的主节点时， 这个新节点不会被选中。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#将集群中的某些哈希桶移动到新节点里面， 新节点就会成为真正的主节点了。</span><br><br>redis-cli -a 123456  --cluster reshard 192.168.62.128:6379 <span class="hljs-comment">##可以为任意的节点 在此登录只是作为客户端去访问的</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/image-20221024180800833.png" srcset="/img/loading.gif" lazyload alt="image-20221024180800833"></p>
+<p>注意：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs txt">1.Redis Cluster 采用的是虚拟槽分区，一个集群共有 16384 个哈希槽，Redis Cluster会自动把这些槽平均分布在集群实例上。例如，如果集群中有 N 个实例，那么，每个实例上的槽个数为 16384/N个，因为我们增加6381为主节点后，一共存在四个主节点，为了平均分配我们需要给6381端口的redis分配：16384除以4等于4096个节点，所以我们输入4096，按enter继续<br><br>2.为的6381的节点ID，按enter继续<br><br>3.从哪些主节点抽取槽到新节点中：all为所有主节点，done：指定节点，在这里我们输入all，按enter继续<br><br>最后询问我们是否接受这个计划，输入yes<br></code></pre></td></tr></table></figure>
+
+
+<p>登录集群查看集群状态即可看到：</p>
+<p><img src="/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/Redis%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/image-20221024181541011.png" srcset="/img/loading.gif" lazyload alt="image-20221024181541011"></p>
+<p>至此主节点已经添加完毕了</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/" class="category-chain-item">redis</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/redis/">#redis</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Redis高可用集群部署</div>
+      <div>https://pipiguai0123.github.io/2023/04/03/中间件/redis/Redis高可用集群部署/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年4月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/%E4%BD%BF%E7%94%A8redis-shake%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB%E4%BB%A5%E5%8F%8A%E5%90%8C%E6%AD%A5/" title="使用redis-shake进行数据迁移以及同步">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">使用redis-shake进行数据迁移以及同步</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/04/03/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/docker%E5%AE%89%E8%A3%85redis/" title="docker安装redis">
+                        <span class="hidden-mobile">docker安装redis</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

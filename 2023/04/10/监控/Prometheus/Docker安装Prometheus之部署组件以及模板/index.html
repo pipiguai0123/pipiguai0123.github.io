@@ -1,0 +1,895 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Docker安装Prometheus之部署组件及模板、邮件通知1234参考文档1：https:&#x2F;&#x2F;www.freesion.com&#x2F;article&#x2F;7143903065&#x2F;参考文档2：https:&#x2F;&#x2F;www.freesion.com&#x2F;article&#x2F;4040903004&#x2F;其他参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_43909790&#x2F;article&#x2F;details&#x2F;1265">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker安装Prometheus之部署组件以及模板">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="Docker安装Prometheus之部署组件及模板、邮件通知1234参考文档1：https:&#x2F;&#x2F;www.freesion.com&#x2F;article&#x2F;7143903065&#x2F;参考文档2：https:&#x2F;&#x2F;www.freesion.com&#x2F;article&#x2F;4040903004&#x2F;其他参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_43909790&#x2F;article&#x2F;details&#x2F;1265">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/2.3.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222163231173.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222163321309.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222163703942.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222163923398.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222164300151.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222164423204.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222164826393.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222164938738.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222165201800.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222165755007.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220302153227063.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220302153640005.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220302170928150.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20221216113452790.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20221216113631968.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20221216120124489.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20221216114556777.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20221216114644906.png">
+<meta property="article:published_time" content="2023-04-10T02:47:29.000Z">
+<meta property="article:modified_time" content="2023-04-12T03:09:12.764Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="prometheus">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pipiguai0123.github.io/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/2.3.png">
+  
+  
+  
+  <title>Docker安装Prometheus之部署组件以及模板 - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Docker安装Prometheus之部署组件以及模板"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-04-10 10:47" pubdate>
+          2023年4月10日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          12k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          103 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Docker安装Prometheus之部署组件以及模板</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Docker安装Prometheus之部署组件及模板、邮件通知"><a href="#Docker安装Prometheus之部署组件及模板、邮件通知" class="headerlink" title="Docker安装Prometheus之部署组件及模板、邮件通知"></a>Docker安装Prometheus之部署组件及模板、邮件通知</h1><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs txt">参考文档1：https://www.freesion.com/article/7143903065/<br>参考文档2：https://www.freesion.com/article/4040903004/<br><br>其他参考文档：https://blog.csdn.net/weixin_43909790/article/details/126562341<br></code></pre></td></tr></table></figure>
+
+<p><strong>环境：(全部关闭防火墙，禁用selinux)</strong></p>
+<table>
+<thead>
+<tr>
+<th>服务器节点名称</th>
+<th>ip地址</th>
+<th>安装组件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Docker1</td>
+<td>192.168.94.154</td>
+<td>nodeExporter,Cadvisor,grafana,Prometheus server</td>
+</tr>
+<tr>
+<td>Docker2</td>
+<td>192.168.94.155</td>
+<td>nodeExporter,Cadvisor</td>
+</tr>
+<tr>
+<td>Docker3</td>
+<td>192.168.94.156</td>
+<td>nodeExporter,Cadvisor</td>
+</tr>
+</tbody></table>
+<p><strong>需要部署的组件：</strong></p>
+<ul>
+<li>Prometheus server:普罗米修斯的主服务器</li>
+<li>nodeexporter:负责收集host硬件信息和操作系统信息</li>
+<li>CAdvisor:负责收集host上运行的容器信息</li>
+<li>grafana:负责展示普罗米修斯监控界面</li>
+</ul>
+<h2 id="一、部署基础的组件（Prometheus-grafana）"><a href="#一、部署基础的组件（Prometheus-grafana）" class="headerlink" title="一、部署基础的组件（Prometheus +  grafana）"></a>一、部署基础的组件（Prometheus +  grafana）</h2><h3 id="1、）将三个服务器节点，全部部署node-exporter和cadvisor"><a href="#1、）将三个服务器节点，全部部署node-exporter和cadvisor" class="headerlink" title="1、）将三个服务器节点，全部部署node-exporter和cadvisor"></a>1、）将三个服务器节点，全部部署node-exporter和cadvisor</h3><h4 id="1-1、部署node-exporter"><a href="#1-1、部署node-exporter" class="headerlink" title="1.1、部署node-exporter"></a>1.1、部署node-exporter</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker run -d -p 9100:9100 \<br>-v /proc:/host/proc \<br>-v /sys:/host/sys \<br>-v /:/rootfs \<br>--name node-exporter \<br>--net=host prom/node-exporter \<br><span class="hljs-comment">#--web.listen-address=:7100 设置端口为7100</span><br>--path.procfs /host/proc --path.sysfs /host/sys --collector.filesystem.ignored-mount-points <span class="hljs-string">&quot;^/(sys|proc|dev|host|etc)($|/)&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>注意：这里使用了–net&#x3D;host，这样prometheus   server 可以直接与node-exporter通信。<br>docker ps 可以看到有一个image为：prom&#x2F;node-exporter的镜像运行</p>
+<h4 id="1-2、部署安装cadvisor-收集节点容器信息：（在浏览器上验证，猫头鹰头像）"><a href="#1-2、部署安装cadvisor-收集节点容器信息：（在浏览器上验证，猫头鹰头像）" class="headerlink" title="1.2、部署安装cadvisor,收集节点容器信息：（在浏览器上验证，猫头鹰头像）"></a>1.2、部署安装cadvisor,收集节点容器信息：（在浏览器上验证，猫头鹰头像）</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker run -v /:/rootfs:ro \<br>-v /var/run:/var/run/:rw \<br>-v /sys:/sys:ro \<br>-v /var/lib/docker:/var/lib/docker:ro \<br>-p 8080:8080 \<br>--detach=<span class="hljs-literal">true</span> \<br>--name=cadvisor \<br>--net=host google/cadvisor<br></code></pre></td></tr></table></figure>
+
+<p>运行完成后，可以访问ip+9100端口显示：Node Exporter</p>
+<h3 id="2、）在docker1上部署prometheus-server服务：在部署prometheus之前，我们需要对它的配置文件进行修改，所以我们先运行一个容器，先将其配置文件拷贝出来"><a href="#2、）在docker1上部署prometheus-server服务：在部署prometheus之前，我们需要对它的配置文件进行修改，所以我们先运行一个容器，先将其配置文件拷贝出来" class="headerlink" title="2、）在docker1上部署prometheus server服务：在部署prometheus之前，我们需要对它的配置文件进行修改，所以我们先运行一个容器，先将其配置文件拷贝出来**"></a>2、）在docker1上部署prometheus server服务：在部署prometheus之前，我们需要对它的配置文件进行修改，所以我们先运行一个容器，先将其配置文件拷贝出来**</h3><h4 id="2-1、创建文件目录，并临时运行一个容器"><a href="#2-1、创建文件目录，并临时运行一个容器" class="headerlink" title="2.1、创建文件目录，并临时运行一个容器"></a>2.1、创建文件目录，并临时运行一个容器</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> /app<br>docker run -d -p 9090:9090 --name prometheus --net=host prom/prometheus<br><span class="hljs-comment">#docker exec -it prometheus /bin/sh</span><br></code></pre></td></tr></table></figure>
+
+<p>将容器内的prometheus.yml拷贝到&#x2F;app目录下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker <span class="hljs-built_in">cp</span> prometheus:/etc/prometheus/prometheus.yml ./<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-2、修改prometheus-yml文件"><a href="#2-2、修改prometheus-yml文件" class="headerlink" title="2.2、修改prometheus.yml文件"></a>2.2、修改prometheus.yml文件</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#第29行，这里指定了promethus的监控项，包括它也会监控自己收集到的数据。</span><br>    - targets：[<span class="hljs-string">&#x27;localhost:9090&#x27;</span>,<span class="hljs-string">&#x27;localhost:8080&#x27;</span>,<span class="hljs-string">&#x27;localhost:9100&#x27;</span>,<span class="hljs-string">&#x27;192.168.94.155:8080&#x27;</span>,<span class="hljs-string">&#x27;192.168.94.155:9100&#x27;</span>,<span class="hljs-string">&#x27;192.168.94.156:8080&#x27;</span>,<span class="hljs-string">&#x27;192.168.94.156:9100&#x27;</span>]  <br></code></pre></td></tr></table></figure>
+
+<h4 id="2-3、删除临时运行的容器。重新运行，并指定prometheus-yml配置文件"><a href="#2-3、删除临时运行的容器。重新运行，并指定prometheus-yml配置文件" class="headerlink" title="2.3、删除临时运行的容器。重新运行，并指定prometheus.yml配置文件"></a>2.3、删除临时运行的容器。重新运行，并指定prometheus.yml配置文件</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker <span class="hljs-built_in">rm</span> -f prometheus<br>docker run -d -p 9090:9090 --name prometheus --restart=always --net=host -v /app/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus<br></code></pre></td></tr></table></figure>
+
+<p>备注:在浏览器上访问我们的docker1服务器：192.168.94.154:9090 点击status–targets这里能够查看到我们各个监控项：</p>
+<p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/2.3.png" srcset="/img/loading.gif" lazyload alt="5398e3e3f9e82616ba8a567998bcdd39.png"></p>
+<h3 id="3、）在docker1上，部署gragana服务，用来展示prometheus"><a href="#3、）在docker1上，部署gragana服务，用来展示prometheus" class="headerlink" title="3、）在docker1上，部署gragana服务，用来展示prometheus"></a>3、）在docker1上，部署gragana服务，用来展示prometheus</h3><h4 id="3-1、创建挂载目录，并设置权限"><a href="#3-1、创建挂载目录，并设置权限" class="headerlink" title="3.1、创建挂载目录，并设置权限"></a>3.1、创建挂载目录，并设置权限</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> /app/grafana-storage<br><span class="hljs-built_in">chmod</span> 777 -R /app/grafana-storage<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-2、运行grafana服务"><a href="#3-2、运行grafana服务" class="headerlink" title="3.2、运行grafana服务"></a>3.2、运行grafana服务</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker run -d -p 3000:3000 --name grafana  --restart=always -v /app/grafana-storage:/var/lib/grafana -e <span class="hljs-string">&quot;GF_SECURITY_ADMIN_PASSWORD=123456&quot;</span> grafana/grafana<br></code></pre></td></tr></table></figure>
+
+<p>登录：192.168.94.154:3000 输入账号密码登录：admin&#x2F;123456</p>
+<h3 id="4、）配置prometheus和grafana连接"><a href="#4、）配置prometheus和grafana连接" class="headerlink" title="4、）配置prometheus和grafana连接"></a>4、）配置prometheus和grafana连接</h3><h4 id="4-1、登录成功后-gt-gt-添加数据源"><a href="#4-1、登录成功后-gt-gt-添加数据源" class="headerlink" title="4.1、登录成功后&gt;&gt;添加数据源"></a>4.1、登录成功后&gt;&gt;添加数据源</h4><p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222163231173.png" srcset="/img/loading.gif" lazyload alt="image-20220222163231173"></p>
+<h4 id="4-2、选择Prometheus源-gt-gt-自定义名称和源地址-gt-gt-选择”save-amp-test”"><a href="#4-2、选择Prometheus源-gt-gt-自定义名称和源地址-gt-gt-选择”save-amp-test”" class="headerlink" title="4.2、选择Prometheus源&gt;&gt;自定义名称和源地址&gt;&gt;选择”save &amp; test”"></a>4.2、选择Prometheus源&gt;&gt;自定义名称和源地址&gt;&gt;选择”save &amp; test”</h4><p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222163321309.png" srcset="/img/loading.gif" lazyload alt="image-20220222163321309"></p>
+<p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222163703942.png" srcset="/img/loading.gif" lazyload alt="image-20220222163703942"></p>
+<p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222163923398.png" srcset="/img/loading.gif" lazyload alt="image-20220222163923398"></p>
+<h4 id="4-3、grafana官方为我们提供了一些模板，提供数据展示，"><a href="#4-3、grafana官方为我们提供了一些模板，提供数据展示，" class="headerlink" title="4.3、grafana官方为我们提供了一些模板，提供数据展示，"></a>4.3、grafana官方为我们提供了一些模板，提供数据展示，</h4><p>地址：<a target="_blank" rel="noopener" href="https://grafana.com/grafana/dashboards/?pg=community&plcmt=topnav">https://grafana.com/grafana/dashboards/?pg=community&amp;plcmt=topnav</a></p>
+<h5 id="4-3-1、打开官网后，选择“Dashboards”-gt-gt-选择DataSource为Prometheus后搜索“docker”-gt-gt-选择模板"><a href="#4-3-1、打开官网后，选择“Dashboards”-gt-gt-选择DataSource为Prometheus后搜索“docker”-gt-gt-选择模板" class="headerlink" title="4.3.1、打开官网后，选择“Dashboards”&gt;&gt;选择DataSource为Prometheus后搜索“docker”&gt;&gt;选择模板"></a>4.3.1、打开官网后，选择“Dashboards”&gt;&gt;选择DataSource为Prometheus后搜索“docker”&gt;&gt;选择模板</h5><p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222164300151.png" srcset="/img/loading.gif" lazyload alt="image-20220222164300151"></p>
+<p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222164423204.png" srcset="/img/loading.gif" lazyload alt="image-20220222164423204"></p>
+<h5 id="4-3-2、复制ID或者下载JSON文件-gt-gt-打开grafana，选择Import-gt-gt-输入ID或者上传JSON-gt-gt-选择数据源即可"><a href="#4-3-2、复制ID或者下载JSON文件-gt-gt-打开grafana，选择Import-gt-gt-输入ID或者上传JSON-gt-gt-选择数据源即可" class="headerlink" title="4.3.2、复制ID或者下载JSON文件&gt;&gt;打开grafana，选择Import &gt;&gt;输入ID或者上传JSON&gt;&gt;选择数据源即可"></a>4.3.2、复制ID或者下载JSON文件&gt;&gt;打开grafana，选择Import &gt;&gt;输入ID或者上传JSON&gt;&gt;选择数据源即可</h5><p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222164826393.png" srcset="/img/loading.gif" lazyload alt="image-20220222164826393"></p>
+<p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222164938738.png" srcset="/img/loading.gif" lazyload alt="image-20220222164938738"></p>
+<p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222165201800.png" srcset="/img/loading.gif" lazyload alt="image-20220222165201800"></p>
+<p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220222165755007.png" srcset="/img/loading.gif" lazyload alt="image-20220222165755007"></p>
+<h2 id="二、部署监控及邮件、钉钉飞书报警"><a href="#二、部署监控及邮件、钉钉飞书报警" class="headerlink" title="二、部署监控及邮件、钉钉飞书报警"></a>二、部署监控及邮件、钉钉飞书报警</h2><p>在<strong>docker1</strong>上部署AlertManager报警插件。</p>
+<h3 id="1、）配置alertmanager"><a href="#1、）配置alertmanager" class="headerlink" title="1、）配置alertmanager:"></a>1、）配置alertmanager:</h3><p><strong>alertmanager</strong>：用来接收<strong>prometheus</strong>发送的报警信息，并且执行设置好的报警方式，报警内容。</p>
+<p><strong>Prometheus</strong>的报警方式有好几种方式，如：邮箱、钉钉、微信等。</p>
+<h4 id="以下采用邮箱报警："><a href="#以下采用邮箱报警：" class="headerlink" title="以下采用邮箱报警："></a>以下采用邮箱报警：</h4><h4 id="1-1、拉取AlertManager的镜像："><a href="#1-1、拉取AlertManager的镜像：" class="headerlink" title="1.1、拉取AlertManager的镜像："></a>1.1、拉取AlertManager的镜像：</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@docker1 ~]<span class="hljs-comment"># docker pull prom/alertmanager</span><br>[root@docker1 ~]<span class="hljs-comment"># docker images</span><br>prom/alertmanager    latest              30594e96cbe8        3 months ago        53.2MB<br></code></pre></td></tr></table></figure>
+
+<h4 id="1-2、先运行一个容器，将配置文件导出到本地。"><a href="#1-2、先运行一个容器，将配置文件导出到本地。" class="headerlink" title="1.2、先运行一个容器，将配置文件导出到本地。"></a>1.2、先运行一个容器，将配置文件导出到本地。</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@docker1 ~]<span class="hljs-comment"># docker run -d --name alertmanager -p 9300:9300 prom/alertmanager</span><br><br>[root@docker1 ~]<span class="hljs-comment"># docker cp alertmanager:/etc/alertmanager/alertmanager.yml /app/prometheus/</span><br><span class="hljs-comment">#将容器中的配置文件复制到本地/app/prometheus/目录下</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="1-3、修改配置文件，修改后的配置文件如下："><a href="#1-3、修改配置文件，修改后的配置文件如下：" class="headerlink" title="1.3、修改配置文件，修改后的配置文件如下："></a>1.3、修改配置文件，修改后的配置文件如下：</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@docker ~]<span class="hljs-comment"># cat /app/prometheus/alertmanager.yml </span><br>global:<br>  resolve_timeout: 5m        <span class="hljs-comment">#处理超时时间，默认为5min              </span><br>  smtp_from: <span class="hljs-string">&#x27;1962821461@qq.com&#x27;</span>                 <span class="hljs-comment">###发送者信息</span><br>  smtp_smarthost: <span class="hljs-string">&#x27;smtp.qq.com:465&#x27;</span>             <span class="hljs-comment">###qq邮箱的SMTP服务器地址</span><br>  smtp_auth_username: <span class="hljs-string">&#x27;1962821461@qq.com&#x27;</span>		<span class="hljs-comment">###接收者信息</span><br>  smtp_auth_password: <span class="hljs-string">&#x27;shouquanma&#x27;</span>		<span class="hljs-comment">###使用qq邮箱生成的授权码</span><br>  smtp_require_tls: <span class="hljs-literal">false</span><br>  smtp_hello: <span class="hljs-string">&#x27;qq.com&#x27;</span><br>route:<br>  group_by: [<span class="hljs-string">&#x27;alertname&#x27;</span>] <br>  group_wait: 5s<br>  group_interval: 5s<br>  repeat_interval: 5m<br>  receiver: <span class="hljs-string">&#x27;email&#x27;</span><br>receivers:<br>- name: <span class="hljs-string">&#x27;email&#x27;</span><br>  email_configs:<br>  - to: <span class="hljs-string">&#x27;1962821461@qq.com&#x27;</span>					<span class="hljs-comment">###发送者信息</span><br>    send_resolved: <span class="hljs-literal">true</span><br>inhibit_rules:<br>  - source_match:<br>      severity: <span class="hljs-string">&#x27;critical&#x27;</span><br>    target_match:<br>      severity: <span class="hljs-string">&#x27;warning&#x27;</span><br>    equal: [<span class="hljs-string">&#x27;alertname&#x27;</span>, <span class="hljs-string">&#x27;dev&#x27;</span>, <span class="hljs-string">&#x27;instance&#x27;</span>]<br></code></pre></td></tr></table></figure>
+
+<p><strong>AlertManager.yml</strong>配置文件详解：</p>
+<ul>
+<li>global：全局配置，包括报警解决后的超时时间、<strong>SMTP</strong>相关配置、各种渠道通知的<strong>API</strong>地址等新消息。</li>
+<li>route：用来设置报警的分发策略。</li>
+<li>receivers：配置告警消息接收者信息。<br>​- inhibit_rules：抑制规则配置，当存在于另一组匹配的警报时，抑制规则将禁用于一组匹配的警报。</li>
+</ul>
+<h4 id="1-4、删除刚刚运行的容器（alertmanager）。"><a href="#1-4、删除刚刚运行的容器（alertmanager）。" class="headerlink" title="1.4、删除刚刚运行的容器（alertmanager）。"></a>1.4、删除刚刚运行的容器（alertmanager）。</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@docker1 ~]<span class="hljs-comment"># docker rm -f alertmanager </span><br>Alertmanager<br> <br>重新运行容器：<br>[root@docker1 ~]<span class="hljs-comment"># docker run -d --name alertmanager --restart=always -p 9093:9093 -v /app/prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml prom/alertmanager</span><br> <br></code></pre></td></tr></table></figure>
+
+<h4 id="1-5、Prometheus配置alertmanager报警规则："><a href="#1-5、Prometheus配置alertmanager报警规则：" class="headerlink" title="1.5、Prometheus配置alertmanager报警规则："></a>1.5、Prometheus配置alertmanager报警规则：</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@docker1 ~]<span class="hljs-comment"># mkdir -p /app/prometheus/rules</span><br>[root@docker1 ~]<span class="hljs-comment"># cd /app/prometheus/rules/</span><br>[root@docker1 rules]<span class="hljs-comment"># vim node-up.rules </span><br><span class="hljs-built_in">groups</span>:<br>- name: node-up<br>  rules:<br>  - alert: node-up<br>    <span class="hljs-built_in">expr</span>: up&#123;job=<span class="hljs-string">&quot;prometheus&quot;</span>&#125; == 0		<span class="hljs-comment">#必须与prometheus中配置文件（yml文件）中的  - job_name: &#x27;prometheus&#x27; 一样。可执行【cat /app/prometheus.yml | grep  job】查看。</span><br>    <span class="hljs-keyword">for</span>: 15s<br>    labels:<br>      severity: 1<br>      team: node<br>    annotations:<br>      summary: <span class="hljs-string">&quot;&#123;&#123; <span class="hljs-variable">$labels</span>.instance &#125;&#125; 已停止运行超过 15s！&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>​	#具体的规则怎么写，在官网文档上有规则模板：<a target="_blank" rel="noopener" href="https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/">https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/</a></p>
+<h4 id="1-6、配置完报警规则后，编辑prometheus的配置文件（本地挂载的）"><a href="#1-6、配置完报警规则后，编辑prometheus的配置文件（本地挂载的）" class="headerlink" title="1.6、配置完报警规则后，编辑prometheus的配置文件（本地挂载的）"></a>1.6、配置完报警规则后，编辑prometheus的配置文件（本地挂载的）</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs yaml">[<span class="hljs-string">root@docker01</span> <span class="hljs-string">~</span>]<span class="hljs-comment"># vim /app/prometheus.yml </span><br><span class="hljs-comment"># Alertmanager configuration</span><br><span class="hljs-attr">alerting:</span><br>  <span class="hljs-attr">alertmanagers:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">static_configs:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-number">192.168</span><span class="hljs-number">.94</span><span class="hljs-number">.154</span><span class="hljs-string">:9093</span>		<span class="hljs-comment">#修改这一行。必须格外注意配置文件的格式，注意缩进。</span><br>      <br><span class="hljs-attr">rule_files:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;/usr/local/prometheus/rules/*.rules&quot;</span>	<span class="hljs-comment">#添加该行，此为容器内的路径，是我们刚刚定义的报警规则。</span><br>  <span class="hljs-comment"># - &quot;first_rules.yml&quot;</span><br>  <span class="hljs-comment"># - &quot;second_rules.yml&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="1-7、删除Prometheus的容器："><a href="#1-7、删除Prometheus的容器：" class="headerlink" title="1.7、删除Prometheus的容器："></a>1.7、删除Prometheus的容器：</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker <span class="hljs-built_in">rm</span> -f prometheus <br></code></pre></td></tr></table></figure>
+
+<h4 id="1-8、重新运行prometheus容器："><a href="#1-8、重新运行prometheus容器：" class="headerlink" title="1.8、重新运行prometheus容器："></a>1.8、重新运行prometheus容器：</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker run -d -p 9090:9090 --name prometheus  --restart=always --net=host \<br>-v /app/prometheus.yml:/etc/prometheus/prometheus.yml \<br>-v /app/prometheus/rules:/usr/local/prometheus/rules  prom/prometheus<br></code></pre></td></tr></table></figure>
+
+<h3 id="2、）创建监控规则，使用email报警方式。监控服务运行状态，如果服务节点down机状态，则发送邮件。"><a href="#2、）创建监控规则，使用email报警方式。监控服务运行状态，如果服务节点down机状态，则发送邮件。" class="headerlink" title="2、）创建监控规则，使用email报警方式。监控服务运行状态，如果服务节点down机状态，则发送邮件。"></a>2、）创建监控规则，使用email报警方式。监控服务运行状态，如果服务节点down机状态，则发送邮件。</h3><h4 id="2-1、访问：http-192-168-94-154-9090-rules，验证查询报警规则"><a href="#2-1、访问：http-192-168-94-154-9090-rules，验证查询报警规则" class="headerlink" title="2.1、访问：http://192.168.94.154:9090/rules，验证查询报警规则"></a>2.1、访问：<a target="_blank" rel="noopener" href="http://192.168.94.154:9090/rules%EF%BC%8C%E9%AA%8C%E8%AF%81%E6%9F%A5%E8%AF%A2%E6%8A%A5%E8%AD%A6%E8%A7%84%E5%88%99">http://192.168.94.154:9090/rules，验证查询报警规则</a></h4><p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220302153227063.png" srcset="/img/loading.gif" lazyload alt="image-20220302153227063"></p>
+<h4 id="2-2、将docker3机器的node-exporter服务停止，测试是否会推送邮件。"><a href="#2-2、将docker3机器的node-exporter服务停止，测试是否会推送邮件。" class="headerlink" title="2.2、将docker3机器的node-exporter服务停止，测试是否会推送邮件。"></a>2.2、将docker3机器的node-exporter服务停止，测试是否会推送邮件。</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@docker3 ~]<span class="hljs-comment"># docker stop node-exporter </span><br></code></pre></td></tr></table></figure>
+
+<p>会推送邮件到指定的邮件接收人:</p>
+<p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220302153640005.png" srcset="/img/loading.gif" lazyload alt="image-20220302153640005"></p>
+<p><strong>Altermanager配置自定义邮件模板</strong></p>
+<p><code>可参考文档：https://www.appblog.cn/2019/09/09/Prometheus%20+%20Alertmanager%20%E6%8A%A5%E8%AD%A6%E5%AE%9E%E7%8E%B0%EF%BC%88email%E6%8A%A5%E8%AD%A6%EF%BC%89/</code></p>
+<h4 id="2-3、创建文件夹，存放email-tmpl"><a href="#2-3、创建文件夹，存放email-tmpl" class="headerlink" title="2.3、创建文件夹，存放email.tmpl"></a>2.3、创建文件夹，存放email.tmpl</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@docker01 prometheus]<span class="hljs-comment"># mkdir -p  /app/prometheus/alertmanager-tmpl</span><br>[root@docker01 prometheus]<span class="hljs-comment"># ls</span><br>alertmanager-tmpl  rules<br>[root@docker01 prometheus]<span class="hljs-comment"># cd alertmanager-tmpl/</span><br>[root@docker01 alertmanager-tmpl]<span class="hljs-comment"># vim email.tmpl</span><br>&#123;&#123; define <span class="hljs-string">&quot;email.html&quot;</span> &#125;&#125;<br>&lt;table border=<span class="hljs-string">&quot;1&quot;</span>&gt;<br>    &lt;<span class="hljs-built_in">tr</span>&gt;<br>        &lt;td&gt;报警项&lt;/td&gt;<br>        &lt;td&gt;告警级别&lt;/td&gt;<br>        &lt;td&gt;故障主机&lt;/td&gt;<br>        &lt;td&gt;告警主题&lt;/td&gt;<br>        &lt;td&gt;触发时间&lt;/td&gt;<br>    &lt;/tr&gt;<br>    &#123;&#123; range <span class="hljs-variable">$i</span>, <span class="hljs-variable">$alert</span> := .Alerts &#125;&#125;<br>        &lt;<span class="hljs-built_in">tr</span>&gt;<br>            &lt;td&gt;&#123;&#123; index <span class="hljs-variable">$alert</span>.Labels <span class="hljs-string">&quot;alertname&quot;</span> &#125;&#125;&lt;/td&gt;<br>            &lt;td&gt;&#123;&#123; index <span class="hljs-variable">$alert</span>.Labels <span class="hljs-string">&quot;severity&quot;</span> &#125;&#125;级&lt;/td&gt;<br>            &lt;td&gt;&#123;&#123; index <span class="hljs-variable">$alert</span>.Labels <span class="hljs-string">&quot;instance&quot;</span> &#125;&#125;&lt;/td&gt;<br>            &lt;td&gt;&#123;&#123; index <span class="hljs-variable">$alert</span>.Annotations <span class="hljs-string">&quot;summary&quot;</span> &#125;&#125;&lt;/td&gt;<br>            &lt;td&gt;&#123;&#123; <span class="hljs-variable">$alert</span>.StartsAt &#125;&#125;&lt;/td&gt;<br>        &lt;/tr&gt;<br>    &#123;&#123; end &#125;&#125;<br>&lt;/table&gt;<br>&#123;&#123; end &#125;&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-4、编辑完成后，保存退出，编辑alertmanager配置文件。"><a href="#2-4、编辑完成后，保存退出，编辑alertmanager配置文件。" class="headerlink" title="2.4、编辑完成后，保存退出，编辑alertmanager配置文件。"></a>2.4、编辑完成后，保存退出，编辑alertmanager配置文件。</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@docker01 ~]<span class="hljs-comment"># vim /app/prometheus/alertmanager.yml </span><br>global:<br>  resolve_timeout: 5m<br>  smtp_from: <span class="hljs-string">&#x27;1962821461@qq.com&#x27;</span>                 <span class="hljs-comment">###发送者信息</span><br>  smtp_smarthost: <span class="hljs-string">&#x27;smtp.qq.com:465&#x27;</span>             <span class="hljs-comment">###qq邮箱的SMTP服务器地址</span><br>  smtp_auth_username: <span class="hljs-string">&#x27;1962821461@qq.com&#x27;</span>                <span class="hljs-comment">###接收者信息</span><br>  smtp_auth_password: <span class="hljs-string">&#x27;iehrzrphebqmgace&#x27;</span>                <span class="hljs-comment">###使用qq邮箱生成的授权码</span><br>  smtp_require_tls: <span class="hljs-literal">false</span><br>  smtp_hello: <span class="hljs-string">&#x27;qq.com&#x27;</span><br>templates:               <span class="hljs-comment">#添加此行</span><br>  - <span class="hljs-string">&#x27;/etc/alertmanager-tmpl/*.tmpl&#x27;</span>     <span class="hljs-comment">#容器内的路径，需要去挂载一下。</span><br>route:<br>  group_by: [<span class="hljs-string">&#x27;alertname&#x27;</span>]<br>  group_wait: 5s<br>  group_interval: 5s<br>  repeat_interval: 5m<br>  receiver: <span class="hljs-string">&#x27;email&#x27;</span><br>receivers:<br>- name: <span class="hljs-string">&#x27;email&#x27;</span><br>  email_configs:<br> - to: <span class="hljs-string">&#x27;&#123;&#123; template &quot;email.to&quot; &#125;&#125;&#x27;</span>  <span class="hljs-comment">#接收警报的email配置，也可以直接写邮箱地址，例如：  - to: &#x27;1962821461@qq.com&#x27;</span><br>    html: <span class="hljs-string">&#x27;&#123;&#123; template &quot;email.html&quot; . &#125;&#125;&#x27;</span>	<span class="hljs-comment">#设定邮箱的内容模板，必须和email.tmpl中的&#123;&#123; define &quot;email.html&quot; &#125;&#125; 对应</span><br>    headers: &#123; Subject: <span class="hljs-string">&quot;[WARN] 报警邮件&quot;</span>&#125;   <span class="hljs-comment">## 接收邮件的标题</span><br>    send_resolved: <span class="hljs-literal">true</span><br>inhibit_rules:<br>  - source_match:<br>      severity: <span class="hljs-string">&#x27;critical&#x27;</span><br>    target_match:<br>      severity: <span class="hljs-string">&#x27;warning&#x27;</span><br>    equal: [<span class="hljs-string">&#x27;alertname&#x27;</span>, <span class="hljs-string">&#x27;dev&#x27;</span>, <span class="hljs-string">&#x27;instance&#x27;</span>]<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-5、将alertmanager容器删除，重新运行。重新运行alertmanager容器，并挂载模板文件。"><a href="#2-5、将alertmanager容器删除，重新运行。重新运行alertmanager容器，并挂载模板文件。" class="headerlink" title="2.5、将alertmanager容器删除，重新运行。重新运行alertmanager容器，并挂载模板文件。"></a>2.5、将alertmanager容器删除，重新运行。重新运行alertmanager容器，并挂载模板文件。</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker <span class="hljs-built_in">rm</span> -f alertmanager<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker run -d --name alertmanger --restart=always -p 9093:9093 -v /app/prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml -v /app/prometheus/alertmanager-tmpl:/etc/alertmanager-tmpl \<br>prom/alertmanager<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-6、邮件可接收到如下信息。"><a href="#2-6、邮件可接收到如下信息。" class="headerlink" title="2.6、邮件可接收到如下信息。"></a>2.6、邮件可接收到如下信息。</h4><p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20220302170928150.png" srcset="/img/loading.gif" lazyload alt="image-20220302170928150"></p>
+<h3 id="3、）融合邮件-lark飞书、钉钉同时告警（需要安装prometheus-alert）"><a href="#3、）融合邮件-lark飞书、钉钉同时告警（需要安装prometheus-alert）" class="headerlink" title="3、）融合邮件+lark飞书、钉钉同时告警（需要安装prometheus-alert）**"></a>3、）融合邮件+lark飞书、钉钉同时告警（需要安装prometheus-alert）**</h3><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">参考文档：https://blog.csdn.net/yyuggjggg/article/details/122862496<br>参考文档：https://feiyu563.gitbook.io/prometheusalert/base-install<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-1、使用docker运行prometheus-alert"><a href="#3-1、使用docker运行prometheus-alert" class="headerlink" title="3.1、使用docker运行prometheus-alert"></a>3.1、使用docker运行prometheus-alert</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#创建配置文件</span><br><span class="hljs-built_in">mkdir</span> /etc/prometheusalert-center/<br>wget https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/conf/app-example.conf -O /etc/prometheusalert-center/app.conf<br><br><span class="hljs-comment">#启动PrometheusAlert并挂载配置文件</span><br>docker run -d -p 9999:8080 -v /etc/prometheusalert-center:/app/conf --name prometheusalert-center feiyu563/prometheus-alert:latest<br><br><span class="hljs-comment">#启动后可使用浏览器打开以下地址查看：http://127.0.0.1:9999</span><br><span class="hljs-comment">#默认登录帐号和密码在app.conf中有配置：</span><br><span class="hljs-comment">#账号：密码</span><br>login_user=prometheusalert          <br><span class="hljs-comment">#............                                                                                  </span><br>login_password=prometheusalert <br><br><br><span class="hljs-comment">#以下为设置环境变量传参</span><br>docker run -d \<br>-p 8080:8080 \<br>-e PA_LOGIN_USER=prometheusalert \<br>-e PA_LOGIN_PASSWORD=prometheusalert \<br>-e PA_TITLE=PrometheusAlert \<br>-e PA_OPEN_FEISHU=1 \<br>-e PA_OPEN_DINGDING=1 \<br>-e PA_OPEN_WEIXIN=1 \<br>feiyu563/prometheus-alert:latest<br><span class="hljs-comment">#设置的账号密码为：prometheusalert</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-2、运行后打开prometheus-alert并登录"><a href="#3-2、运行后打开prometheus-alert并登录" class="headerlink" title="3.2、运行后打开prometheus-alert并登录"></a>3.2、运行后打开prometheus-alert并登录</h4><p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20221216113452790.png" srcset="/img/loading.gif" lazyload alt="image-20221216113452790"></p>
+<h4 id="3-3、根据自己需求，复制默认自带的模板路径url（也可自己添加模板，自己添加模板步骤已略过）"><a href="#3-3、根据自己需求，复制默认自带的模板路径url（也可自己添加模板，自己添加模板步骤已略过）" class="headerlink" title="3.3、根据自己需求，复制默认自带的模板路径url（也可自己添加模板，自己添加模板步骤已略过）"></a>3.3、根据自己需求，复制默认自带的模板路径url（也可自己添加模板，自己添加模板步骤已略过）</h4><p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20221216113631968.png" srcset="/img/loading.gif" lazyload alt="image-20221216113631968"></p>
+<p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20221216120124489.png" srcset="/img/loading.gif" lazyload alt="image-20221216120124489"></p>
+<p>例如我的为：<a target="_blank" rel="noopener" href="http://192.168.62.128:9999/prometheusalert?type=fs&tpl=prometheus-fsv2&fsurl=https://open.larksuite.com/open-apis/bot/v2/hook/00af844f-26a1-4f20-8a36-ec31e4879eab">http://192.168.62.128:9999/prometheusalert?type=fs&amp;tpl=prometheus-fsv2&amp;fsurl=https://open.larksuite.com/open-apis/bot/v2/hook/00af844f-26a1-4f20-8a36-ec31e4879eab</a></p>
+<h4 id="3-4、编辑alertmanager配置文件"><a href="#3-4、编辑alertmanager配置文件" class="headerlink" title="3.4、编辑alertmanager配置文件"></a>3.4、编辑alertmanager配置文件</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@localhost ~]<span class="hljs-comment"># cat /app/prometheus/alertmanager.yml</span><br>global:<br>  resolve_timeout: 5m<br>  smtp_from: <span class="hljs-string">&#x27;1962821461@qq.com&#x27;</span>                 <span class="hljs-comment">###发送者信息</span><br>  smtp_smarthost: <span class="hljs-string">&#x27;smtp.qq.com:465&#x27;</span>             <span class="hljs-comment">###qq邮箱的SMTP服务器地址</span><br>  smtp_auth_username: <span class="hljs-string">&#x27;1962821461@qq.com&#x27;</span>                <span class="hljs-comment">###接收者信息</span><br>  smtp_auth_password: <span class="hljs-string">&#x27;iehrzrphebqmgace&#x27;</span>                <span class="hljs-comment">###使用qq邮箱生成的授权码</span><br>  smtp_require_tls: <span class="hljs-literal">false</span><br>  smtp_hello: <span class="hljs-string">&#x27;qq.com&#x27;</span><br>templates:               <span class="hljs-comment">#添加此行</span><br>  - <span class="hljs-string">&#x27;/etc/alertmanager-tmpl/*.tmpl&#x27;</span>     <span class="hljs-comment">#容器内的路径，需要去挂载一下。</span><br>route:<br>  group_by: [<span class="hljs-string">&#x27;alertname&#x27;</span>]<br>  group_wait: 5s<br>  group_interval: 5s<br>  repeat_interval: 15s<br>  receiver: <span class="hljs-string">&#x27;email&#x27;</span><br>  <br>receivers:<br>- name: <span class="hljs-string">&#x27;email&#x27;</span><br>  email_configs:<br>  - to: <span class="hljs-string">&#x27;1962821461@qq.com&#x27;</span>  <span class="hljs-comment">#接收警报的email配置，也可以直接写邮箱地址，例如：  - to: &#x27;1962821461@qq.com&#x27;</span><br>    html: <span class="hljs-string">&#x27;&#123;&#123; template &quot;email.html&quot; . &#125;&#125;&#x27;</span>   <span class="hljs-comment">#设定邮箱的内容模板，必须和email.tmpl中的&#123;&#123; define &quot;email.html&quot; &#125;&#125; 对应</span><br>    headers: &#123; Subject: <span class="hljs-string">&quot;[WARN] 报警邮件&quot;</span>&#125;   <span class="hljs-comment">## 接收邮件的标题</span><br>    send_resolved: <span class="hljs-literal">true</span><br><span class="hljs-comment">#为自定义机器人生成的 webhook 地址，需修改成自己的</span><br>  webhook_configs:<br>    - url: <span class="hljs-string">&quot;http://192.168.62.128:9999/prometheusalert?type=fs&amp;tpl=prometheus-fsv2&amp;fsurl=https://open.larksuite.com/open-apis/bot/v2/hook/00af844f-26a1-4f20-8a36-ec31e4879eab&quot;</span><br><br>inhibit_rules:<br>  - source_match:<br>      severity: <span class="hljs-string">&#x27;critical&#x27;</span><br>    target_match:<br>      severity: <span class="hljs-string">&#x27;warning&#x27;</span><br>    equal: [<span class="hljs-string">&#x27;alertname&#x27;</span>, <span class="hljs-string">&#x27;dev&#x27;</span>, <span class="hljs-string">&#x27;instance&#x27;</span>]<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-5、重启alertmanager服务"><a href="#3-5、重启alertmanager服务" class="headerlink" title="3.5、重启alertmanager服务"></a>3.5、重启alertmanager服务</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker restart alertmanager<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-6、停止监控的项后即可接收到飞书和邮件告警"><a href="#3-6、停止监控的项后即可接收到飞书和邮件告警" class="headerlink" title="3.6、停止监控的项后即可接收到飞书和邮件告警"></a>3.6、停止监控的项后即可接收到飞书和邮件告警</h4><p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20221216114556777.png" srcset="/img/loading.gif" lazyload alt="image-20221216114556777"></p>
+<p><img src="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/image-20221216114644906.png" srcset="/img/loading.gif" lazyload alt="image-20221216114644906"></p>
+<h3 id="4、）当只需要钉钉或者飞书告警时"><a href="#4、）当只需要钉钉或者飞书告警时" class="headerlink" title="4、）当只需要钉钉或者飞书告警时"></a>4、）当只需要钉钉或者飞书告警时</h3><p><strong>## 备注：如果不需要邮件告警，可直接略过步骤二中的2、），如果没有略过也不影响结果！只需要修改alertmanager.yml文件</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs yaml">[<span class="hljs-string">root@localhost</span> <span class="hljs-string">~</span>]<span class="hljs-comment"># cat /app/prometheus/alertmanager.yml</span><br><span class="hljs-attr">global:</span><br>  <span class="hljs-attr">resolve_timeout:</span> <span class="hljs-string">1m</span><br><span class="hljs-attr">route:</span><br>  <span class="hljs-attr">group_by:</span> [<span class="hljs-string">&#x27;alertname&#x27;</span>]<br>  <span class="hljs-attr">group_wait:</span> <span class="hljs-string">5s</span><br>  <span class="hljs-attr">group_interval:</span> <span class="hljs-string">5s</span><br>  <span class="hljs-attr">repeat_interval:</span> <span class="hljs-string">1m</span><br>  <span class="hljs-attr">receiver:</span> <span class="hljs-string">&#x27;prometheusalert-feishu&#x27;</span><br><span class="hljs-comment">#  receiver: &#x27;web.hook.prometheusalert&#x27;</span><br><span class="hljs-comment">#  routes:</span><br><span class="hljs-comment">#  - receiver: &#x27;prometheusalert-feishu&#x27;</span><br><span class="hljs-comment">#    group_wait: 10s</span><br><span class="hljs-comment">#    match:</span><br><span class="hljs-comment">#      level: &#x27;2&#x27;</span><br><span class="hljs-attr">receivers:</span><br><span class="hljs-comment">#- name: &#x27;web.hook.prometheusalert&#x27;</span><br><span class="hljs-comment">#  webhook_configs:</span><br><span class="hljs-comment">#  - url: &quot;http://[prometheusalert_url]:9999/prometheusalert/alert&quot;</span><br><span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">&#x27;prometheusalert-feishu&#x27;</span><br><span class="hljs-comment">#为自定义机器人生成的 webhook 地址，需修改成自己的</span><br>  <span class="hljs-attr">webhook_configs:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">url:</span> <span class="hljs-string">&quot;http://192.168.62.128:9999/prometheusalert?type=fs&amp;tpl=prometheus-fsv2&amp;fsurl=https://open.larksuite.com/open-apis/bot/v2/hook/00af844f-26a1-4f20-8a36-ec31e4879eab&quot;</span><br><br></code></pre></td></tr></table></figure>
+
+<h3 id="5、）未推送飞书消息时，查看日志提示飞书接口未配置未开启状态-请先配置open-feishu为1"><a href="#5、）未推送飞书消息时，查看日志提示飞书接口未配置未开启状态-请先配置open-feishu为1" class="headerlink" title="5、）未推送飞书消息时，查看日志提示飞书接口未配置未开启状态,请先配置open-feishu为1"></a>5、）未推送飞书消息时，查看日志提示飞书接口未配置未开启状态,请先配置open-feishu为1</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">1.进入容器内<br><br>2.修改/app/conf/app.conf文件<br><br>修改成：open-feishu=1<br><br>3.重启prometheus-alert服务<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%9B%91%E6%8E%A7/" class="category-chain-item">监控</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%9B%91%E6%8E%A7/prometheus/" class="category-chain-item">prometheus</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/prometheus/">#prometheus</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Docker安装Prometheus之部署组件以及模板</div>
+      <div>https://pipiguai0123.github.io/2023/04/10/监控/Prometheus/Docker安装Prometheus之部署组件以及模板/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年4月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/docker-compose%E5%AE%89%E8%A3%85prometheus/" title="使用docker-compose安装prometheus">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">使用docker-compose安装prometheus</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/04/07/%E4%B8%AD%E9%97%B4%E4%BB%B6/slurm/Ubuntu%E5%AE%89%E8%A3%85slurm/" title="Ubuntu安装slurm">
+                        <span class="hidden-mobile">Ubuntu安装slurm</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

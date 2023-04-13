@@ -247,15 +247,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/03/27/%E4%B8%AD%E9%97%B4%E4%BB%B6/nginx/nginx%E5%AE%89%E8%A3%85/" target="_self">
-          nginx安装
+        <a href="/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/PostgreSQL%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA/" target="_self">
+          postgresql主从搭建
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/27/%E4%B8%AD%E9%97%B4%E4%BB%B6/nginx/nginx%E5%AE%89%E8%A3%85/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/PostgreSQL%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA/" target="_self">
         <div>
-          Nginx安装一、二进制安装1.去nginx官网拉取源文件12wget http://nginx.org/download/nginx-1.18.0.tar.gz#或者下载源文件到本地，建议放到/home/目录下 2.安装依赖环境123yum install gcc openssl-devel pcre pcre-devel zlib zlib-devel -y或者yum install -y g
+          PostgreSQL主从搭建12参考文档：https://www.cnblogs.com/guapitomjoy/p/15330079.html参考文档：https://www.cnblogs.com/ezgod/p/15843221.html  一、机器规划基于pgpool中间件实现postgresql一主多从集群部署，这里用两台服务器作一主一从示例    主机名 IP 主从划分    pgsq
         </div>
       </a>
 
@@ -263,7 +263,619 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-27 10:23" pubdate>
+            <time datetime="2023-03-29 10:16" pubdate>
+              2023-03-29
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/PostgreSQL/" class="category-chain-item">PostgreSQL</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/PostgreSQL/">#PostgreSQL</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/Docker%E5%AE%89%E8%A3%85PostgreSQL/" target="_self">
+          Docker安装PostgreSQL
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/29/%E6%95%B0%E6%8D%AE%E5%BA%93/postgreSQL/Docker%E5%AE%89%E8%A3%85PostgreSQL/" target="_self">
+        <div>
+          Docker安装PostgreSQL1.拉取镜像1docker pull postgres  2.启动镜像12345678docker run --name mypostgres -d -p 5432:5432 -e POSTGRES_PASSWORD=123456 postgres参数解释：–name，指定创建的容器的名字-e POSTGRES_PASSWORD=123456，设置环境变量，指定
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-03-29 10:06" pubdate>
+              2023-03-29
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/PostgreSQL/" class="category-chain-item">PostgreSQL</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/PostgreSQL/">#PostgreSQL</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/03/28/%E6%95%B0%E6%8D%AE%E5%BA%93/minio/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAminio/" target="_self">
+          使用docker搭建minio
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/28/%E6%95%B0%E6%8D%AE%E5%BA%93/minio/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAminio/" target="_self">
+        <div>
+          使用docker搭建minio1参考文档：https://blog.csdn.net/networken/article/details/111500745   一、docker部署minio集群前置条件：  准备3个节点，每个节点创建2个挂载点，由于集群模式下不能使用根磁盘，这里使用docker卷作为挂载点。 3节点的集群，故障一个节点时不影响对集群的读写操作。 所有节点均安装docker，时间
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-03-28 14:08" pubdate>
+              2023-03-28
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/Minio/" class="category-chain-item">Minio</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Minio/">#Minio</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/03/28/%E6%95%B0%E6%8D%AE%E5%BA%93/minio/%E6%90%AD%E5%BB%BA%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E6%9C%8D%E5%8A%A1minio%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B/" target="_self">
+          搭建分布式存储服务minio
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/28/%E6%95%B0%E6%8D%AE%E5%BA%93/minio/%E6%90%AD%E5%BB%BA%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E6%9C%8D%E5%8A%A1minio%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B/" target="_self">
+        <div>
+          搭建分布式存储服务minio详细过程1234参考文档：https://blog.csdn.net/yhj_911/article/details/122607159参考文档：https://www.cnblogs.com/hahaha111122222/p/15990604.html参考文档：https://blog.csdn.net/qq_43437874/article/details/109
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-03-28 13:52" pubdate>
+              2023-03-28
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/Minio/" class="category-chain-item">Minio</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Minio/">#Minio</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/03/28/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/MySQL%E4%BD%BF%E7%94%A8binlog%E6%81%A2%E5%A4%8D%E6%95%B0%E6%8D%AE/" target="_self">
+          MySQL使用binlog恢复数据
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/28/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/MySQL%E4%BD%BF%E7%94%A8binlog%E6%81%A2%E5%A4%8D%E6%95%B0%E6%8D%AE/" target="_self">
+        <div>
+          MySQL使用binlog恢复数据12参考文档：https://blog.csdn.net/p2073123/article/details/126487588?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-1-126487588-blog-108519295.
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-03-28 11:45" pubdate>
+              2023-03-28
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/MySQL/">#MySQL</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/03/27/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/MySQL5.7%E5%8D%87%E7%BA%A7%E5%88%B0%E6%9C%80%E6%96%B0%E7%89%88/" target="_self">
+          MySQL5.7升级到最新版
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/27/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/MySQL5.7%E5%8D%87%E7%BA%A7%E5%88%B0%E6%9C%80%E6%96%B0%E7%89%88/" target="_self">
+        <div>
+          MySQL5.7升级到最新版1参考文档：https://blog.csdn.net/qq_41788609/article/details/118147232  一、用mysqldump备份，再安装新版本，恢复sql文件（用于数据量小的升级）mysqldump -uroot -p’123456’ –single-transaction –master-data&#x3D;1 –all-databa
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-03-27 16:57" pubdate>
+              2023-03-27
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/MySQL/">#MySQL</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/03/27/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/" target="_self">
+          mysql主从复制
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/27/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/" target="_self">
+        <div>
+          mysql主从复制12一主二从参考文档：https://blog.csdn.net/qq_38711927/article/details/107013588mysql双主参考文档：https://www.cnblogs.com/jpfss/p/11577924.html 需：版本一致、初始化表，并在后台启动mysql、修改root的密码 一、mysql一主一从配置1.修改主服务器master12
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-03-27 16:45" pubdate>
+              2023-03-27
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/MySQL/">#MySQL</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/03/27/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/docker%E8%BF%90%E8%A1%8Cmysql%E5%8D%95%E8%8A%82%E7%82%B9%E5%92%8C%E4%B8%BB%E4%BB%8E%E8%8A%82%E7%82%B9/" target="_self">
+          docker运行MySQL单节点和主从节点
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/27/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/docker%E8%BF%90%E8%A1%8Cmysql%E5%8D%95%E8%8A%82%E7%82%B9%E5%92%8C%E4%B8%BB%E4%BB%8E%E8%8A%82%E7%82%B9/" target="_self">
+        <div>
+          docker运行MySQL一、使用docker运行mysql单节点（对mysql性能有要求的，不建议使用docker运行mysql）持久化数据，创建配置文件、日志、以及数据目录123mkdir /app/mysql/&#123;conf,log,data&#125;#/app/mysql/conf/文件目录中需要有相应的my.cnf，否则直接执行以下命令时会无法启动  docker运行mysql(
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-03-27 16:34" pubdate>
+              2023-03-27
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/MySQL/">#MySQL</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/03/27/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E8%A3%85mysql/" target="_self">
+          二进制安装mysql
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/27/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E8%A3%85mysql/" target="_self">
+        <div>
+          二进制安装MySQL1.安装前检查12345678#检查系统是否自带安装 MySQL，如果有的话&#x27;rpm -e&#x27;普通删除&#x27;rpm -e --nodeps&#x27;强制删除rpm -qa | grep mysql#检查系统是否自带安装 mariadb，如果有的话&#x27;rpm -e --nodeps&#x27;强制删除rpm -qa | grep mariadb#
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-03-27 15:49" pubdate>
+              2023-03-27
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/MySQL/">#MySQL</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/03/27/%E4%B8%AD%E9%97%B4%E4%BB%B6/nginx/nginx%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%AE%9E%E7%8E%B0%E7%AD%96%E7%95%A5/" target="_self">
+          Nginx负载均衡实现策略
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/27/%E4%B8%AD%E9%97%B4%E4%BB%B6/nginx/nginx%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%AE%9E%E7%8E%B0%E7%AD%96%E7%95%A5/" target="_self">
+        <div>
+          前言   轮询 默认方式    weight 权重方式   ip_hash 依据ip分配方式   least_conn 最少连接方式   fair（第三方） 响应时间方式   url_hash（第三方） 依据URL分配方式   Nginx使用的配置详解:12345(1). down： 表示当前的server暂时不参与负载。(2). weight：  默认为1.weight越大，负载的权重就越大。(
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-03-27 10:27" pubdate>
               2023-03-27
             </time>
           </div>
@@ -309,337 +921,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/03/24/dockerfile/dockerfile%E8%AF%A6%E8%A7%A3/" target="_self">
-          dockerfile详解
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/24/dockerfile/dockerfile%E8%AF%A6%E8%A7%A3/" target="_self">
-        <div>
-          Dockerfile 文件全面详解Docker 可以通过读取 Dockerfile 中的指令自动构建镜像。Dockerfile 是一个文本文档，其中包含了用户创建镜像的所有命令和说明。 一、 变量 变量用 $variable_name 或者 ${variable_name} 表示。  ${variable:-word} 表示如果 variable 设置，则结果将是该值。如果 variable 未设
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-24 16:28" pubdate>
-              2023-03-24
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/docker/" class="category-chain-item">docker</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/docker/dockerfile/" class="category-chain-item">dockerfile</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/dockerfile/">#dockerfile</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/03/24/docker-compose/docker-compose%E5%AE%89%E8%A3%85/" target="_self">
-          docker-compose安装
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/24/docker-compose/docker-compose%E5%AE%89%E8%A3%85/" target="_self">
-        <div>
-          docker-compose的使用和安装:通过一个yaml文件  来启动和管理多个容器 一、docker-compose的安装：Linux 上我们可以从 Github 上下载它的二进制包来使用，最新发行的版本地址：https://github.com/docker/compose/releases 12345678910111213下载二进制包:##1.24.1版本的：下载路径https://gi
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-24 16:08" pubdate>
-              2023-03-24
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/docker/" class="category-chain-item">docker</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/docker/docker-compose/" class="category-chain-item">docker-compose</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/docker-compose/">#docker-compose</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/03/24/docker-compose/docker-compose_yaml%E6%96%87%E4%BB%B6/" target="_self">
-          docker-compose.yml 配置文件编写详解
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/24/docker-compose/docker-compose_yaml%E6%96%87%E4%BB%B6/" target="_self">
-        <div>
-          docker-compose.yml 配置文件编写详解一.前言关于 docker compose 技术可以查看官方文档 Docker Compose撰写规范：https://github.com/compose-spec/compose-spec/blob/master/spec.md 以下的内容是确立在已经下载好 Docker 以及 Docker Compose，可参看 Docker Compo
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-24 16:02" pubdate>
-              2023-03-24
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/docker/" class="category-chain-item">docker</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/docker/docker-compose/" class="category-chain-item">docker-compose</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/docker-compose/">#docker-compose</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/03/24/docker/docker%E9%95%9C%E5%83%8F%E6%93%8D%E4%BD%9C%EF%BC%8C%E4%BB%A5%E5%8F%8Adocker%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/" target="_self">
-          docker镜像操作，以及docker命令的使用
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/24/docker/docker%E9%95%9C%E5%83%8F%E6%93%8D%E4%BD%9C%EF%BC%8C%E4%BB%A5%E5%8F%8Adocker%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/" target="_self">
-        <div>
-          docker镜像操作，以及docker命令使用1234参考文献：Docker初学者的常用命令：https://blog.csdn.net/weixin_43062251/article/details/103825065Docker详细：https://jiajially.gitbooks.io/dockerguide/content/chapter_fastlearn/docker_run/in
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-24 15:49" pubdate>
-              2023-03-24
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/docker/" class="category-chain-item">docker</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/docker/">#docker</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/03/24/docker/docker%E5%AE%89%E8%A3%85/" target="_self">
-          docker安装
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/24/docker/docker%E5%AE%89%E8%A3%85/" target="_self">
-        <div>
-          安装docker：一、yum在线安装：安装指定版可参考文档：https://www.cnblogs.com/lixie0215/p/14804777.html 1、下载关于docker的依赖环境12345yum -y install yum-utils device-mapper-persistent-data lvm2可以使用该插件更快编译补齐代码：# yum -y install bash-c
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-24 15:39" pubdate>
-              2023-03-24
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/docker/" class="category-chain-item">docker</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/docker/">#docker</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/6/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/#board">5</a><a class="page-number" href="/page/6/#board">6</a><span class="page-number current">7</span>
+      <a class="extend prev" rel="prev" href="/page/6/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/#board">5</a><a class="page-number" href="/page/6/#board">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/#board">8</a><a class="extend next" rel="next" href="/page/8/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 
