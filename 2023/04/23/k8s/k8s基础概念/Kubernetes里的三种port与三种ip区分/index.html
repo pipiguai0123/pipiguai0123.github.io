@@ -16,25 +16,21 @@
   <meta name="author" content="zhenzhou_zhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="安装和部署12参考文档：https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;6844903833143869453jaeger的官网是:www.jaegertracing.io&#x2F;  基本介绍:12支持OpenTracing的server端有很多，我们总要选一个。在这里，选用jaeger。jaeger的开发较为活跃，支持的客户端实现也较多。由于采用了golang开发，发行包也比较简洁。   特点：1234">
+    <meta name="description" content="Kubernetes里的三种port与三种ip区分123k8s中的service提供了一层对外的服务抽象。Kubernetes的Service定义了一种抽象：逻辑上的一组Pod，一种可以访问它们的方式。这一组Pod能通过Service被访问到，通过是通过Selector来实现的。简单来说Service就是一个把所有Pod统一成一个组，然后对外提供固定一个IP，具体是哪些Pod，可以通过之前介绍到的">
 <meta property="og:type" content="article">
-<meta property="og:title" content="jaeger安装">
-<meta property="og:url" content="https://pipiguai0123.github.io/2023/04/12/%E4%B8%AD%E9%97%B4%E4%BB%B6/jaeger/jaeger%E5%AE%89%E8%A3%85/index.html">
+<meta property="og:title" content="皮皮怪-page">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/04/23/k8s/k8s%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/Kubernetes%E9%87%8C%E7%9A%84%E4%B8%89%E7%A7%8Dport%E4%B8%8E%E4%B8%89%E7%A7%8Dip%E5%8C%BA%E5%88%86/index.html">
 <meta property="og:site_name" content="皮皮怪-page">
-<meta property="og:description" content="安装和部署12参考文档：https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;6844903833143869453jaeger的官网是:www.jaegertracing.io&#x2F;  基本介绍:12支持OpenTracing的server端有很多，我们总要选一个。在这里，选用jaeger。jaeger的开发较为活跃，支持的客户端实现也较多。由于采用了golang开发，发行包也比较简洁。   特点：1234">
+<meta property="og:description" content="Kubernetes里的三种port与三种ip区分123k8s中的service提供了一层对外的服务抽象。Kubernetes的Service定义了一种抽象：逻辑上的一组Pod，一种可以访问它们的方式。这一组Pod能通过Service被访问到，通过是通过Selector来实现的。简单来说Service就是一个把所有Pod统一成一个组，然后对外提供固定一个IP，具体是哪些Pod，可以通过之前介绍到的">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/12/%E4%B8%AD%E9%97%B4%E4%BB%B6/jaeger/jaeger%E5%AE%89%E8%A3%85/image-20221110161255214.png">
-<meta property="og:image" content="https://pipiguai0123.github.io/2023/04/12/%E4%B8%AD%E9%97%B4%E4%BB%B6/jaeger/jaeger%E5%AE%89%E8%A3%85/image-20221110161404044.png">
-<meta property="article:published_time" content="2023-04-12T02:29:00.000Z">
-<meta property="article:modified_time" content="2023-04-12T09:31:26.866Z">
+<meta property="article:published_time" content="2023-04-23T06:44:00.398Z">
+<meta property="article:modified_time" content="2022-11-10T08:54:10.769Z">
 <meta property="article:author" content="zhenzhou_zhang">
-<meta property="article:tag" content="jaeger">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://pipiguai0123.github.io/2023/04/12/%E4%B8%AD%E9%97%B4%E4%BB%B6/jaeger/jaeger%E5%AE%89%E8%A3%85/image-20221110161255214.png">
   
   
   
-  <title>jaeger安装 - 皮皮怪-page</title>
+  <title>皮皮怪-page</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -221,7 +217,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="jaeger安装"></span>
+            <span id="subtitle" data-typed-text=""></span>
           
         </div>
 
@@ -232,8 +228,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-04-12 10:29" pubdate>
-          2023年4月12日 上午
+        <time datetime="2023-04-23 14:44" pubdate>
+          2023年4月23日 下午
         </time>
       </span>
     
@@ -244,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.4k 字
+          2k 字
         
       </span>
     
@@ -256,7 +252,7 @@
         
         
           <!-- compatible with older versions-->
-          21 分钟
+          17 分钟
         
       </span>
     
@@ -302,60 +298,33 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">jaeger安装</h1>
+            <h1 style="display: none"></h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="安装和部署"><a href="#安装和部署" class="headerlink" title="安装和部署"></a>安装和部署</h1><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">参考文档：https://juejin.cn/post/6844903833143869453<br>jaeger的官网是:www.jaegertracing.io/<br></code></pre></td></tr></table></figure>
+                <h1 id="Kubernetes里的三种port与三种ip区分"><a href="#Kubernetes里的三种port与三种ip区分" class="headerlink" title="Kubernetes里的三种port与三种ip区分"></a>Kubernetes里的三种port与三种ip区分</h1><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">k8s</span>中的service提供了一层对外的服务抽象。Kubernetes的Service定义了一种抽象：逻辑上的一组Pod，一种可以访问它们的方式。这一组Pod能通过Service被访问到，通过是通过Selector来实现的。<br><br>简单来说Service就是一个把所有Pod统一成一个组，然后对外提供固定一个<span class="hljs-built_in">IP</span>，具体是哪些Pod，可以通过之前介绍到的Label标签来进行设置，假设一个pod死掉，副本控制器在生成一个pod,这是pod <span class="hljs-built_in">ip</span>肯定会变，但是我们不去关心你pod <span class="hljs-built_in">ip</span>是多少，我们只知道service <span class="hljs-built_in">ip</span> 没变就好了，因为新的pod 早就加入到我的service中了，各个服务之间通信是通过service 唯一<span class="hljs-built_in">ip</span>来通信的。<br></code></pre></td></tr></table></figure>
+<h2 id="Kubernetes里的三种port分别如下"><a href="#Kubernetes里的三种port分别如下" class="headerlink" title="Kubernetes里的三种port分别如下:"></a>Kubernetes里的三种port分别如下:</h2><h3 id="NodePort"><a href="#NodePort" class="headerlink" title="NodePort"></a>NodePort</h3><figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs elm"><span class="hljs-title">nodeport</span>是外部流量访问<span class="hljs-type">K8s</span>的一种方式，即nodeIP:nodePort，是提供给外部流量访问<span class="hljs-type">K8s</span>集群资源的一种方式。总的来说，我们可以通过在service中配置node<span class="hljs-keyword">port</span>，从而使得我们可以通过集群外的机器进行访问我们的服务。<br></code></pre></td></tr></table></figure>
+<h3 id="Port"><a href="#Port" class="headerlink" title="Port"></a>Port</h3><figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vhdl"><span class="hljs-keyword">port</span>是K8s集群内部服务访问service的入口。是service暴露在Cluster上的端口，ClusterIP:<span class="hljs-keyword">Port</span>。如下面的yaml配置文件所示，K8s集群内部节点可以通过<span class="hljs-number">30080</span>端口访问Nginx服务，然而外部网络还是不能够访问到服务，因为nodePort参数没有配置。<br></code></pre></td></tr></table></figure>
 
-<h2 id="基本介绍"><a href="#基本介绍" class="headerlink" title="基本介绍:"></a>基本介绍:</h2><figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs axapta">支持OpenTracing的<span class="hljs-keyword">server</span>端有很多，我们总要选一个。在这里，选用jaeger。<br>jaeger的开发较为活跃，支持的客户端实现也较多。由于采用了golang开发，发行包也比较简洁。<br></code></pre></td></tr></table></figure>
+<h3 id="targetPort"><a href="#targetPort" class="headerlink" title="targetPort"></a>targetPort</h3><figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs elm"><span class="hljs-title">targetPort</span>是容器的端口，也是最终底层的服务所提供的端口，所以说targetPod也就是<span class="hljs-type">Pod</span>的端口。从<span class="hljs-keyword">port</span>或者是nodePort进入的流量，经过路由转发之后，最终都会都通过targetPort进入到Pod中。<br><br>targetPort要与Dockerfile中暴露的端口一致。<br></code></pre></td></tr></table></figure>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-symbol">apiVersion:</span> v1<br><span class="hljs-symbol">kind:</span> Service<br><span class="hljs-symbol">metadata:</span><br><span class="hljs-symbol"> name:</span> nginx-service<br><span class="hljs-symbol">spec:</span><br><span class="hljs-symbol"> type:</span> NodePort         <span class="hljs-comment">// 配置为NodePort，外部可以访问</span><br><span class="hljs-symbol"> ports:</span><br> - port: <span class="hljs-number">30080</span>          <span class="hljs-comment">// 容器间，服务调用的端口</span><br><span class="hljs-symbol">   targetPort:</span> <span class="hljs-number">80</span>       <span class="hljs-comment">// 容器暴露的端口，与Dockerfile暴露端口保持一致</span><br><span class="hljs-symbol">   nodePort:</span> <span class="hljs-number">30001</span>      <span class="hljs-comment">// NodePort，外部访问的端口,如果不显示指定，k8s会随机分配一个端口</span><br><span class="hljs-symbol"> selector:</span><br><span class="hljs-symbol">  name:</span> nginx-pod<br></code></pre></td></tr></table></figure>
 
+<h2 id="Kubernetes集群里有三种IP地址，分别如下："><a href="#Kubernetes集群里有三种IP地址，分别如下：" class="headerlink" title="Kubernetes集群里有三种IP地址，分别如下："></a>Kubernetes集群里有三种IP地址，分别如下：</h2><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">Node</span> <span class="hljs-built_in">IP</span>：Node节点的<span class="hljs-built_in">IP</span>地址，即物理网卡的<span class="hljs-built_in">IP</span>地址。<br><span class="hljs-symbol">Pod</span> <span class="hljs-built_in">IP</span>：Pod的<span class="hljs-built_in">IP</span>地址，即docker容器的<span class="hljs-built_in">IP</span>地址，此为虚拟<span class="hljs-built_in">IP</span>地址。<br><span class="hljs-symbol">Cluster</span> <span class="hljs-built_in">IP</span>：Service的<span class="hljs-built_in">IP</span>地址，此为虚拟<span class="hljs-built_in">IP</span>地址。<br></code></pre></td></tr></table></figure>
+<h3 id="Node-IP"><a href="#Node-IP" class="headerlink" title="Node IP"></a>Node IP</h3><p>可以是物理机的IP（也可能是虚拟机IP）。每个Service都会在Node节点上开通一个端口，外部可以通过NodeIP:NodePort即可访问Service里的Pod,和我们访问服务器部署的项目一样，IP:端口&#x2F;项目名。</p>
+<p>在kubernetes查询Node IP：</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs crmsh"><span class="hljs-number">1</span>.kubectl get nodes<br><span class="hljs-number">2</span>.kubectl describe <span class="hljs-keyword">node</span> <span class="hljs-title">nodeName</span><br><span class="hljs-number">3</span>.显示出来的InternalIP就是NodeIP<br></code></pre></td></tr></table></figure>
 
-<h2 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h2><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">jaeger的开发语言是`golang`<br>jaeger支持OpenTracing协议，同属于CNCF基金会 <br>jaeger支持各种各样的客户端，包括Go、Java、<span class="hljs-keyword">Node</span><span class="hljs-title">、Python</span>、C++等<br>jaeger支持udp协议传输，当然也支持http<br></code></pre></td></tr></table></figure>
+<h3 id="Pod-IP"><a href="#Pod-IP" class="headerlink" title="Pod IP"></a>Pod IP</h3><p>Pod IP是每个Pod的IP地址，他是Docker Engine根据docker网桥的IP地址段进行分配的，通常是一个虚拟的二层网络。</p>
+<p>同Service下的pod可以直接根据PodIP相互通信。<br>不同Service下的pod在集群间pod通信要借助于 cluster ip。<br>pod和集群外通信，要借助于node ip。</p>
+<p>在kubernetes查询Pod IP：</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs maxima"><span class="hljs-number">1.</span>kubectl <span class="hljs-built_in">get</span> pods<br><span class="hljs-number">2.</span>kubectl <span class="hljs-built_in">describe</span> pod podName<br></code></pre></td></tr></table></figure>
 
-<h2 id="jaeger能够解决以下问题"><a href="#jaeger能够解决以下问题" class="headerlink" title="jaeger能够解决以下问题"></a>jaeger能够解决以下问题</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs">分布式事务监控<br>性能分析与性能优化<br>调用链，找到根源问题<br>服务依赖分析（需大数据分析)<br></code></pre></td></tr></table></figure>
+<h3 id="Cluster-IP"><a href="#Cluster-IP" class="headerlink" title="Cluster IP"></a>Cluster IP</h3><p>Service的IP地址，此为虚拟IP地址。外部网络无法ping通，只有kubernetes集群内部访问使用。<br>在kubernetes查询Cluster IP: </p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">kubectl -n 命名空间 <span class="hljs-built_in">get</span> Service<br></code></pre></td></tr></table></figure>
 
-<h2 id="复制代码安装需了解的技术栈："><a href="#复制代码安装需了解的技术栈：" class="headerlink" title="复制代码安装需了解的技术栈："></a>复制代码安装需了解的技术栈：</h2><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">OpenTracing</span><br>Golang<br>ElasticSearch<br>Kafka （可选)<br></code></pre></td></tr></table></figure>
-
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs armasm">环境准备：<br>主机<span class="hljs-built_in">ip</span>地址：<span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">62</span>.<span class="hljs-number">129</span><br>主机系统：centos7<br></code></pre></td></tr></table></figure>
-
-<h3 id="1-下载并解压"><a href="#1-下载并解压" class="headerlink" title="1.下载并解压"></a>1.下载并解压</h3><p>jaeger是二进制发行包，使用wget下载即可，这里以linux版本为例。<br>下载地址:<code>https://github.com/jaegertracing/jaeger/tags</code></p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sh">wget https://github.com/jaegertracing/jaeger/releases/download/v1.39.0/jaeger-1.39.0-linux-amd64.tar.gz<br><br>tar -xnf jaeger-1.39.0-linux-amd64.tar.gz<br><br><span class="hljs-comment">#解压后jaeger的二进制发行包包含六个二进制文件：</span><br>example-hotrod<br>jaeger-agent<br>jaeger-collector<br>jaeger-query<br>jaeger-all-in-one<br>jaeger-ingester	<br><br></code></pre></td></tr></table></figure>
-
-<h3 id="2-选择存储"><a href="#2-选择存储" class="headerlink" title="2.选择存储"></a>2.选择存储</h3><p>trace数据总要存在一个地方。jaeger支持ES和Canssandra两种后端DB。国内用ES的多一点，我们就以ES为例（ES安装过程已略过）：</p>
-<p><code>es连接地址：192.168.62.128:9200</code></p>
-<p>由于上面四个命令都有很多参数，所以我们可以创建文件来存放这几个脚本，来支持jaeger的启动。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> jaeger-sh &amp;&amp; <span class="hljs-built_in">cd</span> jaeger-sh<br><br></code></pre></td></tr></table></figure>
-
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim start-collector.sh<br><br><span class="hljs-comment">#!/bin/bash</span><br><span class="hljs-built_in">export</span> SPAN_STORAGE_TYPE=elasticsearch<br><span class="hljs-built_in">nohup</span> ../jaeger-collector  --es.server-urls http://192.168.62.128:9200/  --log-level=debug &gt; collector.log  2&gt;&amp;1 &amp;<br></code></pre></td></tr></table></figure>
-
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim start-agent.sh<br><br><span class="hljs-comment">#!/bin/bash</span><br><span class="hljs-built_in">export</span> SPAN_STORAGE_TYPE=elasticsearch<br><span class="hljs-built_in">nohup</span>  ../jaeger-agent  --admin.http.host-port=192.168.62.129:14267 --reporter.grpc.discovery.min-peers=1 --log-level=debug &gt; agent.log 2&gt;&amp;1 &amp;<br><br></code></pre></td></tr></table></figure>
-
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim start-query.sh<br><br><span class="hljs-comment">#!/bin/bash</span><br><span class="hljs-built_in">export</span> SPAN_STORAGE_TYPE=elasticsearch<br><span class="hljs-built_in">nohup</span> ../jaeger-query --span-storage.type=elasticsearch --es.server-urls=http://192.168.62.128:9200/  &gt; query.log 2&gt;&amp;1 &amp;<br><br></code></pre></td></tr></table></figure>
-
-<h2 id="部署方式"><a href="#部署方式" class="headerlink" title="部署方式"></a>部署方式</h2><p>jaeger有两种部署方式。下面一一介绍。如果你的数据量特别多，使用kafka缓冲一下也是可以的(所以就引入了另外一个组件jaeger-ingester），不多做介绍。</p>
-<p>测试环境：</p>
-<p><img src="/2023/04/12/%E4%B8%AD%E9%97%B4%E4%BB%B6/jaeger/jaeger%E5%AE%89%E8%A3%85/image-20221110161255214.png" srcset="/img/loading.gif" lazyload alt="image-20221110161255214"></p>
-<p>备注：这种方式一般用在dev环境或者其他测试环境。只需要部署一个单一节点即可。我们的app，需要手动填写agent的地址，这个地址一般都是固定的。这些环境的流量很小，一个agent是足够的。更加简洁的部署方式，连agent都不需要，直接向collector发送数据即可。为了方便测试，我们使用此方式。</p>
-<p>正式环境：</p>
-<p><img src="/2023/04/12/%E4%B8%AD%E9%97%B4%E4%BB%B6/jaeger/jaeger%E5%AE%89%E8%A3%85/image-20221110161404044.png" srcset="/img/loading.gif" lazyload alt="image-20221110161404044"></p>
-<p>备注：上面这种部署方式，适合生产环境。agent安装在每一台业务机器上。Client端的目标agent只需要填写localhost即可。这种方式的好处是生产环境的配置非常的简单。即使你的机器是混合部署的，也能正常收集trace信息</p>
-<p>​	</p>
-<h2 id="调用关系图"><a href="#调用关系图" class="headerlink" title="调用关系图"></a>调用关系图</h2><p>jaeger的调用关系图是使用spark任务进行计算的。项目地址为：<a target="_blank" rel="noopener" href="https://github.com/jaegertracing/spark-dependencies">https://github.com/jaegertracing/spark-dependencies</a></p>
-<p>作为一个可选部分，只有在计算完毕后，才能在jaeger的后台中进行展现。</p>
-<h2 id="端口整理"><a href="#端口整理" class="headerlink" title="端口整理"></a>端口整理</h2><p><strong>Agent</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">5775 UDP协议，接收兼容zipkin的协议数据<br>6831 UDP协议，接收兼容jaeger的兼容协议<br>6832 UDP协议，接收jaeger的二进制协议<br>5778 HTTP协议，数据量大不建议使用<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">备注：它们之间的传输协议都是基于thrift封装的。我们默认使用5775作为传输端口。</span><br></code></pre></td></tr></table></figure>
-
-<p><strong>Collector</strong></p>
-<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-symbol">14267 </span>tcp agent发送jaeger.thrift格式数据<br><span class="hljs-symbol">14250 </span>tcp agent发送proto格式数据（背后gRPC)<br><span class="hljs-symbol">14268 </span>http 直接接受客户端数据<br><span class="hljs-symbol">14269 </span>http 健康检查<br></code></pre></td></tr></table></figure>
-
-<p><strong>Query</strong></p>
-<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-symbol">16686 </span>http jaeger的前端，放给用户的接口<br><span class="hljs-symbol">16687 </span>http 健康检查<br></code></pre></td></tr></table></figure>
-
-
-
-
+<p>Cluster IP是一个虚拟的IP，但更像是一个伪造的IP网络，原因有以下几点:</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-number">1</span>.Cluster <span class="hljs-built_in">IP</span>仅仅作用于Kubernetes Service这个对象，并由Kubernetes管理和分配P地址<br><br><span class="hljs-number">2</span>.Cluster <span class="hljs-built_in">IP</span>无法被ping，他没有一个“实体网络对象”来响应<br><br><span class="hljs-number">3</span>.Cluster <span class="hljs-built_in">IP</span>只能结合Service Port组成一个具体的通信端口，单独的Cluster <span class="hljs-built_in">IP</span>不具备通信的基础，并且他们属于Kubernetes集群这样一个封闭的空间。<br><br><span class="hljs-number">4</span>.在不同Service下的pod节点在集群间相互访问可以通过Cluster <span class="hljs-built_in">IP</span><br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -363,41 +332,6 @@
             <div>
               <div class="post-metas my-3">
   
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/jaeger/" class="category-chain-item">jaeger</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/jaeger/">#jaeger</a>
-      
-    </div>
   
 </div>
 
@@ -407,8 +341,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>jaeger安装</div>
-      <div>https://pipiguai0123.github.io/2023/04/12/中间件/jaeger/jaeger安装/</div>
+      <div></div>
+      <div>https://pipiguai0123.github.io/2023/04/23/k8s/k8s基础概念/Kubernetes里的三种port与三种ip区分/</div>
     </div>
     <div class="license-meta">
       
@@ -420,7 +354,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年4月12日</div>
+          <div>2023年4月23日</div>
         </div>
       
       
@@ -452,18 +386,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/04/13/%E4%B8%AD%E9%97%B4%E4%BB%B6/spark+hadoop/spark%E6%90%AD%E5%BB%BA%E5%8D%95%E8%8A%82%E7%82%B9/" title="spark搭建单节点">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">spark搭建单节点</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/04/11/%E4%B8%AD%E9%97%B4%E4%BB%B6/Zookeeper/Liunx%E4%B9%8BZookeeper%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" title="Linux之Zookeeper集群搭建">
-                        <span class="hidden-mobile">Linux之Zookeeper集群搭建</span>
+                      <a href="/2023/04/20/k8s/%E6%90%AD%E5%BB%BAk8s/k8s_V1.20%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E8%A3%85/" title="二进制安装k8s">
+                        <span class="hidden-mobile">二进制安装k8s</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

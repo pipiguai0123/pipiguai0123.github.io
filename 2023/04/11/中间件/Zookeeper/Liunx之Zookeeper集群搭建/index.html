@@ -16,22 +16,22 @@
   <meta name="author" content="zhenzhou_zhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Liunx之Zookeeper集群搭建：参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;carefree2005&#x2F;article&#x2F;details&#x2F;118027821 一、Zookeeper集群简介：  Zookeeper是一个高效的分布式协调服务，可以提供配置信息管理、命名、分布式同步、集群管理、数据库切换等服务。它不适用与存储大量信息，可以用来存储一些配置、发布与订阅等少量信息。Hadoo">
+    <meta name="description" content="Linux之Zookeeper集群搭建：参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;carefree2005&#x2F;article&#x2F;details&#x2F;118027821 一、Zookeeper集群简介：  Zookeeper是一个高效的分布式协调服务，可以提供配置信息管理、命名、分布式同步、集群管理、数据库切换等服务。它不适用与存储大量信息，可以用来存储一些配置、发布与订阅等少量信息。Hadoo">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Liunx之Zookeeper集群搭建">
+<meta property="og:title" content="Linux之Zookeeper集群搭建">
 <meta property="og:url" content="https://pipiguai0123.github.io/2023/04/11/%E4%B8%AD%E9%97%B4%E4%BB%B6/Zookeeper/Liunx%E4%B9%8BZookeeper%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/index.html">
 <meta property="og:site_name" content="皮皮怪-page">
-<meta property="og:description" content="Liunx之Zookeeper集群搭建：参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;carefree2005&#x2F;article&#x2F;details&#x2F;118027821 一、Zookeeper集群简介：  Zookeeper是一个高效的分布式协调服务，可以提供配置信息管理、命名、分布式同步、集群管理、数据库切换等服务。它不适用与存储大量信息，可以用来存储一些配置、发布与订阅等少量信息。Hadoo">
+<meta property="og:description" content="Linux之Zookeeper集群搭建：参考文档：https:&#x2F;&#x2F;blog.csdn.net&#x2F;carefree2005&#x2F;article&#x2F;details&#x2F;118027821 一、Zookeeper集群简介：  Zookeeper是一个高效的分布式协调服务，可以提供配置信息管理、命名、分布式同步、集群管理、数据库切换等服务。它不适用与存储大量信息，可以用来存储一些配置、发布与订阅等少量信息。Hadoo">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-04-11T05:12:23.000Z">
-<meta property="article:modified_time" content="2023-04-12T09:24:07.875Z">
+<meta property="article:modified_time" content="2023-04-17T02:29:01.024Z">
 <meta property="article:author" content="zhenzhou_zhang">
 <meta property="article:tag" content="Zookeeper">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>Liunx之Zookeeper集群搭建 - 皮皮怪-page</title>
+  <title>Linux之Zookeeper集群搭建 - 皮皮怪-page</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -218,7 +218,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Liunx之Zookeeper集群搭建"></span>
+            <span id="subtitle" data-typed-text="Linux之Zookeeper集群搭建"></span>
           
         </div>
 
@@ -299,12 +299,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Liunx之Zookeeper集群搭建</h1>
+            <h1 style="display: none">Linux之Zookeeper集群搭建</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="Liunx之Zookeeper集群搭建："><a href="#Liunx之Zookeeper集群搭建：" class="headerlink" title="Liunx之Zookeeper集群搭建："></a>Liunx之Zookeeper集群搭建：</h1><p><code>参考文档：https://blog.csdn.net/carefree2005/article/details/118027821</code></p>
+                <h1 id="Linux之Zookeeper集群搭建："><a href="#Linux之Zookeeper集群搭建：" class="headerlink" title="Linux之Zookeeper集群搭建："></a>Linux之Zookeeper集群搭建：</h1><p><code>参考文档：https://blog.csdn.net/carefree2005/article/details/118027821</code></p>
 <h2 id="一、Zookeeper集群简介："><a href="#一、Zookeeper集群简介：" class="headerlink" title="一、Zookeeper集群简介："></a>一、Zookeeper集群简介：</h2><p>  Zookeeper是一个高效的分布式协调服务，可以提供配置信息管理、命名、分布式同步、集群管理、数据库切换等服务。它不适用与存储大量信息，可以用来存储一些配置、发布与订阅等少量信息。Hadoop、Storm、消息中间件、<br>RPC服务框架、分布式数据库同步系统，这些都是Zookeeper的应用场景。对Zookeeper集群进行了这三种角色的划分：leader、follower、observer；</p>
 <ul>
 <li>领导者(leader)：负责记性投票的发起和决议、更新系统状态</li>
@@ -412,7 +412,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Liunx之Zookeeper集群搭建</div>
+      <div>Linux之Zookeeper集群搭建</div>
       <div>https://pipiguai0123.github.io/2023/04/11/中间件/Zookeeper/Liunx之Zookeeper集群搭建/</div>
     </div>
     <div class="license-meta">
