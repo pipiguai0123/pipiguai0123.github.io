@@ -1,0 +1,793 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="mysql故障处理，以及解决方法一、测试、生产环境中，有时并不需要在本地安装一个mysql server服务，只需要安装一个登录mysql server 的mysql的客户端client12345#centos6系统上安装mysql-client的方式：yum install mysql-clent mysql-devel -y#centos7的系统上安装mysql client的方式：yum i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql故障处理，以及解决方法记录">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/05/17/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%EF%BC%8C%E4%BB%A5%E5%8F%8A%E6%93%8D%E4%BD%9C%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="mysql故障处理，以及解决方法一、测试、生产环境中，有时并不需要在本地安装一个mysql server服务，只需要安装一个登录mysql server 的mysql的客户端client12345#centos6系统上安装mysql-client的方式：yum install mysql-clent mysql-devel -y#centos7的系统上安装mysql client的方式：yum i">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-05-17T02:57:45.000Z">
+<meta property="article:modified_time" content="2023-06-01T08:52:51.761Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>mysql故障处理，以及解决方法记录 - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="mysql故障处理，以及解决方法记录"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-05-17 10:57" pubdate>
+          2023年5月17日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          34 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">mysql故障处理，以及解决方法记录</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="mysql故障处理，以及解决方法"><a href="#mysql故障处理，以及解决方法" class="headerlink" title="mysql故障处理，以及解决方法"></a>mysql故障处理，以及解决方法</h1><h2 id="一、测试、生产环境中，有时并不需要在本地安装一个mysql-server服务，只需要安装一个登录mysql-server-的mysql的客户端client"><a href="#一、测试、生产环境中，有时并不需要在本地安装一个mysql-server服务，只需要安装一个登录mysql-server-的mysql的客户端client" class="headerlink" title="一、测试、生产环境中，有时并不需要在本地安装一个mysql server服务，只需要安装一个登录mysql server 的mysql的客户端client"></a>一、测试、生产环境中，有时并不需要在本地安装一个mysql server服务，只需要安装一个登录mysql server 的mysql的客户端client</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#centos6系统上安装mysql-client的方式：</span><br>yum install mysql-clent mysql-devel -y<br><br><span class="hljs-comment">#centos7的系统上安装mysql client的方式：</span><br>yum install -y mariadb.x86_64 mariadb-libs.x86_64<br></code></pre></td></tr></table></figure>
+
+<h2 id="二、liunx服务器中，导出mysql查询出来的数据"><a href="#二、liunx服务器中，导出mysql查询出来的数据" class="headerlink" title="二、liunx服务器中，导出mysql查询出来的数据"></a>二、liunx服务器中，导出mysql查询出来的数据</h2><h3 id="查看数据库配置的导出路径-secure-file-priv为导出路径"><a href="#查看数据库配置的导出路径-secure-file-priv为导出路径" class="headerlink" title="查看数据库配置的导出路径: secure_file_priv为导出路径"></a>查看数据库配置的导出路径: secure_file_priv为导出路径</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">show variables like <span class="hljs-string">&#x27;%secure%&#x27;</span><br><br><span class="hljs-comment">#如果secure_file_priv为null可使用mysqldump导出整个表:</span><br>mysqldump  -u用户名 -p  库名  表名 &gt; 保存的文件名称(文件保存的的路径为当前使用命令的路径)<br><br><span class="hljs-comment">#如果不为mull，则导出语句中的导出路径为上面查询到的secure_file_priv的路径</span><br>mysql&gt;select * from table into outfile <span class="hljs-string">&#x27;导出路径/1.xls&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<p><code>into outfile</code>为数据导出的路径，这个就是第一步查询到的路径，导出的数据必须是这个值的指定路径才可以导出，默认有可能是NULL就代表禁止导出，所以需要设置一下；我们需要在&#x2F;etc&#x2F;my.cnf 文件的末尾进行设置。</p>
+<p>在末尾添加一句secure_file_priv&#x3D;”&#x2F;“即可将数据导出到任意目录；secure_file_priv</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh">1、限制mysqld 不允许导入、导出<br>　　　 secure_file_prive=null<br><br>2、限制mysqld 的导入、导出 只能发生在/tmp/目录下<br>　　　secure_file_priv=/tmp/<br><br>3、可以导出至任意目录<br>      secure_file_priv=<span class="hljs-string">&quot;/&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="三、检查所以数据库中的所有表是否正常"><a href="#三、检查所以数据库中的所有表是否正常" class="headerlink" title="三、检查所以数据库中的所有表是否正常"></a>三、检查所以数据库中的所有表是否正常</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">mysqlcheck -c --all-databases -uroot -p <br></code></pre></td></tr></table></figure>
+
+<h2 id="四、ERROR-2059-HY000-错误处理"><a href="#四、ERROR-2059-HY000-错误处理" class="headerlink" title="四、ERROR 2059 (HY000)错误处理"></a>四、ERROR 2059 (HY000)错误处理</h2><h3 id="错误提示："><a href="#错误提示：" class="headerlink" title="错误提示："></a>错误提示：</h3><p>ERROR 2059 (HY000): Authentication plugin ‘caching_sha2_password’ cannot be loaded: &#x2F;usr&#x2F;lib64&#x2F;mysql&#x2F;plugin&#x2F;caching_sha2_password.so: cannot open shared object file: No such file or directory</p>
+<h3 id="处理方式："><a href="#处理方式：" class="headerlink" title="处理方式："></a>处理方式：</h3><p>MySQL8.0之后的加密规则为caching_sha2_password.而在此之前的加密规则为mysql_native_password。<br>可以将加密规则改成mysql_native_password来：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">ALTER USER <span class="hljs-string">&#x27;root&#x27;</span>@<span class="hljs-string">&#x27;%&#x27;</span> IDENTIFIED WITH mysql_native_password BY <span class="hljs-string">&#x27;root&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="五、ERROR-1418-HY000-错误处理"><a href="#五、ERROR-1418-HY000-错误处理" class="headerlink" title="五、ERROR 1418 (HY000)错误处理"></a>五、ERROR 1418 (HY000)错误处理</h2><h3 id="错误提示：-1"><a href="#错误提示：-1" class="headerlink" title="错误提示："></a>错误提示：</h3><p>ERROR 1418 (HY000): This function has none of DETERMINISTIC, NO SQL, or READS SQL DATA</p>
+<h3 id="解决办法："><a href="#解决办法：" class="headerlink" title="解决办法："></a>解决办法：</h3><p>设置临时环境变量</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">set</span> global log_bin_trust_function_creators=1;<br></code></pre></td></tr></table></figure>
+
+<h2 id="六、错误处理ERROR-1712（往数据库里面插入数据时）"><a href="#六、错误处理ERROR-1712（往数据库里面插入数据时）" class="headerlink" title="六、错误处理ERROR 1712（往数据库里面插入数据时）"></a>六、错误处理ERROR 1712（往数据库里面插入数据时）</h2><h3 id="错误提示：-2"><a href="#错误提示：-2" class="headerlink" title="错误提示："></a>错误提示：</h3><p>ERROR 1712 (HY000): Index PRIMARY is corrupted</p>
+<h3 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h3><p>使用mysql的命令 </p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">repair table tableName; <br><span class="hljs-comment">#tableName：表名 </span><br></code></pre></td></tr></table></figure>
+
+<h2 id="七、当往数据库里面插入字段以及数据时报错"><a href="#七、当往数据库里面插入字段以及数据时报错" class="headerlink" title="七、当往数据库里面插入字段以及数据时报错"></a>七、当往数据库里面插入字段以及数据时报错</h2><p>一般情况下，一百多万的数据量，也可以直接进行加字段操作，但是得看服务器的运行情况，如果有大量服务占用内存，添加字段可能会出现问题。<br>为了避免出现无法插入等报错这种问题:</p>
+<h3 id="1-创建一个临时的新表，复制旧表的结构"><a href="#1-创建一个临时的新表，复制旧表的结构" class="headerlink" title="1.创建一个临时的新表，复制旧表的结构"></a>1.创建一个临时的新表，复制旧表的结构</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">create table <span class="hljs-string">&#x27;tmp&#x27;</span> like <span class="hljs-string">&#x27;old_tables&#x27;</span> ;<br><span class="hljs-comment">#create table &#x27;tmp&#x27; like partybuilding.tmp; #复制其他库的表结构</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-给新表加上新增的字段"><a href="#2-给新表加上新增的字段" class="headerlink" title="2.给新表加上新增的字段"></a>2.给新表加上新增的字段</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">ALTER TABLE `tmp`<br>ADD COLUMN `sync_key` varchar(255) NULL COMMENT <span class="hljs-string">&#x27;同步键&#x27;</span> ,<br>ADD COLUMN `data_from` varchar(255) NULL  COMMENT <span class="hljs-string">&#x27;数据产生方&#x27;</span>,<br>ADD COLUMN `data_update` varchar(255) NULL COMMENT <span class="hljs-string">&#x27;数据修改方&#x27;</span> ;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-把旧表的数据复制过来"><a href="#3-把旧表的数据复制过来" class="headerlink" title="3.把旧表的数据复制过来"></a>3.把旧表的数据复制过来</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">insert into tmp (<span class="hljs-built_in">id</span>,name,unit) select <span class="hljs-built_in">id</span>,name,unit from old_table;<br><span class="hljs-comment">#注意，是所有的字段</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-重命名"><a href="#4-重命名" class="headerlink" title="4.重命名"></a>4.重命名</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">rename table old_tables to old_tables_bak ;<br>rename table tmp to old_tables;<br><span class="hljs-comment">#注意：需要在mysql没有使用的时候操作，或者是不会在短时间内变更的数据</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="八、MySQL错误“ERROR-2006-（HY000）：MySQL-server-has-gone-away”"><a href="#八、MySQL错误“ERROR-2006-（HY000）：MySQL-server-has-gone-away”" class="headerlink" title="八、MySQL错误“ERROR 2006 （HY000）：MySQL server has gone away”"></a>八、MySQL错误“ERROR 2006 （HY000）：MySQL server has gone away”</h2><h3 id="1-MySQL-服务器真的不见了"><a href="#1-MySQL-服务器真的不见了" class="headerlink" title="1. MySQL 服务器真的不见了"></a>1. MySQL 服务器真的不见了</h3><p>我们可以通过检查服务器正常运行时间（uptime）和服务器的错误日志来检查是否服务器确实消失了。<br>查看MySQL的正常运行时间（uptime）：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">show global status like <span class="hljs-string">&#x27;uptime&#x27;</span>; <br><span class="hljs-comment">#查询错误日志的存储位置：</span><br>show variables like <span class="hljs-string">&#x27;%error&#x27;</span>; <br></code></pre></td></tr></table></figure>
+<h3 id="2-连接超时"><a href="#2-连接超时" class="headerlink" title="2. 连接超时"></a>2. 连接超时</h3><p>查看各项连接时间：<code>show global variables like &#39;%timeout&#39;</code>;</p>
+<h3 id="3-你的SQL语句被杀死了"><a href="#3-你的SQL语句被杀死了" class="headerlink" title="3. 你的SQL语句被杀死了"></a>3. 你的SQL语句被杀死了</h3><p>有些系统会主动杀死运行时间过长的SQL语句，我们可以通过查看已经执行的kill语句数量来检查是否可能发生这种情况。<br>查看mysql请求连接进程被主动杀死：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">show global  status like <span class="hljs-string">&#x27;com_kill&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-你的SQL语句太大了"><a href="#4-你的SQL语句太大了" class="headerlink" title="4. 你的SQL语句太大了"></a>4. 你的SQL语句太大了</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">show global variables like <span class="hljs-string">&#x27;max_allowed_packet&#x27;</span>;<br><br>如果值比较小，可以设置大一点：<br><span class="hljs-built_in">set</span> global max_allowed_packet=1024*1024*16<br></code></pre></td></tr></table></figure>
+
+<h2 id="九、Mysqldump导出的文件只导入一张表"><a href="#九、Mysqldump导出的文件只导入一张表" class="headerlink" title="九、Mysqldump导出的文件只导入一张表"></a>九、Mysqldump导出的文件只导入一张表</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">grep -i <span class="hljs-string">&#x27;INSERT INTO `tab_pb_flow_out`&#x27;</span> test0123.sql &gt; tab_pb_flow_out.sql &amp;<br><br>然后再导入该sql文件:<br><span class="hljs-comment">#可以使用如下命令复制数据库表结构</span><br>create table <span class="hljs-string">&#x27;tmp&#x27;</span> like test.tmp;<br><br>再进行导入<br></code></pre></td></tr></table></figure>
+
+<h2 id="十、MySQL安装控制插件-Connection-Control-–可有效的防止客户端暴力登录的风险-攻击"><a href="#十、MySQL安装控制插件-Connection-Control-–可有效的防止客户端暴力登录的风险-攻击" class="headerlink" title="十、MySQL安装控制插件(Connection-Control)–可有效的防止客户端暴力登录的风险(攻击)"></a>十、MySQL安装控制插件(Connection-Control)–可有效的防止客户端暴力登录的风险(攻击)</h2><p>实现文档：<code>https://blog.51cto.com/u_15069450/4331304</code></p>
+<h2 id="十一、表分区，分区是一种表的设计模式，正确的分区可以极大地提升数据库的查询效率，完成更高质量的SQL编程。但是如果错误地使用分区，那么分区可能带来毁灭性的的结果。"><a href="#十一、表分区，分区是一种表的设计模式，正确的分区可以极大地提升数据库的查询效率，完成更高质量的SQL编程。但是如果错误地使用分区，那么分区可能带来毁灭性的的结果。" class="headerlink" title="十一、表分区，分区是一种表的设计模式，正确的分区可以极大地提升数据库的查询效率，完成更高质量的SQL编程。但是如果错误地使用分区，那么分区可能带来毁灭性的的结果。"></a>十一、表分区，分区是一种表的设计模式，正确的分区可以极大地提升数据库的查询效率，完成更高质量的SQL编程。但是如果错误地使用分区，那么分区可能带来毁灭性的的结果。</h2><h3 id="表分区简介参考文档："><a href="#表分区简介参考文档：" class="headerlink" title="表分区简介参考文档："></a>表分区简介参考文档：</h3><p><code>https://developer.aliyun.com/article/944253</code></p>
+<h3 id="操作文档："><a href="#操作文档：" class="headerlink" title="操作文档："></a>操作文档：</h3><p><code>https://www.cnblogs.com/xibuhaohao/p/10154281.html#_label0_1</code><br><code>https://www.cnblogs.com/dw3306/p/12620042.html</code></p>
+<h3 id="已有数据结构改分区表、第二种"><a href="#已有数据结构改分区表、第二种" class="headerlink" title="已有数据结构改分区表、第二种"></a>已有数据结构改分区表、第二种</h3><p><code>https://blog.csdn.net/orangleliu/article/details/57088338</code></p>
+<h3 id="自动创建分区："><a href="#自动创建分区：" class="headerlink" title="自动创建分区："></a>自动创建分区：</h3><p><code>https://www.cnblogs.com/webenh/p/11667778.html</code></p>
+<h2 id="十二、mysql表优化指南"><a href="#十二、mysql表优化指南" class="headerlink" title="十二、mysql表优化指南"></a>十二、mysql表优化指南</h2><p>参考文档：<a target="_blank" rel="noopener" href="https://z.itpub.net/article/detail/7EFE8159C8E5AF3C0AB2F77685A49977">https://z.itpub.net/article/detail/7EFE8159C8E5AF3C0AB2F77685A49977</a></p>
+<h2 id="十三：数据库导入报错-index-column-size-too-large-the-maximum-column-size-is-767-bytes"><a href="#十三：数据库导入报错-index-column-size-too-large-the-maximum-column-size-is-767-bytes" class="headerlink" title="十三：数据库导入报错:index column size too large. the maximum column size is 767 bytes"></a>十三：数据库导入报错:index column size too large. the maximum column size is 767 bytes</h2><p>原因：<br>#INNODB 引擎，UTF-8，主键字符串 默认最大 767，需要修改</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">&gt;mysql <span class="hljs-built_in">set</span> global innodb_file_format = BARRACUDA;<br>&gt;mysql <span class="hljs-built_in">set</span> global innodb_large_prefix = ON;<br><br>然后修改导入的sql文件<br>sed -i<span class="hljs-string">&#x27;s/ENGINE=InnoDB/ROW_FORMAT=DYNAMIC &amp;/&#x27;</span> 导入的数据.sql文件<br></code></pre></td></tr></table></figure>
+
+<h2 id="十四：Fatal-error-The-slave-I-x2F-O-thread-stops-because-master-and-slave-have-equal-MySQL-server-UUIDs；"><a href="#十四：Fatal-error-The-slave-I-x2F-O-thread-stops-because-master-and-slave-have-equal-MySQL-server-UUIDs；" class="headerlink" title="十四：Fatal error: The slave I&#x2F;O thread stops because master and slave have equal MySQL server UUIDs；"></a>十四：Fatal error: The slave I&#x2F;O thread stops because master and slave have equal MySQL server UUIDs；</h2><p>原因auto.cnf文件中UUID一致导致<br>删除数据目录中的auto.cnf，启动mysql</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">rm</span> -rf /var/lib/mysql/auto.cnf<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/MySQL/">#MySQL</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>mysql故障处理，以及解决方法记录</div>
+      <div>https://pipiguai0123.github.io/2023/05/17/数据库/mysql/mysql问题处理，以及操作方法/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年5月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/15/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E5%9F%BA%E7%A1%80%E8%AF%AD%E5%8F%A5/" title="mysql基础语句记录">
+                        <span class="hidden-mobile">mysql基础语句记录</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
