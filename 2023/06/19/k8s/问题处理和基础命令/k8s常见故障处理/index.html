@@ -1,0 +1,960 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="K8s常见故障解决方法原文🔗：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;chalon&#x2F;p&#x2F;14415252.html 问题1：K8S集群服务访问失败？  原因分析：证书不能被识别，其原因为：自定义证书，过期等。 解决方法：更新证书即可。 问题2：K8S集群服务访问失败？ curl: (7) Failed connect to 10.103.22.158:3000; Connection r">
+<meta property="og:type" content="article">
+<meta property="og:title" content="K8s常见故障解决方法">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="K8s常见故障解决方法原文🔗：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;chalon&#x2F;p&#x2F;14415252.html 问题1：K8S集群服务访问失败？  原因分析：证书不能被识别，其原因为：自定义证书，过期等。 解决方法：更新证书即可。 问题2：K8S集群服务访问失败？ curl: (7) Failed connect to 10.103.22.158:3000; Connection r">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603104322054-411822980.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603104344862-437503062.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603105044708-1737680663.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603122454382-1766701516.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603122652066-1288164700.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603111123847-1730917423.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603111239103-1497174416.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603111220362-852021078.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603123538080-142331168.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603123956011-84144343.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210609111855527-1561009834.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210609111921747-76967801.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210609112056358-1704997375.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608142139646-2015534421.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608141834587-828337105.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608141907458-1152976452.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608142357313-1045982108.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608143516835-51702057.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608143529358-1445097125.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608143743700-2132332485.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608145508975-1757531963.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611154104880-82982759.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611153121868-358978531.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611155102173-1536637770.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611155032150-1121427176.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611155933220-1626419175.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611160715287-1013020495.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611160654971-1535070994.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611161118476-2133736578.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611163546862-1553169573.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611163604060-258577761.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624102404105-704505228.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624105624772-504456968.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210219105458263-1617541950.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210219105646263-1373412665.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210219112357117-362606443.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210219112507651-116731499.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210219113310917-478327760.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210219113604736-125404248.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210219114452861-657767230.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624135341043-415174052.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624135659659-1654041649.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624135717240-2062172087.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624135958216-1463656156.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624140430692-1813759677.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624140544838-1223478937.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625095834663-1316004106.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625095942938-422508268.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625101452262-920564710.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625101435371-442855016.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625103917835-653085243.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625101745179-1317079111.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625105130441-757342407.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625113835452-1904340625.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625114032336-1008503957.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625114018810-1389908339.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625114555727-1428567866.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625114653101-898239459.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210628091707454-1294021117.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210628110841093-816405284.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210628110856426-578465221.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210629151950882-422456884.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210629152051352-1225823433.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210629152510721-328871187.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210707212133091-1095838688.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210707213220258-1665790330.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210708095055294-1249964591.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210708095335158-562240764.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210714110933328-892431856.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210714111148067-685810349.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210714111939253-1593125774.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210826164716944-163445187.png">
+<meta property="og:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210826164902328-1366795862.png">
+<meta property="article:published_time" content="2023-06-19T03:07:07.000Z">
+<meta property="article:modified_time" content="2023-11-08T09:49:12.782Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="kubernetes">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pipiguai0123.github.io/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603104322054-411822980.png">
+  
+  
+  
+  <title>K8s常见故障解决方法 - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="K8s常见故障解决方法"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-06-19 11:07" pubdate>
+          2023年6月19日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          58 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">K8s常见故障解决方法</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="K8s常见故障解决方法"><a href="#K8s常见故障解决方法" class="headerlink" title="K8s常见故障解决方法"></a>K8s常见故障解决方法</h1><p>原文🔗：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/chalon/p/14415252.html">https://www.cnblogs.com/chalon/p/14415252.html</a></p>
+<h2 id="问题1：K8S集群服务访问失败？"><a href="#问题1：K8S集群服务访问失败？" class="headerlink" title="问题1：K8S集群服务访问失败？"></a>问题1：K8S集群服务访问失败？</h2><p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603104322054-411822980.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603104344862-437503062.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>原因分析：证书不能被识别，其原因为：自定义证书，过期等。</p>
+<p>解决方法：更新证书即可。</p>
+<h2 id="问题2：K8S集群服务访问失败？"><a href="#问题2：K8S集群服务访问失败？" class="headerlink" title="问题2：K8S集群服务访问失败？"></a>问题2：K8S集群服务访问失败？</h2><p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603105044708-1737680663.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>curl: (7) Failed connect to 10.103.22.158:3000; Connection refused</p>
+<p>原因分析：端口映射错误，服务正常工作，但不能提供服务。</p>
+<p>解决方法：删除svc，重新映射端口即可。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">kubectl delete svc nginx-deployment<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603122454382-1766701516.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603122652066-1288164700.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题3：K8S集群服务暴露失败？"><a href="#问题3：K8S集群服务暴露失败？" class="headerlink" title="问题3：K8S集群服务暴露失败？"></a>问题3：K8S集群服务暴露失败？</h2><p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603111123847-1730917423.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>Error from server (AlreadyExists): services “nginx-deployment” already exists</p>
+<p>原因分析：该容器已暴露服务了。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603111239103-1497174416.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603111220362-852021078.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>解决方法：删除svc，重新映射端口即可。</p>
+<h2 id="问题4：外网无法访问K8S集群提供的服务？"><a href="#问题4：外网无法访问K8S集群提供的服务？" class="headerlink" title="问题4：外网无法访问K8S集群提供的服务？"></a>问题4：外网无法访问K8S集群提供的服务？</h2><p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603123538080-142331168.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>原因分析：K8S集群的type为ClusterIP，未将服务暴露至外网。</p>
+<p>解决方法：修改K8S集群的type为NodePort即可，于是可通过所有K8S集群节点访问服务。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">kubectl edit svc nginx-deployment<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210603123956011-84144343.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题5：pod状态为ErrImagePull？"><a href="#问题5：pod状态为ErrImagePull？" class="headerlink" title="问题5：pod状态为ErrImagePull？"></a>问题5：pod状态为ErrImagePull？</h2><p> readiness-httpget-pod  0&#x2F;1   ErrImagePull  0     10s</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210609111855527-1561009834.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>原因分析：image无法拉取；</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210609111921747-76967801.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210609112056358-1704997375.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> Warning Failed 59m (x4 over 61m) kubelet, k8s-node01 Error: ErrImagePull</p>
+<p>解决方法：更换镜像即可。</p>
+<h2 id="问题6：创建init-C容器后，其状态不正常？"><a href="#问题6：创建init-C容器后，其状态不正常？" class="headerlink" title="问题6：创建init C容器后，其状态不正常？"></a>问题6：创建init C容器后，其状态不正常？</h2><p>NAME READY STATUS RESTARTS AGE<br>myapp-pod 0&#x2F;1 Init:0&#x2F;2 0 20s</p>
+<p>原因分析：查看日志发现，pod一直出于初始化中；然后查看pod详细信息，定位pod创建失败的原因为：初始化容器未执行完毕。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608142139646-2015534421.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> Error from server (BadRequest): container “myapp-container” in pod “myapp-pod” is waiting to start: PodInitializing</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608141834587-828337105.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> <img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608141907458-1152976452.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> <img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608142357313-1045982108.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>解决方法：创建相关service，将SVC的name写入K8S集群的coreDNS服务器中，于是coreDNS就能对POD的initC容器执行过程中的域名解析了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sg">kubectl apply -f myservice.yaml<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608143516835-51702057.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608143529358-1445097125.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608143743700-2132332485.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210608145508975-1757531963.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题7：探测存活pod状态为CrashLoopBackOff？"><a href="#问题7：探测存活pod状态为CrashLoopBackOff？" class="headerlink" title="问题7：探测存活pod状态为CrashLoopBackOff？"></a>问题7：探测存活pod状态为CrashLoopBackOff？</h2><p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611154104880-82982759.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>原因分析：镜像问题，导致容器重启失败。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611153121868-358978531.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>解决方法：更换镜像即可。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611155102173-1536637770.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611155032150-1121427176.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题8：POD创建失败？"><a href="#问题8：POD创建失败？" class="headerlink" title="问题8：POD创建失败？"></a>问题8：POD创建失败？</h2><p>原因分析：镜像问题导致容器无法启动。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@k8s-master01 ~]<span class="hljs-comment"># kubectl logs readiness-httpget-pod</span><br>url.js:106<br>throw new errors.TypeError(<span class="hljs-string">&#x27;ERR_INVALID_ARG_TYPE&#x27;</span>, <span class="hljs-string">&#x27;url&#x27;</span>, <span class="hljs-string">&#x27;string&#x27;</span>, url);<br>^<br><br>TypeError [ERR_INVALID_ARG_TYPE]: The <span class="hljs-string">&quot;url&quot;</span> argument must be of <span class="hljs-built_in">type</span> string. Received <span class="hljs-built_in">type</span> undefined<br>at Url.parse (url.js:106:11)<br>at Object.urlParse [as parse] (url.js:100:13)<br>at module.exports (/myapp/node_modules/mongodb/lib/url_parser.js:17:23)<br>at connect (/myapp/node_modules/mongodb/lib/mongo_client.js:159:16)<br>at Function.MongoClient.connect (/myapp/node_modules/mongodb/lib/mongo_client.js:110:3)<br>at Object.&lt;anonymous&gt; (/myapp/app.js:12:13)<br>at Module._compile (module.js:641:30)<br>at Object.Module._extensions..js (module.js:652:10)<br>at Module.load (module.js:560:32)<br>at tryModuleLoad (module.js:503:12)<br>at Function.Module._load (module.js:495:3)<br>at Function.Module.runMain (module.js:682:10)<br>at startup (bootstrap_node.js:191:16)<br>at bootstrap_node.js:613:3<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611155933220-1626419175.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>解决方法：更换镜像。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611160715287-1013020495.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611160654971-1535070994.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题9：POD的ready状态未进入？"><a href="#问题9：POD的ready状态未进入？" class="headerlink" title="问题9：POD的ready状态未进入？"></a>问题9：POD的ready状态未进入？</h2><p>readiness-httpget-pod  0&#x2F;1   Running  0     116s</p>
+<p>原因分析：POD的执行命令失败，无法获取资源。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611161118476-2133736578.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>解决方法：进入容器内部，创建yaml定义的资源</p>
+<p><em><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611163546862-1553169573.png" srcset="/img/loading.gif" lazyload alt="img"></em></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210611163604060-258577761.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题10：pod创建失败？"><a href="#问题10：pod创建失败？" class="headerlink" title="问题10：pod创建失败？"></a>问题10：pod创建失败？</h2><p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624102404105-704505228.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>原因分析：yml文件内容出错—使用中文字符；</p>
+<p>解决方法：修改myregistrykey内容即可。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624105624772-504456968.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题11、kube-flannel-ds-amd64-ndsf7插件pod的status为Init-0-x2F-1？"><a href="#问题11、kube-flannel-ds-amd64-ndsf7插件pod的status为Init-0-x2F-1？" class="headerlink" title="问题11、kube-flannel-ds-amd64-ndsf7插件pod的status为Init:0&#x2F;1？"></a>问题11、kube-flannel-ds-amd64-ndsf7插件pod的status为Init:0&#x2F;1？</h2><p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210219105458263-1617541950.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> 排查思路：kubectl -n kube-system describe pod kube-flannel-ds-amd64-ndsf7 #查询pod描述信息；</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210219105646263-1373412665.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>原因分析：k8s-slave1节点拉取镜像失败。</p>
+<p>解决方法：登录k8s-slave1，重启docker服务，手动拉取镜像。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210219112357117-362606443.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>k8s-master节点，重新安装插件即可。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">kubectl create -f kube-flannel.yml;kubectl get nodes<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210219112507651-116731499.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题12、K8S创建服务status为ErrImagePull？"><a href="#问题12、K8S创建服务status为ErrImagePull？" class="headerlink" title="问题12、K8S创建服务status为ErrImagePull？"></a>问题12、K8S创建服务status为ErrImagePull？</h2><p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210219113310917-478327760.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>排查思路：kubectl describe pod test-nginx</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210219113604736-125404248.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>原因分析：拉取镜像名称问题。</p>
+<p>解决方法：删除错误pod；重新拉取镜像；</p>
+<p>kubectl delete pod test-nginx;kubectl run test-nginx –image&#x3D;10.0.0.81:5000&#x2F;nginx:alpine</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210219114452861-657767230.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题13、不能进入指定容器内部？"><a href="#问题13、不能进入指定容器内部？" class="headerlink" title="问题13、不能进入指定容器内部？"></a>问题13、不能进入指定容器内部？</h2><p>Error from server (BadRequest): container volume-test-container is not valid for pod volume-test-pod</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624135341043-415174052.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> 原因分析：yml文件comtainers字段重复，导致该pod没有该容器。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624135659659-1654041649.png" srcset="/img/loading.gif" lazyload alt="img"> <img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624135717240-2062172087.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> <img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624135958216-1463656156.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> 解决方法：去掉yml文件中多余的containers字段，重新生成pod。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624140430692-1813759677.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> <img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210624140544838-1223478937.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题14、创建PV失败？"><a href="#问题14、创建PV失败？" class="headerlink" title="问题14、创建PV失败？"></a>问题14、创建PV失败？</h2><p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625095834663-1316004106.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> 原因分析：pv的name字段重复。</p>
+<p>解决方法：修改pv的name字段即可。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625095942938-422508268.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题15、pod无法挂载PVC？"><a href="#问题15、pod无法挂载PVC？" class="headerlink" title="问题15、pod无法挂载PVC？"></a>问题15、pod无法挂载PVC？</h2><p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625101452262-920564710.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625101435371-442855016.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> 原因分析：pod无法挂载PVC。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625103917835-653085243.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625101745179-1317079111.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>accessModes与可使用的PV不一致，导致无法挂载PVC，由于只能挂载大于1G且accessModes为RWO的PV，故只能成功创建1个pod，第2个pod一致pending，按序创建时则第3个pod一直未被创建；</p>
+<p>解决方法：修改yml文件中accessModes或PV的accessModes即可。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625105130441-757342407.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题16、问题：pod使用PV后，无法访问其内容？"><a href="#问题16、问题：pod使用PV后，无法访问其内容？" class="headerlink" title="问题16、问题：pod使用PV后，无法访问其内容？"></a>问题16、问题：pod使用PV后，无法访问其内容？</h2><p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625113835452-1904340625.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> 原因分析：nfs卷中没有文件或权限不对。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625114032336-1008503957.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> <img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625114018810-1389908339.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> 解决方法：在nfs卷中创建文件并授予权限。</p>
+<p> <img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625114555727-1428567866.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> <img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210625114653101-898239459.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题17、查看节点状态失败？"><a href="#问题17、查看节点状态失败？" class="headerlink" title="问题17、查看节点状态失败？"></a>问题17、查看节点状态失败？</h2><p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210628091707454-1294021117.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>原因分析：没有heapster服务。</p>
+<p>解决方法：安装promethus监控组件即可。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210628110841093-816405284.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210628110856426-578465221.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题18、pod一直处于pending’状态？"><a href="#问题18、pod一直处于pending’状态？" class="headerlink" title="问题18、pod一直处于pending’状态？"></a>问题18、pod一直处于pending’状态？</h2><p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210629151950882-422456884.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> 原因分析：由于已使用同样镜像发布了pod，导致无节点可调度。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210629152051352-1225823433.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><em>解决方法：删除所有pod后部署pod即可。</em></p>
+<p><em><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210629152510721-328871187.png" srcset="/img/loading.gif" lazyload alt="img"></em></p>
+<h2 id="问题19、helm安装组件失败？"><a href="#问题19、helm安装组件失败？" class="headerlink" title="问题19、helm安装组件失败？"></a>问题19、helm安装组件失败？</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh"> [root@k8s-master01 hello-world]<span class="hljs-comment"># helm install</span><br><br>Error: This <span class="hljs-built_in">command</span> needs 1 argument: chart nam<br><br>[root@k8s-master01 hello-world]<span class="hljs-comment"># helm install ./</span><br>Error: no Chart.yaml exists <span class="hljs-keyword">in</span> directory <span class="hljs-string">&quot;/root/hello-world&quot;</span><br></code></pre></td></tr></table></figure>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210707212133091-1095838688.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> 原因分析：文件名格式不对。</p>
+<p><em>解决方法：mv chart.yaml Chart.yaml</em></p>
+<p> <img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210707213220258-1665790330.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题20、helm更新release失败？"><a href="#问题20、helm更新release失败？" class="headerlink" title="问题20、helm更新release失败？"></a>问题20、helm更新release失败？</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@k8s-master01 hello-world]<span class="hljs-comment"># helm upgrade joyous-wasp ./</span><br>UPGRADE FAILED<br>ROLLING BACK<br>Error: render error <span class="hljs-keyword">in</span> <span class="hljs-string">&quot;hello-world/templates/deployment.yaml&quot;</span>: template: hello-world/templates/deployment.yaml:14:35: executing <span class="hljs-string">&quot;hello-world/templates/deployment.yaml&quot;</span> at &lt;.values.image.reposi...&gt;: can<span class="hljs-string">&#x27;t evaluate field image in type interface &#123;&#125;</span><br><span class="hljs-string">Error: UPGRADE FAILED: render error in &quot;hello-world/templates/deployment.yaml&quot;: template: hello-world/templates/deployment.yaml:14:35: executing &quot;hello-world/templates/deployment.yaml&quot; at &lt;.values.image.reposi...&gt;: can&#x27;</span>t evaluate field image <span class="hljs-keyword">in</span> <span class="hljs-built_in">type</span> interface &#123;&#125;<br></code></pre></td></tr></table></figure>
+<p>原因分析：yaml文件语法错误。</p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210708095055294-1249964591.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p> 解决方法：修改yaml文件即可。</p>
+<p> <img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210708095335158-562240764.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题21、etcd启动失败？"><a href="#问题21、etcd启动失败？" class="headerlink" title="问题21、etcd启动失败？"></a>问题21、etcd启动失败？</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@k8s-master01 ~]<span class="hljs-comment"># systemctl enable --now etcd</span><br>Created symlink from /etc/systemd/system/etcd3.service to /usr/lib/systemd/system/etcd.service.<br>Created symlink from /etc/systemd/system/multi-user.target.wants/etcd.service to /usr/lib/systemd/system/etcd.service.<br>Job <span class="hljs-keyword">for</span> etcd.service failed because a <span class="hljs-built_in">timeout</span> was exceeded. See <span class="hljs-string">&quot;systemctl status etcd.service&quot;</span> and <span class="hljs-string">&quot;journalctl -xe&quot;</span> <span class="hljs-keyword">for</span> details.<br></code></pre></td></tr></table></figure>
+<p>原因分析：认证失败原因可能为证书、配置、端口等。检查配置符合etcd版本要求，证书生成过程有效。最后确认端口被占用导致认证失败。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@k8s-master01 ~]``<span class="hljs-comment"># systemctl status etcd``● etcd.service - Etcd.service``Loaded: loaded (``/usr/lib/systemd/system/etcd``.service; enabled; vendor preset: disabled)``Active: activating (start) since Wed 2021-07-14 09:53:03 CST; 1min 6s ago``Docs: https:``//coreos``.com``/etcd/docs/latest/``Main PID: 39692 (etcd)``CGroup: ``/system``.slice``/etcd``.service``└─39692 ``/usr/local/bin/etcd` `--config-``file``=``/etc/etcd/etcd``.config.yml` `Jul 14 09:54:09 k8s-master01 etcd[39692]: rejected connection from ``&quot;192.168.0.108:46168&quot;` `(error ``&quot;remote error: tls: bad certificate&quot;``, ServerName ``&quot;&quot;``)``Jul 14 09:54:09 k8s-master01 etcd[39692]: rejected connection from ``&quot;192.168.0.108:46166&quot;` `(error ``&quot;remote error: tls: bad certificate&quot;``, ServerName ``&quot;&quot;``)``Jul 14 09:54:09 k8s-master01 etcd[39692]: rejected connection from ``&quot;192.168.0.108:46170&quot;` `(error ``&quot;remote error: tls: bad certificate&quot;``, ServerName ``&quot;&quot;``)``Jul 14 09:54:09 k8s-master01 etcd[39692]: rejected connection from ``&quot;192.168.0.108:46172&quot;` `(error ``&quot;remote error: tls: bad certificate&quot;``, ServerName ``&quot;&quot;``)``Jul 14 09:54:09 k8s-master01 etcd[39692]: rejected connection from ``&quot;192.168.0.108:46176&quot;` `(error ``&quot;remote error: tls: bad certificate&quot;``, ServerName ``&quot;&quot;``)``Jul 14 09:54:09 k8s-master01 etcd[39692]: rejected connection from ``&quot;192.168.0.108:46174&quot;` `(error ``&quot;remote error: tls: bad certificate&quot;``, ServerName ``&quot;&quot;``)``Jul 14 09:54:09 k8s-master01 etcd[39692]: rejected connection from ``&quot;192.168.0.108:46178&quot;` `(error ``&quot;remote error: tls: bad certificate&quot;``, ServerName ``&quot;&quot;``)``Jul 14 09:54:09 k8s-master01 etcd[39692]: rejected connection from ``&quot;192.168.0.108:46180&quot;` `(error ``&quot;remote error: tls: bad certificate&quot;``, ServerName ``&quot;&quot;``)``Jul 14 09:54:10 k8s-master01 etcd[39692]: rejected connection from ``&quot;192.168.0.108:46182&quot;` `(error ``&quot;remote error: tls: bad certificate&quot;``, ServerName ``&quot;&quot;``)``Jul 14 09:54:10 k8s-master01 etcd[39692]: rejected connection from ``&quot;192.168.0.108:46186&quot;` `(error ``&quot;remote error: tls: bad certificate&quot;``, ServerName ``&quot;&quot;``)　</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210714110933328-892431856.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><em>解决方法：kill占用2379端口的进程，重启etcd即可。</em></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210714111148067-685810349.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210714111939253-1593125774.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="问题22、svc反代理服务，跨域访问失败？"><a href="#问题22、svc反代理服务，跨域访问失败？" class="headerlink" title="问题22、svc反代理服务，跨域访问失败？"></a>问题22、svc反代理服务，跨域访问失败？</h2><p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210826164716944-163445187.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/1617751-20210826164902328-1366795862.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>原因分析：pod跨域访问，被百度禁止访问；</p>
+<p>解决方法：修改访问策略即可（略略）。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/kubernetes/" class="category-chain-item">kubernetes</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/kubernetes/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/" class="category-chain-item">问题处理和基础命令</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/kubernetes/">#kubernetes</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>K8s常见故障解决方法</div>
+      <div>https://pipiguai0123.github.io/2023/06/19/k8s/问题处理和基础命令/k8s常见故障处理/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年6月19日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/06/18/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/%E5%88%A0%E9%99%A4k8s%E7%8E%AF%E5%A2%83/" title="彻底删除k8s环境">
+                        <span class="hidden-mobile">彻底删除k8s环境</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

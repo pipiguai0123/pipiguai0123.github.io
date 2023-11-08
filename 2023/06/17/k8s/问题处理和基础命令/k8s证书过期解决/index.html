@@ -1,0 +1,793 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="K8s证书过期处理一、kubeadm证书过期解决1、openssl 查看证书有效期1openssl x509 -in XX.crt -noout -dates 使用for循环输出有效期: 12for item in &#96;find &#x2F;etc&#x2F;kubernetes&#x2F;pki -maxdepth 2 -name &quot;*.crt&quot;&#96;;do openssl x509 -in $item -te">
+<meta property="og:type" content="article">
+<meta property="og:title" content="K8s证书过期处理">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/06/17/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E8%AF%81%E4%B9%A6%E8%BF%87%E6%9C%9F%E8%A7%A3%E5%86%B3/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="K8s证书过期处理一、kubeadm证书过期解决1、openssl 查看证书有效期1openssl x509 -in XX.crt -noout -dates 使用for循环输出有效期: 12for item in &#96;find &#x2F;etc&#x2F;kubernetes&#x2F;pki -maxdepth 2 -name &quot;*.crt&quot;&#96;;do openssl x509 -in $item -te">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-06-17T03:07:07.000Z">
+<meta property="article:modified_time" content="2023-11-08T09:06:48.343Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="kubernetes">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>K8s证书过期处理 - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="K8s证书过期处理"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-06-17 11:07" pubdate>
+          2023年6月17日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          24 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">K8s证书过期处理</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="K8s证书过期处理"><a href="#K8s证书过期处理" class="headerlink" title="K8s证书过期处理"></a>K8s证书过期处理</h1><h2 id="一、kubeadm证书过期解决"><a href="#一、kubeadm证书过期解决" class="headerlink" title="一、kubeadm证书过期解决"></a>一、kubeadm证书过期解决</h2><h3 id="1、openssl-查看证书有效期"><a href="#1、openssl-查看证书有效期" class="headerlink" title="1、openssl 查看证书有效期"></a>1、openssl 查看证书有效期</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">openssl x509 -<span class="hljs-keyword">in</span> XX.crt -noout -dates<br></code></pre></td></tr></table></figure>
+<p><strong>使用for循环输出有效期:</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> `find /etc/kubernetes/pki -maxdepth 2 -name <span class="hljs-string">&quot;*.crt&quot;</span>`;<span class="hljs-keyword">do</span> openssl x509 -<span class="hljs-keyword">in</span> <span class="hljs-variable">$item</span> -text -noout| grep Not;\<br><span class="hljs-built_in">echo</span> ======================<span class="hljs-variable">$item</span>===================;<span class="hljs-keyword">done</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2、备份证书和etcd数据目录"><a href="#2、备份证书和etcd数据目录" class="headerlink" title="2、备份证书和etcd数据目录"></a>2、备份证书和etcd数据目录</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> -r /etc/kubernetes/  /tmp/kubernetes_bak<br><span class="hljs-built_in">cp</span> -r /var/lib/etcd    /tmp/etcd_bak<br></code></pre></td></tr></table></figure>
+
+<h3 id="3、生成证书"><a href="#3、生成证书" class="headerlink" title="3、生成证书"></a>3、生成证书</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">kubeadm alpha certs renew all --config=kubeadm.yml<br></code></pre></td></tr></table></figure>
+<p><strong>没有kubeadm.yaml文件的可以导出配置文件</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">kubeadm config <span class="hljs-built_in">print</span> init-defaults --kubeconfig ClusterConfiguration &gt; kubeadm.yml<br></code></pre></td></tr></table></figure>
+
+<h3 id="4、kubeadm再次查看证书有效期-version-1-15"><a href="#4、kubeadm再次查看证书有效期-version-1-15" class="headerlink" title="4、kubeadm再次查看证书有效期(version:1.15+)"></a>4、kubeadm再次查看证书有效期(version:1.15+)</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">kubeadm alpha certs check-expiration<br></code></pre></td></tr></table></figure>
+
+<h3 id="5、更新-kubeconfig-文件"><a href="#5、更新-kubeconfig-文件" class="headerlink" title="5、更新 kubeconfig 文件"></a>5、更新 kubeconfig 文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">kubeadm init phase kubeconfig all --config kubeadm.yml<br></code></pre></td></tr></table></figure>
+
+<h3 id="6、将新生成的-admin-配置文件覆盖掉原本的-admin-文件"><a href="#6、将新生成的-admin-配置文件覆盖掉原本的-admin-文件" class="headerlink" title="6、将新生成的 admin 配置文件覆盖掉原本的 admin 文件"></a>6、将新生成的 admin 配置文件覆盖掉原本的 admin 文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mv</span> <span class="hljs-variable">$HOME</span>/.kube/config <span class="hljs-variable">$HOME</span>/.kube/config.old<br><span class="hljs-built_in">cp</span> -i /etc/kubernetes/admin.conf <span class="hljs-variable">$HOME</span>/.kube/config<br><span class="hljs-built_in">chown</span> $(<span class="hljs-built_in">id</span> -u):$(<span class="hljs-built_in">id</span> -g) <span class="hljs-variable">$HOME</span>/.kube/config<br></code></pre></td></tr></table></figure>
+
+<h3 id="7、重启-kube-apiserver、kube-controller、kube-scheduler、etcd-这4个容器"><a href="#7、重启-kube-apiserver、kube-controller、kube-scheduler、etcd-这4个容器" class="headerlink" title="7、重启 kube-apiserver、kube-controller、kube-scheduler、etcd 这4个容器"></a>7、重启 kube-apiserver、kube-controller、kube-scheduler、etcd 这4个容器</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker ps |grep -E <span class="hljs-string">&#x27;k8s_kube-apiserver|k8s_kube-controller-manager|k8s_kube-scheduler|k8s_etcd_etcd&#x27;</span> | awk -F <span class="hljs-string">&#x27; &#x27;</span> <span class="hljs-string">&#x27;&#123;print $1&#125;&#x27;</span> |xargs docker restart<br></code></pre></td></tr></table></figure>
+
+<h3 id="8、使用kubeadm查看证书有效期-version-1-20"><a href="#8、使用kubeadm查看证书有效期-version-1-20" class="headerlink" title="8、使用kubeadm查看证书有效期 (version:1.20+)"></a>8、使用kubeadm查看证书有效期 (version:1.20+)</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">kubeadm certs check-expiration<br></code></pre></td></tr></table></figure>
+
+<h3 id="9、同步证书到其他master机器上"><a href="#9、同步证书到其他master机器上" class="headerlink" title="9、同步证书到其他master机器上"></a>9、同步证书到其他master机器上</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">scp etc/kubernetes/pki/apiserver* etc/kubernetes/pki/front-proxy* 192.168.94.155:/etc/kubernetes/pki/<br><br>scp etc/kubernetes/admin.conf 192.168.94.155:/etc/kubernetes/<br></code></pre></td></tr></table></figure>
+
+<h2 id="二、二进制安装的k8s，node节点notready，证书过期处理"><a href="#二、二进制安装的k8s，node节点notready，证书过期处理" class="headerlink" title="二、二进制安装的k8s，node节点notready，证书过期处理"></a>二、二进制安装的k8s，node节点notready，证书过期处理</h2><h3 id="1、重启node节点kubelete"><a href="#1、重启node节点kubelete" class="headerlink" title="1、重启node节点kubelete"></a>1、重启node节点kubelete</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl  restart kubelet &amp;&amp; systemctl  status  kubelet<br></code></pre></td></tr></table></figure>
+
+<h3 id="2、使用CSR重新生产证书"><a href="#2、使用CSR重新生产证书" class="headerlink" title="2、使用CSR重新生产证书"></a>2、使用CSR重新生产证书</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sh">kubectl get csr<br><span class="hljs-comment">#-----------以下为输出内容:-------------------</span><br>NAME                        AGE       REQUESTOR           CONDITION<br>node-csr-NsKZSz-myrv   11s       kubelet-bootstrap   Pending<br><span class="hljs-comment">#------------------------------------------</span><br><br>kubectl certificate approve node-csr-NsKZSz-myrv<br><span class="hljs-comment">#------------以下为输出内容:-----------------</span><br>certificatesigningrequest.certificates.k8s.io/node-csr-NsKZSz-myrv approved<br><br>备注：CSR授权完成后，kubelete会自动发起CSR请求更新证书。<br></code></pre></td></tr></table></figure>
+
+<h3 id="3、-查看集群状态"><a href="#3、-查看集群状态" class="headerlink" title="3、 查看集群状态"></a>3、 查看集群状态</h3><p><strong>大概等待10秒，运行如下命令:</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">kubectl get node<br></code></pre></td></tr></table></figure>
+<p>备注：直接生成三十年有效期：<a target="_blank" rel="noopener" href="https://blog.csdn.net/warlice/article/details/105402449%EF%BC%88%E6%9C%AA%E9%AA%8C%E8%AF%81%EF%BC%89">https://blog.csdn.net/warlice/article/details/105402449（未验证）</a></p>
+<h2 id="三、master节点修改默认证书期限（在master节点操作）"><a href="#三、master节点修改默认证书期限（在master节点操作）" class="headerlink" title="三、master节点修改默认证书期限（在master节点操作）"></a>三、master节点修改默认证书期限（在master节点操作）</h2><h3 id="1：拉取源码"><a href="#1：拉取源码" class="headerlink" title="1：拉取源码"></a>1：拉取源码</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> /data &amp;&amp; git <span class="hljs-built_in">clone</span> https://github.com/kubernetes/kubernetes.git<br></code></pre></td></tr></table></figure>
+
+<h3 id="2：切换到1-13-0版本"><a href="#2：切换到1-13-0版本" class="headerlink" title="2：切换到1.13.0版本"></a>2：切换到1.13.0版本</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">git checkout -b remotes/origin/release-1.13 v1.13.0<br></code></pre></td></tr></table></figure>
+
+<h3 id="3：安装go环境"><a href="#3：安装go环境" class="headerlink" title="3：安装go环境"></a>3：安装go环境</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> /data/soft &amp;&amp; wgethttps://dl.google.com/go/go1.11.2.linux-amd64.tar.gz<br>tar zxvf go1.11.2.linux-amd64.tar.gz  -C /usr/local<br></code></pre></td></tr></table></figure>
+
+<h3 id="4：编辑-x2F-etc-x2F-profile文件，添加如下："><a href="#4：编辑-x2F-etc-x2F-profile文件，添加如下：" class="headerlink" title="4：编辑&#x2F;etc&#x2F;profile文件，添加如下："></a>4：编辑&#x2F;etc&#x2F;profile文件，添加如下：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#go setting</span><br><span class="hljs-built_in">export</span> GOROOT=/usr/local/go<br><span class="hljs-built_in">export</span> GOPATH=/usr/local/gopath<br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:<span class="hljs-variable">$GOROOT</span>/bin<br></code></pre></td></tr></table></figure>
+
+<h3 id="5：生效"><a href="#5：生效" class="headerlink" title="5：生效"></a>5：生效</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">source</span> /etc/profile<br></code></pre></td></tr></table></figure>
+
+<h3 id="6：修改源码-原来1年，-100表示100年"><a href="#6：修改源码-原来1年，-100表示100年" class="headerlink" title="6：修改源码,原来1年，*100表示100年"></a>6：修改源码,原来1年，<code>*100</code>表示100年</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /data/kubernetes/staging/src/k8s.io/client-go/util/cert/cert.go<br><span class="hljs-comment">#...</span><br>&gt;112  NotAfter:     time.Now().Add(duration365d * 100).UTC(),<br>&gt;187  NotAfter:  validFrom.Add(maxAge *100),<br>&gt;215  NotAfter:  validFrom.Add(maxAge * 100),<br></code></pre></td></tr></table></figure>
+
+<h3 id="7：编译"><a href="#7：编译" class="headerlink" title="7：编译"></a>7：编译</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> /data/kubernetes/ &amp;&amp; make WHAT=cmd/kubeadm<br><span class="hljs-comment">#查看编译后的文件</span><br><span class="hljs-built_in">ls</span> -l /data/kubernetes/_output/bin/kubeadm<br></code></pre></td></tr></table></figure>
+
+<h3 id="8：替换kubeadm"><a href="#8：替换kubeadm" class="headerlink" title="8：替换kubeadm"></a>8：替换kubeadm</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mv</span> /usr/bin/kubeadm /usr/bin/kubeadm_backup<br><span class="hljs-built_in">ln</span> -s /data/kubernetes/_output/bin/kubeadm /usr/bin/kubeadm<br></code></pre></td></tr></table></figure>
+
+<h3 id="9-查看证书期限"><a href="#9-查看证书期限" class="headerlink" title="9.查看证书期限"></a>9.查看证书期限</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">openssl x509 -<span class="hljs-keyword">in</span> front-proxy-client.crt   -noout -text  |grep Not<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/kubernetes/" class="category-chain-item">kubernetes</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/kubernetes/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/" class="category-chain-item">问题处理和基础命令</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/kubernetes/">#kubernetes</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>K8s证书过期处理</div>
+      <div>https://pipiguai0123.github.io/2023/06/17/k8s/问题处理和基础命令/k8s证书过期解决/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年6月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/06/18/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E5%8D%87%E7%BA%A7%20Kubernetes%20%E9%9B%86%E7%BE%A4%E7%9A%84%20Docker%20%E5%92%8C%20Containerd%20%E7%89%88%E6%9C%AC/" title="优雅升级 Kubernetes 集群的 Docker 和 Containerd 版本">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">优雅升级 Kubernetes 集群的 Docker 和 Containerd 版本</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/06/16/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%AE%B9%E5%99%A8%E4%B8%8E%E5%AE%B9%E5%99%A8%E4%B9%8B%E9%97%B4%E7%9A%84%E9%80%9A%E4%BF%A1/" title="k8s容器与容器之间的通信">
+                        <span class="hidden-mobile">k8s容器与容器之间的通信</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

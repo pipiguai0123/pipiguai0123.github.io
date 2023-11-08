@@ -16,22 +16,22 @@
   <meta name="author" content="zhenzhou_zhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="mysql故障处理，以及解决方法一、测试、生产环境中，有时并不需要在本地安装一个mysql server服务，只需要安装一个登录mysql server 的mysql的客户端client12345#centos6系统上安装mysql-client的方式：yum install mysql-clent mysql-devel -y#centos7的系统上安装mysql client的方式：yum i">
+    <meta name="description" content="mysql故障处理，以及解决方法一、 测试、生产环境中，有时并不需要在本地安装一个mysql server服务，只需要安装一个登录mysql server 的mysql的客户端client1234#centos6系统上安装mysql-client的方式：yum install mysql-clent mysql-devel -y#centos7的系统上安装mysql client的方式：yum i">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mysql故障处理，以及解决方法记录">
+<meta property="og:title" content="mysql故障处理，以及解决方法">
 <meta property="og:url" content="https://pipiguai0123.github.io/2023/05/17/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%EF%BC%8C%E4%BB%A5%E5%8F%8A%E6%93%8D%E4%BD%9C%E6%96%B9%E6%B3%95/index.html">
 <meta property="og:site_name" content="皮皮怪-page">
-<meta property="og:description" content="mysql故障处理，以及解决方法一、测试、生产环境中，有时并不需要在本地安装一个mysql server服务，只需要安装一个登录mysql server 的mysql的客户端client12345#centos6系统上安装mysql-client的方式：yum install mysql-clent mysql-devel -y#centos7的系统上安装mysql client的方式：yum i">
+<meta property="og:description" content="mysql故障处理，以及解决方法一、 测试、生产环境中，有时并不需要在本地安装一个mysql server服务，只需要安装一个登录mysql server 的mysql的客户端client1234#centos6系统上安装mysql-client的方式：yum install mysql-clent mysql-devel -y#centos7的系统上安装mysql client的方式：yum i">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-05-17T02:57:45.000Z">
-<meta property="article:modified_time" content="2023-06-01T08:52:51.761Z">
+<meta property="article:published_time" content="2023-05-17T08:45:55.000Z">
+<meta property="article:modified_time" content="2023-10-23T10:03:09.767Z">
 <meta property="article:author" content="zhenzhou_zhang">
 <meta property="article:tag" content="MySQL">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>mysql故障处理，以及解决方法记录 - 皮皮怪-page</title>
+  <title>mysql故障处理，以及解决方法 - 皮皮怪-page</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -73,7 +73,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -218,7 +218,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="mysql故障处理，以及解决方法记录"></span>
+            <span id="subtitle" data-typed-text="mysql故障处理，以及解决方法"></span>
           
         </div>
 
@@ -229,8 +229,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-05-17 10:57" pubdate>
-          2023年5月17日 上午
+        <time datetime="2023-05-17 16:45" pubdate>
+          2023年5月17日 下午
         </time>
       </span>
     
@@ -291,19 +291,6 @@
   <div class="row nomargin-x">
     <div class="side-col d-none d-lg-block col-lg-2">
       
-  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
-    <div id="toc">
-  <p class="toc-header">
-    <i class="iconfont icon-list"></i>
-    <span>目录</span>
-  </p>
-  <div class="toc-body" id="toc-body"></div>
-</div>
-
-
-
-  </aside>
-
 
     </div>
 
@@ -312,63 +299,56 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">mysql故障处理，以及解决方法记录</h1>
+            <h1 style="display: none">mysql故障处理，以及解决方法</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="mysql故障处理，以及解决方法"><a href="#mysql故障处理，以及解决方法" class="headerlink" title="mysql故障处理，以及解决方法"></a>mysql故障处理，以及解决方法</h1><h2 id="一、测试、生产环境中，有时并不需要在本地安装一个mysql-server服务，只需要安装一个登录mysql-server-的mysql的客户端client"><a href="#一、测试、生产环境中，有时并不需要在本地安装一个mysql-server服务，只需要安装一个登录mysql-server-的mysql的客户端client" class="headerlink" title="一、测试、生产环境中，有时并不需要在本地安装一个mysql server服务，只需要安装一个登录mysql server 的mysql的客户端client"></a>一、测试、生产环境中，有时并不需要在本地安装一个mysql server服务，只需要安装一个登录mysql server 的mysql的客户端client</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#centos6系统上安装mysql-client的方式：</span><br>yum install mysql-clent mysql-devel -y<br><br><span class="hljs-comment">#centos7的系统上安装mysql client的方式：</span><br>yum install -y mariadb.x86_64 mariadb-libs.x86_64<br></code></pre></td></tr></table></figure>
+                <h1 id="mysql故障处理，以及解决方法"><a href="#mysql故障处理，以及解决方法" class="headerlink" title="mysql故障处理，以及解决方法"></a>mysql故障处理，以及解决方法</h1><h2 id="一、-测试、生产环境中，有时并不需要在本地安装一个mysql-server服务，只需要安装一个登录mysql-server-的mysql的客户端client"><a href="#一、-测试、生产环境中，有时并不需要在本地安装一个mysql-server服务，只需要安装一个登录mysql-server-的mysql的客户端client" class="headerlink" title="一、 测试、生产环境中，有时并不需要在本地安装一个mysql server服务，只需要安装一个登录mysql server 的mysql的客户端client"></a>一、 测试、生产环境中，有时并不需要在本地安装一个mysql server服务，只需要安装一个登录mysql server 的mysql的客户端client</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#centos6系统上安装mysql-client的方式：</span><br>yum install mysql-clent mysql-devel -y<br><span class="hljs-comment">#centos7的系统上安装mysql client的方式：</span><br>yum install -y mariadb.x86_64 mariadb-libs.x86_64<br></code></pre></td></tr></table></figure>
 
-<h2 id="二、liunx服务器中，导出mysql查询出来的数据"><a href="#二、liunx服务器中，导出mysql查询出来的数据" class="headerlink" title="二、liunx服务器中，导出mysql查询出来的数据"></a>二、liunx服务器中，导出mysql查询出来的数据</h2><h3 id="查看数据库配置的导出路径-secure-file-priv为导出路径"><a href="#查看数据库配置的导出路径-secure-file-priv为导出路径" class="headerlink" title="查看数据库配置的导出路径: secure_file_priv为导出路径"></a>查看数据库配置的导出路径: secure_file_priv为导出路径</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">show variables like <span class="hljs-string">&#x27;%secure%&#x27;</span><br><br><span class="hljs-comment">#如果secure_file_priv为null可使用mysqldump导出整个表:</span><br>mysqldump  -u用户名 -p  库名  表名 &gt; 保存的文件名称(文件保存的的路径为当前使用命令的路径)<br><br><span class="hljs-comment">#如果不为mull，则导出语句中的导出路径为上面查询到的secure_file_priv的路径</span><br>mysql&gt;select * from table into outfile <span class="hljs-string">&#x27;导出路径/1.xls&#x27;</span>;<br></code></pre></td></tr></table></figure>
-
-<p><code>into outfile</code>为数据导出的路径，这个就是第一步查询到的路径，导出的数据必须是这个值的指定路径才可以导出，默认有可能是NULL就代表禁止导出，所以需要设置一下；我们需要在&#x2F;etc&#x2F;my.cnf 文件的末尾进行设置。</p>
+<h2 id="二、-liunx服务器中，导出mysql查询出来的数据"><a href="#二、-liunx服务器中，导出mysql查询出来的数据" class="headerlink" title="二、 liunx服务器中，导出mysql查询出来的数据"></a>二、 liunx服务器中，导出mysql查询出来的数据</h2><p><strong>查看看数据库配置的导出路径: secure_file_priv为导出路径</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">show variables like <span class="hljs-string">&#x27;%secure%&#x27;</span><br>1、 <span class="hljs-comment">#如果secure_file_priv为null则可以使用  </span><br>mysqldump  -u用户名 -p  库名  表名 &gt; 保存的文件名称(文件保存的的路径为当前使用命令的路径)<br>2、 <span class="hljs-comment">#导出语句中的导出路径为上面查询到的secure_file_priv的路径</span><br>mysql&gt;select * from table into outfile <span class="hljs-string">&#x27;导出路径/1.xls&#x27;</span>;<br></code></pre></td></tr></table></figure>
+<p><code>into outfile</code>为数据导出的路径，这个就是第一步查询到的路径，导出的数据必须是这个值的指定路径才可以导出，<br>默认有可能是NULL就代表禁止导出，所以需要设置一下；我们需要在&#x2F;etc&#x2F;my.cnf 文件的末尾进行设置。</p>
 <p>在末尾添加一句secure_file_priv&#x3D;”&#x2F;“即可将数据导出到任意目录；secure_file_priv</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh">1、限制mysqld 不允许导入、导出<br>　　　 secure_file_prive=null<br><br>2、限制mysqld 的导入、导出 只能发生在/tmp/目录下<br>　　　secure_file_priv=/tmp/<br><br>3、可以导出至任意目录<br>      secure_file_priv=<span class="hljs-string">&quot;/&quot;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">1、限制mysqld 不允许导入、导出<br>　　　 secure_file_prive=null<br>2、限制mysqld 的导入、导出 只能发生在/tmp/目录下<br>　　　secure_file_priv=/tmp/<br>3、可以导出至任意目录<br>      secure_file_priv=<span class="hljs-string">&quot;/&quot;</span><br></code></pre></td></tr></table></figure>
 
-<h2 id="三、检查所以数据库中的所有表是否正常"><a href="#三、检查所以数据库中的所有表是否正常" class="headerlink" title="三、检查所以数据库中的所有表是否正常"></a>三、检查所以数据库中的所有表是否正常</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">mysqlcheck -c --all-databases -uroot -p <br></code></pre></td></tr></table></figure>
+<h2 id="三、-检查所以数据库中的所有表是否正常"><a href="#三、-检查所以数据库中的所有表是否正常" class="headerlink" title="三、 #检查所以数据库中的所有表是否正常"></a>三、 #检查所以数据库中的所有表是否正常</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">mysqlcheck -c --all-databases -uroot -p <br></code></pre></td></tr></table></figure>
 
-<h2 id="四、ERROR-2059-HY000-错误处理"><a href="#四、ERROR-2059-HY000-错误处理" class="headerlink" title="四、ERROR 2059 (HY000)错误处理"></a>四、ERROR 2059 (HY000)错误处理</h2><h3 id="错误提示："><a href="#错误提示：" class="headerlink" title="错误提示："></a>错误提示：</h3><p>ERROR 2059 (HY000): Authentication plugin ‘caching_sha2_password’ cannot be loaded: &#x2F;usr&#x2F;lib64&#x2F;mysql&#x2F;plugin&#x2F;caching_sha2_password.so: cannot open shared object file: No such file or directory</p>
-<h3 id="处理方式："><a href="#处理方式：" class="headerlink" title="处理方式："></a>处理方式：</h3><p>MySQL8.0之后的加密规则为caching_sha2_password.而在此之前的加密规则为mysql_native_password。<br>可以将加密规则改成mysql_native_password来：</p>
+<h2 id="四、-ERROR-2059-HY000-错误处理"><a href="#四、-ERROR-2059-HY000-错误处理" class="headerlink" title="四、 ERROR 2059 (HY000)错误处理"></a>四、 ERROR 2059 (HY000)错误处理</h2><p><strong>错误提示：</strong><br>ERROR 2059 (HY000): Authentication plugin ‘caching_sha2_password’ <br>cannot be loaded: &#x2F;usr&#x2F;lib64&#x2F;mysql&#x2F;plugin&#x2F;caching_sha2_password.so: cannot open shared object file: No such file or directory<br><strong>处理方式：</strong><br>MySQL8.0之后的加密规则为caching_sha2_password.而在此之前的加密规则为mysql_native_password。<br>可以将加密规则改成mysql_native_password来：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">ALTER USER <span class="hljs-string">&#x27;root&#x27;</span>@<span class="hljs-string">&#x27;%&#x27;</span> IDENTIFIED WITH mysql_native_password BY <span class="hljs-string">&#x27;root&#x27;</span>;<br></code></pre></td></tr></table></figure>
 
-
-<h2 id="五、ERROR-1418-HY000-错误处理"><a href="#五、ERROR-1418-HY000-错误处理" class="headerlink" title="五、ERROR 1418 (HY000)错误处理"></a>五、ERROR 1418 (HY000)错误处理</h2><h3 id="错误提示：-1"><a href="#错误提示：-1" class="headerlink" title="错误提示："></a>错误提示：</h3><p>ERROR 1418 (HY000): This function has none of DETERMINISTIC, NO SQL, or READS SQL DATA</p>
-<h3 id="解决办法："><a href="#解决办法：" class="headerlink" title="解决办法："></a>解决办法：</h3><p>设置临时环境变量</p>
+<h2 id="五、-ERROR-1418-HY000-错误处理"><a href="#五、-ERROR-1418-HY000-错误处理" class="headerlink" title="五、 ERROR 1418 (HY000)错误处理"></a>五、 ERROR 1418 (HY000)错误处理</h2><p><strong>错误提示：</strong><br>ERROR 1418 (HY000): This function has none of DETERMINISTIC, NO SQL, or READS SQL DATA<br><strong>解决办法：</strong><br>设置临时环境变量</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">set</span> global log_bin_trust_function_creators=1;<br></code></pre></td></tr></table></figure>
 
-<h2 id="六、错误处理ERROR-1712（往数据库里面插入数据时）"><a href="#六、错误处理ERROR-1712（往数据库里面插入数据时）" class="headerlink" title="六、错误处理ERROR 1712（往数据库里面插入数据时）"></a>六、错误处理ERROR 1712（往数据库里面插入数据时）</h2><h3 id="错误提示：-2"><a href="#错误提示：-2" class="headerlink" title="错误提示："></a>错误提示：</h3><p>ERROR 1712 (HY000): Index PRIMARY is corrupted</p>
-<h3 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h3><p>使用mysql的命令 </p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">repair table tableName; <br><span class="hljs-comment">#tableName：表名 </span><br></code></pre></td></tr></table></figure>
+<h2 id="六、-错误处理ERROR-1712（往数据库里面插入数据时）"><a href="#六、-错误处理ERROR-1712（往数据库里面插入数据时）" class="headerlink" title="六、 错误处理ERROR 1712（往数据库里面插入数据时）"></a>六、 错误处理ERROR 1712（往数据库里面插入数据时）</h2><p><strong>错误提示：</strong><br>ERROR 1712 (HY000): Index PRIMARY is corrupted<br><strong>解决方法：</strong><br>使用mysql的命令 </p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">repair table tableName; <span class="hljs-comment">#tableName：表名 </span><br></code></pre></td></tr></table></figure>
 
-<h2 id="七、当往数据库里面插入字段以及数据时报错"><a href="#七、当往数据库里面插入字段以及数据时报错" class="headerlink" title="七、当往数据库里面插入字段以及数据时报错"></a>七、当往数据库里面插入字段以及数据时报错</h2><p>一般情况下，一百多万的数据量，也可以直接进行加字段操作，但是得看服务器的运行情况，如果有大量服务占用内存，添加字段可能会出现问题。<br>为了避免出现无法插入等报错这种问题:</p>
+<h2 id="七、当往数据库里面插入字段以及数据时报错"><a href="#七、当往数据库里面插入字段以及数据时报错" class="headerlink" title="七、当往数据库里面插入字段以及数据时报错"></a>七、当往数据库里面插入字段以及数据时报错</h2><p>一般情况下，一百多万的数据量，也可以直接进行加字段操作，但是得看服务器的运行情况，如果有大量服务占用内存，添加字段可能会出现问题。<br>为了避免出现无法插入等报错这种问题，记录一下比较妥帖的办法:</p>
 <h3 id="1-创建一个临时的新表，复制旧表的结构"><a href="#1-创建一个临时的新表，复制旧表的结构" class="headerlink" title="1.创建一个临时的新表，复制旧表的结构"></a>1.创建一个临时的新表，复制旧表的结构</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">create table <span class="hljs-string">&#x27;tmp&#x27;</span> like <span class="hljs-string">&#x27;old_tables&#x27;</span> ;<br><span class="hljs-comment">#create table &#x27;tmp&#x27; like partybuilding.tmp; #复制其他库的表结构</span><br></code></pre></td></tr></table></figure>
-
 <h3 id="2-给新表加上新增的字段"><a href="#2-给新表加上新增的字段" class="headerlink" title="2.给新表加上新增的字段"></a>2.给新表加上新增的字段</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">ALTER TABLE `tmp`<br>ADD COLUMN `sync_key` varchar(255) NULL COMMENT <span class="hljs-string">&#x27;同步键&#x27;</span> ,<br>ADD COLUMN `data_from` varchar(255) NULL  COMMENT <span class="hljs-string">&#x27;数据产生方&#x27;</span>,<br>ADD COLUMN `data_update` varchar(255) NULL COMMENT <span class="hljs-string">&#x27;数据修改方&#x27;</span> ;<br></code></pre></td></tr></table></figure>
-
 <h3 id="3-把旧表的数据复制过来"><a href="#3-把旧表的数据复制过来" class="headerlink" title="3.把旧表的数据复制过来"></a>3.把旧表的数据复制过来</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">insert into tmp (<span class="hljs-built_in">id</span>,name,unit) select <span class="hljs-built_in">id</span>,name,unit from old_table;<br><span class="hljs-comment">#注意，是所有的字段</span><br></code></pre></td></tr></table></figure>
-
 <h3 id="4-重命名"><a href="#4-重命名" class="headerlink" title="4.重命名"></a>4.重命名</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">rename table old_tables to old_tables_bak ;<br>rename table tmp to old_tables;<br><span class="hljs-comment">#注意：需要在mysql没有使用的时候操作，或者是不会在短时间内变更的数据</span><br></code></pre></td></tr></table></figure>
 
-<h2 id="八、MySQL错误“ERROR-2006-（HY000）：MySQL-server-has-gone-away”"><a href="#八、MySQL错误“ERROR-2006-（HY000）：MySQL-server-has-gone-away”" class="headerlink" title="八、MySQL错误“ERROR 2006 （HY000）：MySQL server has gone away”"></a>八、MySQL错误“ERROR 2006 （HY000）：MySQL server has gone away”</h2><h3 id="1-MySQL-服务器真的不见了"><a href="#1-MySQL-服务器真的不见了" class="headerlink" title="1. MySQL 服务器真的不见了"></a>1. MySQL 服务器真的不见了</h3><p>我们可以通过检查服务器正常运行时间（uptime）和服务器的错误日志来检查是否服务器确实消失了。<br>查看MySQL的正常运行时间（uptime）：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">show global status like <span class="hljs-string">&#x27;uptime&#x27;</span>; <br><span class="hljs-comment">#查询错误日志的存储位置：</span><br>show variables like <span class="hljs-string">&#x27;%error&#x27;</span>; <br></code></pre></td></tr></table></figure>
-<h3 id="2-连接超时"><a href="#2-连接超时" class="headerlink" title="2. 连接超时"></a>2. 连接超时</h3><p>查看各项连接时间：<code>show global variables like &#39;%timeout&#39;</code>;</p>
+<h2 id="八、-MySQL错误“ERROR-2006-（HY000）：MySQL-server-has-gone-away”"><a href="#八、-MySQL错误“ERROR-2006-（HY000）：MySQL-server-has-gone-away”" class="headerlink" title="八、 MySQL错误“ERROR 2006 （HY000）：MySQL server has gone away”"></a>八、 MySQL错误“ERROR 2006 （HY000）：MySQL server has gone away”</h2><h3 id="1-MySQL-服务器真的不见了"><a href="#1-MySQL-服务器真的不见了" class="headerlink" title="1. MySQL 服务器真的不见了"></a>1. MySQL 服务器真的不见了</h3><p>我们可以通过检查服务器正常运行时间（uptime）和服务器的错误日志来检查是否服务器确实消失了。<br>查看MySQL的正常运行时间（uptime）：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">show global status like <span class="hljs-string">&#x27;uptime&#x27;</span>; <br>查询错误日志的存储位置：<br>show variables like <span class="hljs-string">&#x27;%error&#x27;</span>; <br></code></pre></td></tr></table></figure>
+<h3 id="2-连接超时"><a href="#2-连接超时" class="headerlink" title="2. 连接超时"></a>2. 连接超时</h3><p>查看各项连接时间：<code>show global variables like &#39;%timeout&#39;;</code></p>
 <h3 id="3-你的SQL语句被杀死了"><a href="#3-你的SQL语句被杀死了" class="headerlink" title="3. 你的SQL语句被杀死了"></a>3. 你的SQL语句被杀死了</h3><p>有些系统会主动杀死运行时间过长的SQL语句，我们可以通过查看已经执行的kill语句数量来检查是否可能发生这种情况。<br>查看mysql请求连接进程被主动杀死：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">show global  status like <span class="hljs-string">&#x27;com_kill&#x27;</span>;<br></code></pre></td></tr></table></figure>
-
 <h3 id="4-你的SQL语句太大了"><a href="#4-你的SQL语句太大了" class="headerlink" title="4. 你的SQL语句太大了"></a>4. 你的SQL语句太大了</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">show global variables like <span class="hljs-string">&#x27;max_allowed_packet&#x27;</span>;<br><br>如果值比较小，可以设置大一点：<br><span class="hljs-built_in">set</span> global max_allowed_packet=1024*1024*16<br></code></pre></td></tr></table></figure>
 
-<h2 id="九、Mysqldump导出的文件只导入一张表"><a href="#九、Mysqldump导出的文件只导入一张表" class="headerlink" title="九、Mysqldump导出的文件只导入一张表"></a>九、Mysqldump导出的文件只导入一张表</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">grep -i <span class="hljs-string">&#x27;INSERT INTO `tab_pb_flow_out`&#x27;</span> test0123.sql &gt; tab_pb_flow_out.sql &amp;<br><br>然后再导入该sql文件:<br><span class="hljs-comment">#可以使用如下命令复制数据库表结构</span><br>create table <span class="hljs-string">&#x27;tmp&#x27;</span> like test.tmp;<br><br>再进行导入<br></code></pre></td></tr></table></figure>
+<h2 id="九、-Mysqldump导出的文件只导入一张表"><a href="#九、-Mysqldump导出的文件只导入一张表" class="headerlink" title="九、 Mysqldump导出的文件只导入一张表"></a>九、 Mysqldump导出的文件只导入一张表</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">grep -i <span class="hljs-string">&#x27;INSERT INTO `tab_pb_flow_out`&#x27;</span> partybuilding20220621.sql &gt; tab_pb_flow_out.sql &amp;<br><br>然后再导入该sql文件<br>可以使用如下命令复制数据库表结构：<br>create table <span class="hljs-string">&#x27;tmp&#x27;</span> like partybuilding.tmp;<br>再进行导入<br></code></pre></td></tr></table></figure>
 
-<h2 id="十、MySQL安装控制插件-Connection-Control-–可有效的防止客户端暴力登录的风险-攻击"><a href="#十、MySQL安装控制插件-Connection-Control-–可有效的防止客户端暴力登录的风险-攻击" class="headerlink" title="十、MySQL安装控制插件(Connection-Control)–可有效的防止客户端暴力登录的风险(攻击)"></a>十、MySQL安装控制插件(Connection-Control)–可有效的防止客户端暴力登录的风险(攻击)</h2><p>实现文档：<code>https://blog.51cto.com/u_15069450/4331304</code></p>
-<h2 id="十一、表分区，分区是一种表的设计模式，正确的分区可以极大地提升数据库的查询效率，完成更高质量的SQL编程。但是如果错误地使用分区，那么分区可能带来毁灭性的的结果。"><a href="#十一、表分区，分区是一种表的设计模式，正确的分区可以极大地提升数据库的查询效率，完成更高质量的SQL编程。但是如果错误地使用分区，那么分区可能带来毁灭性的的结果。" class="headerlink" title="十一、表分区，分区是一种表的设计模式，正确的分区可以极大地提升数据库的查询效率，完成更高质量的SQL编程。但是如果错误地使用分区，那么分区可能带来毁灭性的的结果。"></a>十一、表分区，分区是一种表的设计模式，正确的分区可以极大地提升数据库的查询效率，完成更高质量的SQL编程。但是如果错误地使用分区，那么分区可能带来毁灭性的的结果。</h2><h3 id="表分区简介参考文档："><a href="#表分区简介参考文档：" class="headerlink" title="表分区简介参考文档："></a>表分区简介参考文档：</h3><p><code>https://developer.aliyun.com/article/944253</code></p>
-<h3 id="操作文档："><a href="#操作文档：" class="headerlink" title="操作文档："></a>操作文档：</h3><p><code>https://www.cnblogs.com/xibuhaohao/p/10154281.html#_label0_1</code><br><code>https://www.cnblogs.com/dw3306/p/12620042.html</code></p>
-<h3 id="已有数据结构改分区表、第二种"><a href="#已有数据结构改分区表、第二种" class="headerlink" title="已有数据结构改分区表、第二种"></a>已有数据结构改分区表、第二种</h3><p><code>https://blog.csdn.net/orangleliu/article/details/57088338</code></p>
-<h3 id="自动创建分区："><a href="#自动创建分区：" class="headerlink" title="自动创建分区："></a>自动创建分区：</h3><p><code>https://www.cnblogs.com/webenh/p/11667778.html</code></p>
-<h2 id="十二、mysql表优化指南"><a href="#十二、mysql表优化指南" class="headerlink" title="十二、mysql表优化指南"></a>十二、mysql表优化指南</h2><p>参考文档：<a target="_blank" rel="noopener" href="https://z.itpub.net/article/detail/7EFE8159C8E5AF3C0AB2F77685A49977">https://z.itpub.net/article/detail/7EFE8159C8E5AF3C0AB2F77685A49977</a></p>
-<h2 id="十三：数据库导入报错-index-column-size-too-large-the-maximum-column-size-is-767-bytes"><a href="#十三：数据库导入报错-index-column-size-too-large-the-maximum-column-size-is-767-bytes" class="headerlink" title="十三：数据库导入报错:index column size too large. the maximum column size is 767 bytes"></a>十三：数据库导入报错:index column size too large. the maximum column size is 767 bytes</h2><p>原因：<br>#INNODB 引擎，UTF-8，主键字符串 默认最大 767，需要修改</p>
+<h2 id="十、-MySQL安装控制插件-Connection-Control-–可有效的防止客户端暴力登录的风险-攻击"><a href="#十、-MySQL安装控制插件-Connection-Control-–可有效的防止客户端暴力登录的风险-攻击" class="headerlink" title="十、 MySQL安装控制插件(Connection-Control)–可有效的防止客户端暴力登录的风险(攻击)"></a>十、 MySQL安装控制插件(Connection-Control)–可有效的防止客户端暴力登录的风险(攻击)</h2><p>实现文档：<code>https://blog.51cto.com/u_15069450/4331304</code></p>
+<h2 id="十一、-表分区，-分区是一种表的设计模式，正确的分区可以极大地提升数据库的查询效率，完成更高质量的SQL编程。但是如果错误地使用分区，那么分区可能带来毁灭性的的结果。"><a href="#十一、-表分区，-分区是一种表的设计模式，正确的分区可以极大地提升数据库的查询效率，完成更高质量的SQL编程。但是如果错误地使用分区，那么分区可能带来毁灭性的的结果。" class="headerlink" title="十一、 表分区，  分区是一种表的设计模式，正确的分区可以极大地提升数据库的查询效率，完成更高质量的SQL编程。但是如果错误地使用分区，那么分区可能带来毁灭性的的结果。"></a>十一、 表分区，  分区是一种表的设计模式，正确的分区可以极大地提升数据库的查询效率，完成更高质量的SQL编程。但是如果错误地使用分区，那么分区可能带来毁灭性的的结果。</h2><p><strong>表分区简介参考文档：</strong><br><a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/944253">https://developer.aliyun.com/article/944253</a></p>
+<p><strong>操作文档：</strong><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xibuhaohao/p/10154281.html#_label0_1">https://www.cnblogs.com/xibuhaohao/p/10154281.html#_label0_1</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/dw3306/p/12620042.html">https://www.cnblogs.com/dw3306/p/12620042.html</a></p>
+<p><strong>已有数据结构改分区表、第二种</strong><br>参考文档：<a target="_blank" rel="noopener" href="https://blog.csdn.net/orangleliu/article/details/57088338">https://blog.csdn.net/orangleliu/article/details/57088338</a></p>
+<p><strong>自动创建分区：</strong><br>参考文档：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/webenh/p/11667778.html">https://www.cnblogs.com/webenh/p/11667778.html</a></p>
+<h2 id="十二：-mysql表优化指南"><a href="#十二：-mysql表优化指南" class="headerlink" title="十二： mysql表优化指南"></a>十二： mysql表优化指南</h2><p>参考文档：<a target="_blank" rel="noopener" href="https://z.itpub.net/article/detail/7EFE8159C8E5AF3C0AB2F77685A49977">https://z.itpub.net/article/detail/7EFE8159C8E5AF3C0AB2F77685A49977</a></p>
+<h2 id="十三：数据库导入报错-index-column-size-too-large-the-maximum-column-size-is-767-bytes"><a href="#十三：数据库导入报错-index-column-size-too-large-the-maximum-column-size-is-767-bytes" class="headerlink" title="十三：数据库导入报错:index column size too large. the maximum column size is 767 bytes"></a>十三：数据库导入报错:index column size too large. the maximum column size is 767 bytes</h2><p><strong>原因：</strong><br>INNODB 引擎，UTF-8，主键字符串 默认最大 767，需要修改</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">&gt;mysql <span class="hljs-built_in">set</span> global innodb_file_format = BARRACUDA;<br>&gt;mysql <span class="hljs-built_in">set</span> global innodb_large_prefix = ON;<br><br>然后修改导入的sql文件<br>sed -i<span class="hljs-string">&#x27;s/ENGINE=InnoDB/ROW_FORMAT=DYNAMIC &amp;/&#x27;</span> 导入的数据.sql文件<br></code></pre></td></tr></table></figure>
 
-<h2 id="十四：Fatal-error-The-slave-I-x2F-O-thread-stops-because-master-and-slave-have-equal-MySQL-server-UUIDs；"><a href="#十四：Fatal-error-The-slave-I-x2F-O-thread-stops-because-master-and-slave-have-equal-MySQL-server-UUIDs；" class="headerlink" title="十四：Fatal error: The slave I&#x2F;O thread stops because master and slave have equal MySQL server UUIDs；"></a>十四：Fatal error: The slave I&#x2F;O thread stops because master and slave have equal MySQL server UUIDs；</h2><p>原因auto.cnf文件中UUID一致导致<br>删除数据目录中的auto.cnf，启动mysql</p>
+<h2 id="十四：Fatal-error-The-slave-I-x2F-O-thread-stops-because-master-and-slave-have-equal-MySQL-server-UUIDs；"><a href="#十四：Fatal-error-The-slave-I-x2F-O-thread-stops-because-master-and-slave-have-equal-MySQL-server-UUIDs；" class="headerlink" title="十四：Fatal error: The slave I&#x2F;O thread stops because master and slave have equal MySQL server UUIDs；"></a>十四：Fatal error: The slave I&#x2F;O thread stops because master and slave have equal MySQL server UUIDs；</h2><p>原因：auto.cnf文件中UUID一致导致</p>
+<p>解决：删除数据目录中的auto.cnf，启动mysql</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">rm</span> -rf /var/lib/mysql/auto.cnf<br></code></pre></td></tr></table></figure>
                 
               </div>
@@ -421,7 +401,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>mysql故障处理，以及解决方法记录</div>
+      <div>mysql故障处理，以及解决方法</div>
       <div>https://pipiguai0123.github.io/2023/05/17/数据库/mysql/mysql问题处理，以及操作方法/</div>
     </div>
     <div class="license-meta">
@@ -466,12 +446,18 @@
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/2023/06/01/%E7%9B%91%E6%8E%A7/Prometheus/Prometheus%E9%87%87%E9%9B%86%E4%BF%A1%E6%81%AFagent%EF%BC%88cadvisor%E3%80%81node_exporter%EF%BC%89%E8%BF%90%E8%A1%8C%E5%AE%89%E8%A3%85/" title="Prometheus采集信息agent（cadvisor、node_exporter）运行安装">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Prometheus采集信息agent（cadvisor、node_exporter）运行安装</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/05/15/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E5%9F%BA%E7%A1%80%E8%AF%AD%E5%8F%A5/" title="mysql基础语句记录">
-                        <span class="hidden-mobile">mysql基础语句记录</span>
+                      <a href="/2023/05/15/%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/mysql%E5%9F%BA%E7%A1%80%E8%AF%AD%E5%8F%A5/" title="mysql基础语句">
+                        <span class="hidden-mobile">mysql基础语句</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -520,6 +506,19 @@
 
     <div class="side-col d-none d-lg-block col-lg-2">
       
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
 
     </div>
   </div>

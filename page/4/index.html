@@ -64,7 +64,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -247,15 +247,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/" target="_self">
-          Docker安装Prometheus之部署组件以及模板
+        <a href="/2023/04/27/k8s/k8s%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/%E4%BD%BF%E7%94%A8kubeadm%E5%AE%89%E8%A3%85Kubernetes1.21.1/" target="_self">
+          使用kubeadm安装Kubernetes 1.21.1
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/10/%E7%9B%91%E6%8E%A7/Prometheus/Docker%E5%AE%89%E8%A3%85Prometheus%E4%B9%8B%E9%83%A8%E7%BD%B2%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/27/k8s/k8s%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/%E4%BD%BF%E7%94%A8kubeadm%E5%AE%89%E8%A3%85Kubernetes1.21.1/" target="_self">
         <div>
-          Docker安装Prometheus之部署组件及模板、邮件通知1234参考文档1：https://www.freesion.com/article/7143903065/参考文档2：https://www.freesion.com/article/4040903004/其他参考文档：https://blog.csdn.net/weixin_43909790/article/details/1265
+          使用kubeadm安装Kubernetes 1.21.11#参考文献：https://blog.51cto.com/u_13053917/2523020  一、机器规划：   IP地址 备注    192.168.94.121 k8s-master1   192.168.94.122 k8s-node1   192.168.94.123 k8s-node2   注：CentOS 7.9 内核版本
         </div>
       </a>
 
@@ -263,8 +263,486 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2023-04-10 10:47" pubdate>
-              2023-04-10
+            <time datetime="2023-04-27 12:23" pubdate>
+              2023-04-27
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/kubernetes/" class="category-chain-item">kubernetes</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/kubernetes/k8s%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="category-chain-item">k8s环境搭建</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/kubernetes/">#kubernetes</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/04/25/docker/docker%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/(Dozzle)%E5%AE%B9%E5%99%A8%E7%9A%84%E5%AE%9E%E6%97%B6%E6%97%A5%E5%BF%97%E6%9F%A5%E7%9C%8B%E5%99%A8/" target="_self">
+          docker容器的实时日志查看器Dozzle
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/25/docker/docker%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/(Dozzle)%E5%AE%B9%E5%99%A8%E7%9A%84%E5%AE%9E%E6%97%B6%E6%97%A5%E5%BF%97%E6%9F%A5%E7%9C%8B%E5%99%A8/" target="_self">
+        <div>
+          docker容器的实时日志查看器Dozzle备注：Dozzle是一个简单、轻量级的应用程序，它为您提供了一个基于web的界面来实时监视Docker容器日志。它不存储日志信息，只用于实时监视容器日志。对于企业应用程序，Loggly、Papertrail或Kibana等产品更适合。 一、使用docker运行日志查看器Dozzle1、拉取镜像1docker pull amir20/dozzle:late
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-04-25 15:39" pubdate>
+              2023-04-25
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/docker/" class="category-chain-item">docker</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/docker/docker%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" class="category-chain-item">docker问题解决</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/docker/">#docker</a>
+            
+              <a href="/tags/docker-compose/">#docker-compose</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/04/24/A-%E5%90%84liunx%E7%B3%BB%E7%BB%9F/Ubuntu%E7%B3%BB%E7%BB%9F/Ubuntu%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8/" target="_self">
+          Ubuntu系统安装和使用
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/24/A-%E5%90%84liunx%E7%B3%BB%E7%BB%9F/Ubuntu%E7%B3%BB%E7%BB%9F/Ubuntu%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8/" target="_self">
+        <div>
+          Ubuntu系统安装和使用一、server版本安装参考文档即可12server版安装：https://www.jianshu.com/p/4fcf185bcb29server版安装：https://blog.csdn.net/qq_42289214/article/details/106585790  二、修改Ubuntu系统ip参考文档：https://www.jb51.net/article/
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-04-24 16:28" pubdate>
+              2023-04-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/liunx/" class="category-chain-item">liunx</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/liunx/Ubuntu/" class="category-chain-item">Ubuntu</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/liunx/">#liunx</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/04/24/A-%E5%90%84liunx%E7%B3%BB%E7%BB%9F/Debian%E7%B3%BB%E7%BB%9F/debian%E7%B3%BB%E7%BB%9F%E7%9A%84%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/" target="_self">
+          debian系统的问题处理
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/24/A-%E5%90%84liunx%E7%B3%BB%E7%BB%9F/Debian%E7%B3%BB%E7%BB%9F/debian%E7%B3%BB%E7%BB%9F%E7%9A%84%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/" target="_self">
+        <div>
+          debian系统的问题处理一、系统配置IP地址1.网卡通过DHCP自动获取IP地址配置：123456789101112131415vi /etc/network/interfaces# This file describes the network interfaces available on your system  # and how to activate them. For more i
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-04-24 16:18" pubdate>
+              2023-04-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/liunx/" class="category-chain-item">liunx</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/liunx/debian/" class="category-chain-item">debian</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/liunx/">#liunx</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/04/24/A-%E5%90%84liunx%E7%B3%BB%E7%BB%9F/Almaliunx/AlmaLinux%209.0%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/" target="_self">
+          AlmaLinux 9.0安装与配置
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/24/A-%E5%90%84liunx%E7%B3%BB%E7%BB%9F/Almaliunx/AlmaLinux%209.0%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/" target="_self">
+        <div>
+          AlmaLinux 9.0安装与配置一 安装1.1 镜像源官网下载镜像 https://mirrors.almalinux.org/isos/x86_64/9.0.html 1.2 安装参考centos安装方式* 二 配置2.1 修改源查找合适的镜像源，如:mirrors.aliyun.com 执行一下命令，备份并替换默认源 1234sed -e &#x27;s|^mirrorlist=|#mir
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-04-24 16:08" pubdate>
+              2023-04-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/liunx/" class="category-chain-item">liunx</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/liunx/AlmaLinux/" class="category-chain-item">AlmaLinux</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/liunx/">#liunx</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/04/21/k8s/k8s%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/Kubernetes%E9%87%8C%E7%9A%84%E4%B8%89%E7%A7%8Dport%E4%B8%8E%E4%B8%89%E7%A7%8Dip%E5%8C%BA%E5%88%86/" target="_self">
+          Kubernetes里的三种port与三种ip区分
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/21/k8s/k8s%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/Kubernetes%E9%87%8C%E7%9A%84%E4%B8%89%E7%A7%8Dport%E4%B8%8E%E4%B8%89%E7%A7%8Dip%E5%8C%BA%E5%88%86/" target="_self">
+        <div>
+          Kubernetes里的三种port与三种ip区分123k8s中的service提供了一层对外的服务抽象。Kubernetes的Service定义了一种抽象：逻辑上的一组Pod，一种可以访问它们的方式。这一组Pod能通过Service被访问到，通过是通过Selector来实现的。简单来说Service就是一个把所有Pod统一成一个组，然后对外提供固定一个IP，具体是哪些Pod，可以通过之前介绍到的
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-04-21 12:23" pubdate>
+              2023-04-21
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/kubernetes/" class="category-chain-item">kubernetes</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/kubernetes/k8s%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/" class="category-chain-item">k8s基础概念</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/kubernetes/">#kubernetes</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/04/20/k8s/k8s%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/k8s_V1.20%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E8%A3%85/" target="_self">
+          二进制安装k8s
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/20/k8s/k8s%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/k8s_V1.20%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E8%A3%85/" target="_self">
+        <div>
+          二进制安装k8s1参考文献:https://blog.51cto.com/13053917/2596613#h22  一、前言：kubernetes的五个组件：master节点的三个组件： kube-apiserver:整个集群的唯一入口，并提供认证、授权、访问控制、API注册和发现等机制。 kube-controller-manager:控制器管理器,负责维护集群的状态，比如故障检测、自动扩展、
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-04-20 14:23" pubdate>
+              2023-04-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/kubernetes/" class="category-chain-item">kubernetes</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/kubernetes/k8s%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="category-chain-item">k8s环境搭建</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/kubernetes/">#kubernetes</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/04/18/%E7%9B%91%E6%8E%A7/Zabbix/Zabbix%E6%9C%8D%E5%8A%A1%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E7%9B%91%E6%8E%A7%E9%85%8D%E7%BD%AE/" target="_self">
+          Zabbix服务安装部署及监控配置
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/18/%E7%9B%91%E6%8E%A7/Zabbix/Zabbix%E6%9C%8D%E5%8A%A1%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%8F%8A%E7%9B%91%E6%8E%A7%E9%85%8D%E7%BD%AE/" target="_self">
+        <div>
+          Zabbix服务安装部署及监控配置12#参考文档：https://www.cnblogs.com/alexlv/p/14927373.html#参考文档：https://mp.weixin.qq.com/s/zqU8wvEgsNRaolN71L0rXg 简介：zabbix是一个基于WEB界面的提供分布式系统监视以及网络监视功能的企业级开源解决方案。能够监视各种网络参数，保证服务器系统的安全运营提供
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-04-18 10:47" pubdate>
+              2023-04-18
             </time>
           </div>
         
@@ -284,7 +762,7 @@
   
     <span>></span>
     
-  <a href="/categories/%E7%9B%91%E6%8E%A7/prometheus/" class="category-chain-item">prometheus</a>
+  <a href="/categories/%E7%9B%91%E6%8E%A7/Zabbix/" class="category-chain-item">Zabbix</a>
   
   
 
@@ -301,7 +779,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/prometheus/">#prometheus</a>
+              <a href="/tags/Zabbix/">#Zabbix</a>
             
           </div>
         
@@ -315,15 +793,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/04/07/%E4%B8%AD%E9%97%B4%E4%BB%B6/slurm/Ubuntu%E5%AE%89%E8%A3%85slurm/" target="_self">
-          Ubuntu安装slurm
+        <a href="/2023/04/17/%E7%9B%91%E6%8E%A7/Zabbix/docker%E5%AE%89%E8%A3%85zabbix/" target="_self">
+          使用docker安装Zabbix
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/07/%E4%B8%AD%E9%97%B4%E4%BB%B6/slurm/Ubuntu%E5%AE%89%E8%A3%85slurm/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/17/%E7%9B%91%E6%8E%A7/Zabbix/docker%E5%AE%89%E8%A3%85zabbix/" target="_self">
         <div>
-          Ubuntu安装slurm1参考文档：http://t.csdn.cn/0nZEE 演示环境    服务器ip 系统 安装服务    192.168.94.128 Ubuntu 20.04.5 mysql、slurm   一、安装必要库文件12sudo su -apt-get install make hwloc libhwloc-dev libmunge-dev libmunge2 munge
+          使用docker安装Zabbix：123#参考文档：docker安装zabbix：https://www.cnblogs.com/xdzy/p/13805762.html#参考文档：https://hlynford.com/616.html#参考文档：https://www.csdn.net/tags/MtjaMgysMjY5MTQtYmxvZwO0O0OO0O0O.html  1.准备机器
         </div>
       </a>
 
@@ -331,8 +809,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2023-04-07 11:22" pubdate>
-              2023-04-07
+            <time datetime="2023-04-17 10:47" pubdate>
+              2023-04-17
             </time>
           </div>
         
@@ -347,12 +825,12 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
+  <a href="/categories/%E7%9B%91%E6%8E%A7/" class="category-chain-item">监控</a>
   
   
     <span>></span>
     
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/Slurm/" class="category-chain-item">Slurm</a>
+  <a href="/categories/%E7%9B%91%E6%8E%A7/Zabbix/" class="category-chain-item">Zabbix</a>
   
   
 
@@ -369,7 +847,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Slurm/">#Slurm</a>
+              <a href="/tags/Zabbix/">#Zabbix</a>
             
           </div>
         
@@ -383,15 +861,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/04/07/%E4%B8%AD%E9%97%B4%E4%BB%B6/slurm/Slurm%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/" target="_self">
-          Slurm集群部署
+        <a href="/2023/04/16/%E8%84%9A%E6%9C%AC/%E5%AE%89%E8%A3%85docker%EF%BC%8Cdocker-compose%E8%84%9A%E6%9C%AC/" target="_self">
+          自动安装docker及docker-compose
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/07/%E4%B8%AD%E9%97%B4%E4%BB%B6/slurm/Slurm%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/16/%E8%84%9A%E6%9C%AC/%E5%AE%89%E8%A3%85docker%EF%BC%8Cdocker-compose%E8%84%9A%E6%9C%AC/" target="_self">
         <div>
-          Slurm集群部署:123456789#参考文档：https://blog.csdn.net/qq_34149581/article/details/101902935	#详细参考全文档：http://hmli.ustc.edu.cn/doc/linux/slurm-install/slurm-install.html#id14#参考文档：https://blog.csdn.net/u010797
+          自动安装docker、docker-compose，需要在有网环境下1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465#! /bin/bash#备注：自动安装docker及docker-compose#Aut
         </div>
       </a>
 
@@ -399,8 +877,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2023-04-07 10:12" pubdate>
-              2023-04-07
+            <time datetime="2023-04-16 15:12" pubdate>
+              2023-04-16
             </time>
           </div>
         
@@ -415,15 +893,8 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
+  <a href="/categories/%E8%84%9A%E6%9C%AC/" class="category-chain-item">脚本</a>
   
-  
-    <span>></span>
-    
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/Slurm/" class="category-chain-item">Slurm</a>
-  
-  
-
   
 
       </span>
@@ -437,483 +908,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Slurm/">#Slurm</a>
+              <a href="/tags/docker/">#docker</a>
             
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/04/06/%E4%B8%AD%E9%97%B4%E4%BB%B6/SkyWalking/%E4%BD%BF%E7%94%A8docker-compose%E8%BF%90%E8%A1%8Csky+es8/" target="_self">
-          使用docker-compose运行sky+es
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/06/%E4%B8%AD%E9%97%B4%E4%BB%B6/SkyWalking/%E4%BD%BF%E7%94%A8docker-compose%E8%BF%90%E8%A1%8Csky+es8/" target="_self">
-        <div>
-          使用docker-compose运行sky+essky9+es8123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869version: &quot;3&quot;services:  elasti
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-04-06 13:42" pubdate>
-              2023-04-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/SkyWalking/" class="category-chain-item">SkyWalking</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/SkyWalking/">#SkyWalking</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/04/06/%E4%B8%AD%E9%97%B4%E4%BB%B6/SkyWalking/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8CSkyWalking/" target="_self">
-          使用docker运行SkyWalking
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/06/%E4%B8%AD%E9%97%B4%E4%BB%B6/SkyWalking/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8CSkyWalking/" target="_self">
-        <div>
-          使用docker运行SkyWalking1参考文档：https://ggball.top/pages/787755/#%E6%96%87%E4%BB%B6%E5%87%86%E5%A4%87 一、安装es启动 elasticsearch1234567891011121314#创建挂载目录mkdir -p /data/elasticsearch/datamkdir -p /data/elastics
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-04-06 13:02" pubdate>
-              2023-04-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/SkyWalking/" class="category-chain-item">SkyWalking</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/SkyWalking/">#SkyWalking</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/04/05/%E4%B8%AD%E9%97%B4%E4%BB%B6/SkyWalking/%E6%90%AD%E5%BB%BASkyWalking%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83/" target="_self">
-          搭建SkyWalking单机环境
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/05/%E4%B8%AD%E9%97%B4%E4%BB%B6/SkyWalking/%E6%90%AD%E5%BB%BASkyWalking%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83/" target="_self">
-        <div>
-          搭建 SkyWalking 单机环境1参考文档：https://skywalking.apache.org/zh/2020-04-19-skywalking-quick-start/#  概念分布式系统的应用程序性能监视工具，专为微服务、云原生架构和基于容器（Docker、K8s、Mesos）架构而设计。提供分布式追踪、服务网格遥测分析、度量聚合和可视化一体化解决方案。  一、搭建过程1.根据下面
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-04-05 22:02" pubdate>
-              2023-04-05
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/SkyWalking/" class="category-chain-item">SkyWalking</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/SkyWalking/">#SkyWalking</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/04/05/%E4%B8%AD%E9%97%B4%E4%BB%B6/Seata/Seata%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" target="_self">
-          Seata安装部署
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/05/%E4%B8%AD%E9%97%B4%E4%BB%B6/Seata/Seata%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" target="_self">
-        <div>
-          Seata安装部署123官方文档：https://seata.io/zh-cn/docs/ops/deploy-guide-beginner.html参考博主文档：https://www.yht7.com/news/213351Seata分TC、TM和RM三个角色，TC（Server端）为单独服务端部署，TM和RM（Client端）由业务系统集成。  Seata 是一款开源的分布式事务解决方案，致
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-04-05 09:02" pubdate>
-              2023-04-05
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/Seata/" class="category-chain-item">Seata</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Seata/">#Seata</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/04/04/%E4%B8%AD%E9%97%B4%E4%BB%B6/rocketmq/rocketmq%E9%9B%86%E7%BE%A4%E6%A8%A1%E5%BC%8F%E6%90%AD%E5%BB%BA/" target="_self">
-          Rocketmq集群模式搭建
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/04/%E4%B8%AD%E9%97%B4%E4%BB%B6/rocketmq/rocketmq%E9%9B%86%E7%BE%A4%E6%A8%A1%E5%BC%8F%E6%90%AD%E5%BB%BA/" target="_self">
-        <div>
-          Rocketmq集群模式搭建1官方文档：https://rocketmq.apache.org/zh/docs/deploymentOperations/15deploy/ 角色：RocketMQ中主要涉及到四种角色：NameServer注册服务器、Broker服务器、Producer生产者、Consumer消费者。每种角色都可以单独搭建集群。 12345678910111213141516171
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-04-04 19:59" pubdate>
-              2023-04-04
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/rocketmq/" class="category-chain-item">rocketmq</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/rocketmq/">#rocketmq</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/04/04/%E4%B8%AD%E9%97%B4%E4%BB%B6/rocketmq/Rocketmq%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84/" target="_self">
-          RocketMQ集群架构
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/04/%E4%B8%AD%E9%97%B4%E4%BB%B6/rocketmq/Rocketmq%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84/" target="_self">
-        <div>
-          RocketMQ集群架构1参考链接：https://blog.csdn.net/Weixiaohuai/article/details/123607472  一、集群架构：网络部署图： RocketMQ中主要涉及到四种角色：NameServer注册服务器、Broker服务器、Producer生产者、Consumer消费者。每种角色都可以单独搭建集群，下面我们分别介绍一下NameServer 集群、
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-04-04 19:39" pubdate>
-              2023-04-04
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/rocketmq/" class="category-chain-item">rocketmq</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/rocketmq/">#rocketmq</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/04/04/%E4%B8%AD%E9%97%B4%E4%BB%B6/rocketmq/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8CRocketMQ%E7%AE%A1%E7%90%86%E5%88%A9%E5%99%A8Dashboard/" target="_self">
-          使用docker运行RocketMQ管理利器Dashboard
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/04/%E4%B8%AD%E9%97%B4%E4%BB%B6/rocketmq/%E4%BD%BF%E7%94%A8docker%E8%BF%90%E8%A1%8CRocketMQ%E7%AE%A1%E7%90%86%E5%88%A9%E5%99%A8Dashboard/" target="_self">
-        <div>
-          使用docker运行RocketMQ管理利器Dashboard1参考文档：https://rocketmq.apache.org/zh/docs/deploymentOperations/17Dashboard 备注：以下记录的是docker运行rocketmq-dashboard管理利器，二进制包可查阅《参考文档》 RocketMQ Dashboard 是 RocketMQ 的管控利器 1、do
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-04-04 12:42" pubdate>
-              2023-04-04
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/rocketmq/" class="category-chain-item">rocketmq</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/rocketmq/">#rocketmq</a>
+              <a href="/tags/docker-compose/">#docker-compose</a>
             
           </div>
         
@@ -925,7 +922,7 @@
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/3/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/#board">5</a><a class="page-number" href="/page/6/#board">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/#board">10</a><a class="extend next" rel="next" href="/page/5/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/3/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/#board">5</a><a class="page-number" href="/page/6/#board">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/#board">12</a><a class="extend next" rel="next" href="/page/5/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 
