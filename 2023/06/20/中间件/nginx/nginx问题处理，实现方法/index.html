@@ -1,0 +1,791 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zhenzhou_zhang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="问题处理，解决方法：使用proxy_pass进行代理详细文档：https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;b010c9302cd0Nginx location 匹配:https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;6844903849166110733详细文档：https:&#x2F;&#x2F;www.bookstack.cn&#x2F;read&#x2F;dunwu-nginx-tutorial&#x2F;spilt.1.docs-ng">
+<meta property="og:type" content="article">
+<meta property="og:title" content="问题处理，解决方法">
+<meta property="og:url" content="https://pipiguai0123.github.io/2023/06/20/%E4%B8%AD%E9%97%B4%E4%BB%B6/nginx/nginx%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%EF%BC%8C%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:site_name" content="皮皮怪-page">
+<meta property="og:description" content="问题处理，解决方法：使用proxy_pass进行代理详细文档：https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;b010c9302cd0Nginx location 匹配:https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;6844903849166110733详细文档：https:&#x2F;&#x2F;www.bookstack.cn&#x2F;read&#x2F;dunwu-nginx-tutorial&#x2F;spilt.1.docs-ng">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-06-20T02:23:53.000Z">
+<meta property="article:modified_time" content="2023-11-10T07:10:34.845Z">
+<meta property="article:author" content="zhenzhou_zhang">
+<meta property="article:tag" content="Nginx">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>问题处理，解决方法 - 皮皮怪-page</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/bynotes/texiao/source/css/shubiao.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pipiguai0123.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","app_key":"UEf6tKbkmztzzENwNmj1EpEF","server_url":"https://rpu46qcc.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>皮皮怪个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="问题处理，解决方法"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-06-20 10:23" pubdate>
+          2023年6月20日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          54 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">问题处理，解决方法</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="问题处理，解决方法："><a href="#问题处理，解决方法：" class="headerlink" title="问题处理，解决方法："></a>问题处理，解决方法：</h1><p>使用proxy_pass进行代理详细文档：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b010c9302cd0">https://www.jianshu.com/p/b010c9302cd0</a><br>Nginx location 匹配:<a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903849166110733">https://juejin.cn/post/6844903849166110733</a><br>详细文档：<a target="_blank" rel="noopener" href="https://www.bookstack.cn/read/dunwu-nginx-tutorial/spilt.1.docs-nginx-configuration.md">https://www.bookstack.cn/read/dunwu-nginx-tutorial/spilt.1.docs-nginx-configuration.md</a></p>
+<h2 id="1、重写地址"><a href="#1、重写地址" class="headerlink" title="1、重写地址"></a>1、重写地址</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs awk">location  <span class="hljs-regexp">/idcard/</span> &#123;<br>    root <span class="hljs-regexp">/etc/</span>nginx<span class="hljs-regexp">/txt/</span>;<br>    <span class="hljs-comment">#重写地址 https://xxx.com/idcard/BPWeJvwhrT.txt</span><br>    rewrite ^<span class="hljs-regexp">/idcard/</span>(.*)$ /<span class="hljs-variable">$1</span> <span class="hljs-keyword">break</span>; <br>  &#125;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="2、去掉访问地址的后缀"><a href="#2、去掉访问地址的后缀" class="headerlink" title="2、去掉访问地址的后缀"></a>2、去掉访问地址的后缀</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">location ^~ /mobile/ &#123;<br>       proxy_pass http://192.168.4.138:9360/;  <span class="hljs-comment">#去掉访问时的/mobile/</span><br>   &#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="3、访问某个端口的-x2F-下任何数据都返回某一个页面"><a href="#3、访问某个端口的-x2F-下任何数据都返回某一个页面" class="headerlink" title="3、访问某个端口的&#x2F;下任何数据都返回某一个页面"></a>3、访问某个端口的&#x2F;下任何数据都返回某一个页面</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh">server &#123;<br>    listen      8081;  <span class="hljs-comment">#监听的端口</span><br>    root /home/dist;   <span class="hljs-comment">#页面存放的路径</span><br>    server_name  localhost;  <span class="hljs-comment">#访问的名称</span><br>        location / &#123;<br>        rewrite ^/(.*)$ /index.html <span class="hljs-built_in">break</span>;  <span class="hljs-comment">#重写地址  break：重写路径结束后，不再重新匹配路径。 last：重写路径结束后，将得到的路径重新进行一次路径匹配</span><br>   &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="4、把以show-php结尾的url全部路由到index-php文件。"><a href="#4、把以show-php结尾的url全部路由到index-php文件。" class="headerlink" title="4、把以show.php结尾的url全部路由到index.php文件。"></a>4、把以show.php结尾的url全部路由到index.php文件。</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">rewrite <span class="hljs-string">&quot;^/+(.*)(show\.php)$&quot;</span> /index.php <span class="hljs-built_in">break</span>;<br></code></pre></td></tr></table></figure>
+
+<h2 id="5、nginx-80端口重定向到443端口，也就是http访问自动跳转到https"><a href="#5、nginx-80端口重定向到443端口，也就是http访问自动跳转到https" class="headerlink" title="5、nginx 80端口重定向到443端口，也就是http访问自动跳转到https"></a>5、nginx 80端口重定向到443端口，也就是http访问自动跳转到https</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs sh">server &#123;<br>    listen 80;<br>    server_name www.域名.com;<br>    rewrite ^(.*)$ https://<span class="hljs-variable">$&#123;server_name&#125;</span><span class="hljs-variable">$1</span> permanent; <span class="hljs-comment">#重定向</span><br>&#125;<br>server &#123;<br>    listen 443;<br>    server_name www.域名.com;<br>    root /home/wwwroot;<br>    ssl on;<br>    ssl_certificate /etc/nginx/ssl/server.crt;<br>    ssl_certificate_key /etc/nginx/ssl/server.key;<br>    ....<br>&#125;<br><span class="hljs-comment">#跳转一：实现访问80端口跳转到443端口，端口的跳转！</span><br>upstream web &#123;<br>   server 192.168.94.157:8081;<br>&#125;<br>server &#123;<br>    listen       80;<br>    server_name  192.168.94.156 ;<br>    rewrite ^(.*)$ http://<span class="hljs-variable">$&#123;server_name&#125;</span>:443<span class="hljs-variable">$1</span> permanent;<br>&#125;<br>server &#123;<br>     listen 443 ;<br>     server_name localhost;<br>     location / &#123;<br>       proxy_pass http://web/;<br>    &#125;<br>&#125;<br><span class="hljs-comment">#跳转二：举例：重定向、http到https，https协议跳转。</span><br>server &#123;<br>    listen 80;<br>    server_name test_jira321.com;<br>    rewrite ^(.*) https://$server_name<span class="hljs-variable">$1</span> permanent;<br>&#125;<br>server &#123;<br>  listen 443 ssl;<br>  server_name test_jira321.com;<br><br>  ssl_certificate /etc/letsencrypt/live/test_jira321.com/fullchain.pem;<br>  ssl_certificate_key /etc/letsencrypt/live/test_jira321.com/privkey.pem;<br>  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;<br>  ssl_session_tickets on;<br><br>  proxy_set_header Host <span class="hljs-variable">$host</span>;<br>  proxy_set_header X-Forwarded-For <span class="hljs-variable">$proxy_add_x_forwarded_for</span>;<br>  proxy_set_header X-Real-IP <span class="hljs-variable">$remote_addr</span>;<br>  proxy_set_header X-Forwarded-Proto <span class="hljs-variable">$scheme</span>;<br><br>  gzip_buffers 32 4K;<br>  gzip_comp_level 6;<br>  gzip_min_length 100;<br>  gzip_types application/javascript text/css text/xml;<br>  gzip_disable <span class="hljs-string">&quot;MSIE [1-6]\.&quot;</span>;<br>  gzip_vary on;<br><br>  location / &#123;<br>    proxy_pass http://192.168.94.129:8080/;<br>    proxy_read_timeout 300;<br>    client_max_body_size    100m;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="6、实现nginx转发某个端口：tcp协议转发"><a href="#6、实现nginx转发某个端口：tcp协议转发" class="headerlink" title="6、实现nginx转发某个端口：tcp协议转发"></a>6、实现nginx转发某个端口：tcp协议转发</h2><p>以rpm安装的nginx为例： 修改&#x2F;etc&#x2F;nginx&#x2F;nginx.conf  </p>
+<p><strong>要求stream{}和http{}同级</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /etc/nginx/nginx.conf<br><span class="hljs-comment">#......以上内容省略</span><br>  <span class="hljs-comment">#gzip  on;</span><br><br>       include /etc/nginx/conf.d/*.conf;  <span class="hljs-comment">#rpm安装的时候自己写入的路径</span><br>&#125;<br>stream &#123;<br>    include /etc/nginx/conf.d/tcp/*.conf;  <span class="hljs-comment">#要转发的端口conf路径</span><br>&#125;<br><span class="hljs-comment">#---------------------------</span><br>vim /etc/nginx/conf.d/tcp/xxx.conf  <span class="hljs-comment">#修改转发端口的conf文件</span><br><br>server &#123;<br>    listen       8036;  <span class="hljs-comment">#设置访问时候的端口</span><br>    proxy_pass 172.26.0.26:3306;  <span class="hljs-comment">#转发的ip+端口</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="7-解决docker-push-报错：413-Request-Entity-Too-Large"><a href="#7-解决docker-push-报错：413-Request-Entity-Too-Large" class="headerlink" title="7.解决docker push 报错：413 Request Entity Too Large"></a>7.解决docker push 报错：413 Request Entity Too Large</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh">修改nginx配置文件:nginx.conf<br><br>http &#123;<br>    include       /etc/nginx/mime.types;<br>   <span class="hljs-comment">#....</span><br>    client_max_body_size 102400m;    <br>    <span class="hljs-comment">#client_max_body_size默认为0， 修改0为特定的大小即可。如 client_max_body_size 102400M</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="8-实现页面访问localhost-x2F-download-x2F-xxx-docx链接，下载xxx-docx文件！"><a href="#8-实现页面访问localhost-x2F-download-x2F-xxx-docx链接，下载xxx-docx文件！" class="headerlink" title="8.实现页面访问localhost&#x2F;download&#x2F;xxx.docx链接，下载xxx.docx文件！"></a>8.实现页面访问localhost&#x2F;download&#x2F;xxx.docx链接，下载xxx.docx文件！</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim default.conf<br><span class="hljs-comment">#-----------------------------------</span><br>server &#123;<br>    listen       80;<br>    server_name  localhost;<br><br>    location  /download/ &#123;<br>        root /etc/nginx/txt/html/;  <span class="hljs-comment"># xxx.docx文件存放目录</span><br>        rewrite ^/download/(.*)$ /<span class="hljs-variable">$1</span> <span class="hljs-built_in">break</span>;  <span class="hljs-comment"># 将访问时的download去掉，直接获取链接中的xxx.docx名</span><br>      &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="9-实现nginx登录验证"><a href="#9-实现nginx登录验证" class="headerlink" title="9.实现nginx登录验证"></a>9.实现nginx登录验证</h2><p>参考文档：<a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15076224/3332559">https://blog.51cto.com/u_15076224/3332559</a></p>
+<h3 id="9-1-安装httpd-tools工具"><a href="#9-1-安装httpd-tools工具" class="headerlink" title="9.1.安装httpd-tools工具"></a>9.1.安装httpd-tools工具</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">yum install httpd-tools -y<br></code></pre></td></tr></table></figure>
+
+<h3 id="9-2-生成用户名密码文件"><a href="#9-2-生成用户名密码文件" class="headerlink" title="9.2.生成用户名密码文件"></a>9.2.生成用户名密码文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">htpasswd -c /etc/nginx/conf.d/.ngpasswd flink<br>备注：flink为用户名,回车后会提示你输入密码。<br></code></pre></td></tr></table></figure>
+
+<h3 id="9-3-配置nginx的conf文件"><a href="#9-3-配置nginx的conf文件" class="headerlink" title="9.3.配置nginx的conf文件"></a>9.3.配置nginx的conf文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh">server &#123;<br>    listen       80;<br>    server_name  localhost;<br>    location / &#123;<br>        auth_basic           <span class="hljs-string">&quot;input you user name and password&quot;</span>;<br>        auth_basic_user_file /etc/nginx/conf.d/.ngpasswd;<br>        proxy_pass http://flink:8081; <span class="hljs-comment">#改地址为flink转发</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="10-实现nginx只允许指定的ip访问"><a href="#10-实现nginx只允许指定的ip访问" class="headerlink" title="10.实现nginx只允许指定的ip访问"></a>10.实现nginx只允许指定的ip访问</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs sh">server &#123;<br>    listen       80;<br>    server_name  localhost;<br>    location / &#123;<br>        auth_basic           <span class="hljs-string">&quot;input you user name and password&quot;</span>;<br>        auth_basic_user_file /etc/nginx/conf.d/.ngpasswd;<br>        proxy_pass http://flink:8081; <span class="hljs-comment">#改地址为flink转发</span><br>        allow 192.168.91.159;<br>        deny all;<br>    &#125;<br>&#125;<br><br>allow:允许访问<br>deny：不允许访问<br>注意！上面的配置中allow必须在deny的前面配置，不然allow不生效。<br></code></pre></td></tr></table></figure>
+
+<h2 id="11-nginx配置socket连接"><a href="#11-nginx配置socket连接" class="headerlink" title="11.nginx配置socket连接"></a>11.nginx配置socket连接</h2><p>#Nginx通过在客户端和后端服务器之间建立隧道来支持WebSockets通信。为了让Nginx可以将来自客户端的Upgrade请求发送到后端服务器，Upgrade和Connection的头信息必须被显式的设置。<br>#参考文档：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43931358/article/details/111039750">https://blog.csdn.net/weixin_43931358/article/details/111039750</a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs sh">location /wsapp/ &#123;<br>        proxy_pass http://wsbackend;<br>        proxy_http_version 1.1;<br>        <span class="hljs-comment">#以下为socket连接</span><br>        proxy_set_header Upgrade <span class="hljs-variable">$http_upgrade</span>;<br>        proxy_set_header Connection <span class="hljs-string">&quot;upgrade&quot;</span>;<br>    &#125;<br><span class="hljs-comment">#生产配置实例：</span><br>   location  / &#123; <br>        proxy_pass http://192.168.10.3:8702/;<br>            proxy_http_version 1.1;<br>            proxy_redirect off;<br>            proxy_buffering off;<br>            proxy_set_header X-NginX-Proxy <span class="hljs-literal">true</span>;<br>            proxy_set_header Host <span class="hljs-variable">$host</span>;<br>            proxy_set_header Http-Host <span class="hljs-variable">$http_host</span>;<br>            proxy_set_header X-Real-IP <span class="hljs-variable">$remote_addr</span>;<br>            proxy_set_header REMOTE-HOST <span class="hljs-variable">$remote_addr</span>;<br>            proxy_set_header X-Forwarded-For <span class="hljs-variable">$proxy_add_x_forwarded_for</span>;<br>            <span class="hljs-comment">#socket</span><br>            proxy_set_header Upgrade <span class="hljs-variable">$http_upgrade</span>;<br>            proxy_set_header Connection <span class="hljs-variable">$connection_upgrade</span>;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="12-nginx转发携带请求头，nginx转发headers内容丢失解决"><a href="#12-nginx转发携带请求头，nginx转发headers内容丢失解决" class="headerlink" title="12.nginx转发携带请求头，nginx转发headers内容丢失解决"></a>12.nginx转发携带请求头，nginx转发headers内容丢失解决</h2><p>修改nginx配置文件:<code>nginx.conf</code>,添加：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">underscores_in_headers on;<br>默认为off，需要开启<br></code></pre></td></tr></table></figure>
+
+<h2 id="13-nginx配置不缓存某种特定文件"><a href="#13-nginx配置不缓存某种特定文件" class="headerlink" title="13.nginx配置不缓存某种特定文件"></a>13.nginx配置不缓存某种特定文件</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs sh">    location / &#123;<br>        root   /usr/share/nginx/html;<br>        index  index.html index.htm;<br>        try_files <span class="hljs-variable">$uri</span> <span class="hljs-variable">$uri</span>/ /index.html;<br>        gzip_static on;<br>        <span class="hljs-comment">#不缓存以wasm和wasmd结尾的文件</span><br>        <span class="hljs-keyword">if</span> (<span class="hljs-variable">$request_filename</span> ~* .*\.(?:wasm|wasmd)$) &#123;<br>            add_header Cache-Control <span class="hljs-string">&quot;no-cache&quot;</span>;<br>        &#125;<br>     &#125;<br>上面的可能需要强制刷新，下面为每次普通刷新：<br>    location / &#123;<br>        root   /usr/share/nginx/html;<br>        index  index.html index.htm;<br>        try_files <span class="hljs-variable">$uri</span> <span class="hljs-variable">$uri</span>/ /index.html;<br>        gzip_static on;<br>    &#125;<br>    location ~ .*\.(wasm|wasmd)$ &#123;<br>        root   /usr/share/nginx/html;<br>        index  index.html index.htm;<br>        try_files <span class="hljs-variable">$uri</span> <span class="hljs-variable">$uri</span>/ /index.html;<br>        gzip_static on;<br>        add_header Cache-Control <span class="hljs-string">&quot;no-cache&quot;</span>;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="14-nginx代理websocket-因为cookie过大导致连接失败"><a href="#14-nginx代理websocket-因为cookie过大导致连接失败" class="headerlink" title="14.nginx代理websocket 因为cookie过大导致连接失败"></a>14.nginx代理websocket 因为cookie过大导致连接失败</h2><p><strong>问题：</strong><br>由于前端cookie都时经过加密。所以导致长度大小会很大。此时nginx代理。如果是跨域代理的话不会携带cookie，但是如果是同源代理的话会携带cookie。nginx默认请求头大小为1k ，此时因为cookie导致大小溢出，导致连接ws时会fail。</p>
+<p><strong>解决方案：</strong></p>
+<h3 id="14-1、忽略cookie信息"><a href="#14-1、忽略cookie信息" class="headerlink" title="14.1、忽略cookie信息"></a>14.1、忽略cookie信息</h3><p>由于cookie信息后端时不用的。所以我选择了这个。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">##覆盖</span><br>proxy_set_header Cookie <span class="hljs-string">&quot;la=1&quot;</span>;<br><span class="hljs-comment">##或者忽略</span><br>proxy_no_cache <span class="hljs-variable">$cookie_nocache</span> $arg_nocache<span class="hljs-variable">$arg_comment</span>;<br></code></pre></td></tr></table></figure>
+<h3 id="14-2、修改nginx请求头默认大小"><a href="#14-2、修改nginx请求头默认大小" class="headerlink" title="14.2、修改nginx请求头默认大小"></a>14.2、修改nginx请求头默认大小</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#client_header_buffer_size 8k;</span><br><span class="hljs-comment">#large_client_header_buffers 4 32k;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="15-nginx配置robots协议"><a href="#15-nginx配置robots协议" class="headerlink" title="15.nginx配置robots协议"></a>15.nginx配置robots协议</h3><p>详细：robots协议也叫robots.txt（统一小写）是一种存放于网站根目录下的ASCII编码的文本文件，它通常告诉网络搜索引擎的漫游器（又称网络蜘蛛），此网站中的哪些内容是不应被搜索引擎的漫游器获取的，哪些是可以被漫游器获取的。因为一些系统中的URL是大小写敏感的，所以robots.txt的文件名应统一为小写。robots.txt应放置于网站的根目录下。如果想单独定义搜索引擎的漫游器访问子目录时的行为，那么可以将自定的设置合并到根目录下的robots.txt，或者使用robots元数据（Metadata，又称元数据）。<br>robots协议并不是一个规范，而只是约定俗成的，所以并不能保证网站的隐私。<br>nginx配置文件中添加：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">location =/robots.txt &#123;<br>        default_type text/html;<br>        add_header Content-Type <span class="hljs-string">&quot;text/plain; charset=UTF-8&quot;</span>;<br>        <span class="hljs-built_in">return</span> 200 <span class="hljs-string">&quot;User-Agent: *\nDisallow: /&quot;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/Nginx/" class="category-chain-item">Nginx</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Nginx/">#Nginx</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>问题处理，解决方法</div>
+      <div>https://pipiguai0123.github.io/2023/06/20/中间件/nginx/nginx问题处理，实现方法/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zhenzhou_zhang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年6月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/06/20/%E4%B8%AD%E9%97%B4%E4%BB%B6/kafka/docker%E5%AE%89%E8%A3%85kafka%E5%8D%95%E8%8A%82%E7%82%B9/" title="docker安装kafka单节点">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">docker安装kafka单节点</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/06/19/k8s/%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86%E5%92%8C%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/k8s%E5%B8%B8%E8%A7%81%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/" title="K8s常见故障解决方法">
+                        <span class="hidden-mobile">K8s常见故障解决方法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"rpU46QccqgFCGnJRAoed5HyO-gzGzoHsz","appKey":"UEf6tKbkmztzzENwNmj1EpEF","path":"window.location.pathname","placeholder":"港点什么吧~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         次
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/sakura.js"></script>
+<script src="/js/clicksocialvalue.js"></script>
+<script src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<script src="/js/fairyDustCursor.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
